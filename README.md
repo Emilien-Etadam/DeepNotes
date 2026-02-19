@@ -1,41 +1,83 @@
 # DeepNotes
 
-Website: [https://deepnotes.app](https://deepnotes.app)
+Open source, end-to-end encrypted infinite canvas with deep page nesting and realtime collaboration.
 
-DeepNotes is an open source, end-to-end encrypted infinite canvas tool with deep page nesting and realtime collaboration.
+Fork maintained by [Emilien-Etadam](https://github.com/Emilien-Etadam) with build fixes for local development.
 
-## Why DeepNotes?
+## Prerequisites
 
-- **Infinite canvases:** Free yourself from the big wall of text.
-- **Deep page nesting:** Explore concepts in all their complexity.
-- **End-to-end encryption:** Keep your notes well protected.
-- **Realtime collaboration:** Create groups to collaborate with your team.
-- **Flexible note system:** Organize your notes in whatever way you want.
-- **Lifelong storage:** Never lose your notes ever again.
+- **Node 18** (via [nvm](https://github.com/nvm-sh/nvm))
+- **pnpm 7.6.0** (enforced by the repo)
+- **Docker** (for PostgreSQL and KeyDB)
 
-## Development
+## Installation
 
-```console
-git clone https://github.com/DeepNotesApp/DeepNotes && cd DeepNotes && cp template.env .env && pnpm install && pnpm run repo:build && docker-compose up -d
-```
 
-(On Windows, use WSL or Git Bash to run the commands above)
+# 1. Install nvm and Node 18
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc
+nvm install 18
+nvm use 18
 
-1. Run `pnpm run dev` to start the backend servers.
-2. Run one of these commands to start the frontend server:
-   - `pnpm run dev:spa` to start the Single Page Application app.
-   - `pnpm run dev:ssr` to start the Server Side Rendered app.
-   - `pnpm run dev:electron` to start the Electron app.
-   - `pnpm run dev:android` to start the Android app (requires Android Studio).
-   - `pnpm run dev:ios` to start the iOS app (requires Xcode).
+# 2. Install pnpm
+npm install -g pnpm@7.6.0
 
-(If you use SPA or SSR, you must access the app through `http://localhost:60379` by default. Other URLs won't work. You can configure the host and ports in the `.env` file.)
+# 3. Clone the repo
+git clone https://github.com/Emilien-Etadam/DeepNotes.git
+cd DeepNotes
 
-## Special thanks to these libraries for making DeepNotes possible:
+# 4. Start PostgreSQL and KeyDB
+docker-compose up -d
 
-- [Vue.js](https://vuejs.org/): Reactivity, component system, and more
-- [Quasar Framework](https://quasar.dev/): Cross-platform frontend framework
-- [Yjs](https://docs.yjs.dev/): Realtime collaboration
-- [Tiptap](https://tiptap.dev/): Rich text editor
-- [KeyDB](https://docs.keydb.dev/) and [Redis](https://redis.io/): Scalable shared memory and communication
-- And many more...
+# 5. Fix KeyDB write error
+redis-cli -a "keydb_password_here" config set stop-writes-on-bgsave-error no
+
+# 6. Configure environment
+cp template.env .env
+
+# 7. Install dependencies
+pnpm install
+
+# 8. Build packages (TypeScript errors are non-blocking)
+pnpm run repo:build
+
+# 9. Initialize the database
+# The database is automatically initialized by the app-server on first run.
+Copy
+Running
+Terminal 1 (backend servers):
+
+Copynvm use 18
+cd DeepNotes
+pnpm run dev
+Wait until you see app-server started on port 48922.
+
+Terminal 2 (frontend):
+
+Copynvm use 18
+cd DeepNotes
+pnpm run spa:dev
+Open http://localhost:61033 in your browser.
+
+Default Ports
+Service	Port
+Frontend (SPA)	61033
+App Server	48922
+Realtime Server	31074
+Collab Server	33245
+PostgreSQL	5432
+KeyDB (Redis)	6379
+Troubleshooting
+KeyDB write errors: Run redis-cli -a "keydb_password_here" config set stop-writes-on-bgsave-error no.
+
+Port already in use: Stop native PostgreSQL/Redis if running (sudo service postgresql stop && sudo service redis-server stop) before starting Docker.
+
+Node version: This project requires Node 18. Run nvm use 18 in every terminal.
+
+Slow first load: Normal in dev mode. Vite pre-bundles dependencies on first request.
+
+Tech Stack
+TypeScript, Vue 3, Quasar, Vite, tRPC, Tiptap, Yjs, PostgreSQL, KeyDB, libsodium (E2EE)
+
+License
+AGPL-3.0 EOF
