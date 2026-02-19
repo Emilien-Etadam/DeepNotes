@@ -26,7 +26,7 @@
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.2",
     "turbo": "^1.10.16",
-    "typescript": "^5.2.2",
+    "typescript": "5.3.3",
     "vitest": "^0.34.6"
   },
   "engines": {
@@ -63,7 +63,7 @@
     "preinstall": "npx only-allow pnpm",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
     "release": "standard-version",
-    "repo:build": "tsc --build tsconfig.packages.json && turbo run repo:build --parallel",
+    "repo:build": "tsc --build tsconfig.packages.json; turbo run repo:build --parallel",
     "repo:build:watch": "concurrently \"tsc --build tsconfig.packages.json --watch\" \"turbo run repo:build:watch --parallel\"",
     "test": "vitest"
   },
