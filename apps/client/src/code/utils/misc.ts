@@ -23,18 +23,34 @@ export async function asyncDialog<T = any>(opts: QDialogOptions): Promise<T> {
   });
 }
 
+const backendUnavailableMessage =
+  'Backend unavailable. Ensure PostgreSQL and Redis (KeyDB) are running.';
+
+function isBackendUnavailableError(error: any): boolean {
+  const msg = String(error?.message ?? '');
+  return (
+    msg.includes('Unable to transform response from server') ||
+    msg.includes('Failed to fetch') ||
+    msg.includes('NetworkError')
+  );
+}
+
 export function handleError(error: any, logger = mainLogger) {
   if (error == null) {
     return;
   }
 
-  $quasar().notify({
-    message: isString(error)
+  const message = isBackendUnavailableError(error)
+    ? backendUnavailableMessage
+    : isString(error)
       ? error
       : (error.response?.data?.errors?.[0]?.message ??
         error.response?.data?.message ??
         error.message ??
-        'An error has occurred.'),
+        'An error has occurred.');
+
+  $quasar().notify({
+    message,
     type: 'negative',
   });
 

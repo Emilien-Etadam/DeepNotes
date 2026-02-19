@@ -1,7 +1,8 @@
 version: '3.8'
+
 services:
   postgres:
-    image: postgres:15.3
+    image: postgres:16
     container_name: postgres
     restart: always
     environment:
@@ -11,8 +12,13 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   keydb:
     image: eqalpha/keydb:alpine_x86_64_v6.3.3
@@ -22,4 +28,82 @@ services:
       - '6379:6379'
     volumes:
       - ./keydb.conf:/etc/keydb/redis.conf
-      - ./keydb_data:/data
+      - keydb_data:/data
+    healthcheck:
+      test: ['CMD', 'keydb-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app-server:
+    build:
+      context: .
+      dockerfile: apps/app-server/Dockerfile
+    container_name: app-server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file: .env
+    ports:
+      - '48922:48922'
+
+  collab-server:
+    build:
+      context: .
+      dockerfile: apps/collab-server/Dockerfile
+    container_name: collab-server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file: .env
+    ports:
+      - '48923:48923'
+
+  realtime-server:
+    build:
+      context: .
+      dockerfile: apps/realtime-server/Dockerfile
+    container_name: realtime-server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file: .env
+    ports:
+      - '48924:48924'
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: apps/scheduler/Dockerfile
+    container_name: scheduler
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file: .env
+
+  client:
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile
+    container_name: client
+    restart: always
+    ports:
+      - '80:80'
+    depends_on:
+      - app-server
+
+volumes:
+  postgres_data:
+  keydb_data:

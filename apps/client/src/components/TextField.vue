@@ -1,5 +1,6 @@
 <template>
   <q-input
+    v-bind="props"
     filled
     :input-style="{ color: readonly ? '#d8d8d8' : undefined }"
     :readonly="readonly"
@@ -24,7 +25,7 @@ interface Props extends QInputProps {
   readonly?: boolean;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 </script>
 
 <style scoped lang="scss">

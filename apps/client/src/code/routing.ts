@@ -34,6 +34,27 @@ export async function getRedirectDest(input: {
   auth: AuthStore;
   cookies?: typeof Cookies;
 }) {
+  // Setup: first account must be created via /setup; no public register
+  if (process.env.CLIENT) {
+    try {
+      const { needsSetup } = await trpcClient.setup.getSetupStatus.query();
+      if (needsSetup && (input.route.name === 'home' || input.route.name === 'login')) {
+        return { name: 'setup' };
+      }
+      if (needsSetup && input.route.name === 'register') {
+        return { name: 'setup' };
+      }
+      if (!needsSetup && input.route.name === 'setup') {
+        return { name: 'login' };
+      }
+      if (!needsSetup && input.route.name === 'register') {
+        return { name: 'login' };
+      }
+    } catch {
+      // Ignore (e.g. server unreachable)
+    }
+  }
+
   // Page requires auth
 
   if (
@@ -49,9 +70,7 @@ export async function getRedirectDest(input: {
     input.auth.loggedIn &&
     input.route.matched.some((record) => record.meta.requiresGuest)
   ) {
-    return {
-      name: isIncluded(process.env.MODE, ['ssr', 'spa']) ? 'home' : 'pages',
-    };
+    return { name: 'pages' };
   }
 
   // Starting page redirection

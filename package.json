@@ -5,40 +5,34 @@
     "@commitlint/cli": "^18.2.0",
     "@commitlint/config-conventional": "^18.1.0",
     "@deeplib/tsconfig": "workspace:*",
+    "@eslint/js": "^9.17.0",
     "@quasar/icongenie": "^3.1.1",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "eslint": "^8.53.0",
-    "eslint-config-base": "workspace:*",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
-    "eslint-plugin-vue": "^9.18.1",
-    "husky": "^8.0.3",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-prettier": "^5.2.0",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "eslint-plugin-unused-imports": "^4.1.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "husky": "^9.0.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
     "standard-version": "^9.5.0",
     "syncpack": "^11.2.1",
-    "tsc-alias": "~1.7.1",
+    "tsc-alias": "~1.8.10",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.2",
-    "turbo": "^1.10.16",
-    "typescript": "5.3.3",
-    "vitest": "^0.34.6"
+    "turbo": "^2.3.0",
+    "typescript": "~5.7.3",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.0.0"
   },
   "engines": {
     "npm": ">=7.0.0",
-    "node": ">=14.0.0"
+    "node": ">=20.0.0"
   },
-  "packageManager": "pnpm@7.6.0",
-  "pnpm": {
-    "patchedDependencies": {
-      "dotenv-expand@9.0.0": "patches/dotenv-expand@9.0.0.patch"
-    }
-  },
+  "packageManager": "pnpm@9.15.4",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -61,7 +55,7 @@
     "lint": "turbo run lint",
     "npkill": "turbo run npkill && rimraf ./node_modules",
     "preinstall": "npx only-allow pnpm",
-    "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
+    "prepare": "husky",
     "release": "standard-version",
     "repo:build": "tsc --build tsconfig.packages.json; turbo run repo:build --parallel",
     "repo:build:watch": "concurrently \"tsc --build tsconfig.packages.json --watch\" \"turbo run repo:build:watch --parallel\"",
@@ -75,5 +69,10 @@
   "workspaces": [
     "apps/**",
     "packages/**"
-  ]
+  ],
+  "pnpm": {
+    "patchedDependencies": {
+      "libsodium-wrappers-sumo@0.7.16": "patches/libsodium-wrappers-sumo@0.7.16.patch"
+    }
+  }
 }

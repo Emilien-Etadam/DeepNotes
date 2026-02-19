@@ -1,21 +1,15 @@
-import { isIncluded } from '@stdlib/misc';
 import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    meta: {
-      requiresGuest: !isIncluded(process.env.MODE, ['ssr', 'spa']),
-    },
+    meta: { requiresGuest: true },
     children: [
       {
         path: '',
         name: 'home',
-        component: () =>
-          isIncluded(process.env.MODE, ['ssr', 'spa'])
-            ? import('src/pages/home/Index/Index.vue')
-            : import('src/pages/home/Login/Login.vue'),
+        component: () => import('src/pages/home/Login/Login.vue'),
       },
     ],
   },
@@ -29,6 +23,19 @@ const routes: RouteRecordRaw[] = [
         path: '',
         name: 'login',
         component: () => import('src/pages/home/Login/Login.vue'),
+      },
+    ],
+  },
+
+  {
+    path: '/setup',
+    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
+    meta: { requiresGuest: true },
+    children: [
+      {
+        path: '',
+        name: 'setup',
+        component: () => import('src/pages/home/Setup.vue'),
       },
     ],
   },
@@ -67,18 +74,6 @@ const routes: RouteRecordRaw[] = [
         path: '',
         name: 'verify-email',
         component: () => import('src/pages/home/VerifyEmail.vue'),
-      },
-    ],
-  },
-
-  {
-    path: '/pricing',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    children: [
-      {
-        path: '',
-        name: 'pricing',
-        component: () => import('src/pages/home/Pricing/Pricing.vue'),
       },
     ],
   },
@@ -215,47 +210,6 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/articles',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    children: [
-      {
-        path: 'comparing-obsidian',
-        component: () =>
-          import('src/pages/home/Articles/ComparingObsidian.vue'),
-        name: 'articles/comparing-obsidian',
-      },
-    ],
-  },
-
-  ...(isIncluded(process.env.MODE, ['ssr', 'spa'])
-    ? [
-        {
-          path: '/download',
-          component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-          children: [
-            {
-              path: '',
-              name: 'download',
-              component: () => import('src/pages/home/Download/Download.vue'),
-            },
-          ],
-        },
-      ]
-    : []),
-
-  {
-    path: '/whitepaper',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    children: [
-      {
-        path: '',
-        name: 'whitepaper',
-        component: () => import('src/pages/home/Whitepaper/Whitepaper.vue'),
-      },
-    ],
-  },
-
-  {
     path: '/privacy-policy',
     component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
     children: [
@@ -281,13 +235,14 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/subscribed',
+    path: '/accept-invite/:token',
     component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
+    meta: { requiresGuest: true },
     children: [
       {
         path: '',
-        name: 'subscribed',
-        component: () => import('src/pages/home/Subscribed.vue'),
+        name: 'accept-invite',
+        component: () => import('src/pages/home/AcceptInvite.vue'),
       },
     ],
   },
@@ -318,6 +273,12 @@ const routes: RouteRecordRaw[] = [
             name: 'account/security',
             component: () =>
               import('src/pages/home/Account/Security/Security.vue'),
+          },
+          {
+            path: 'invitations',
+            name: 'account/invitations',
+            component: () =>
+              import('src/pages/home/Account/Invitations/Invitations.vue'),
           },
         ],
       },

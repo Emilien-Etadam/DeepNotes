@@ -50,6 +50,17 @@
               </q-item-section>
               <q-item-section>Security</q-item-section>
             </q-item>
+
+            <q-item
+              style="height: 60px"
+              clickable
+              :to="{ name: 'account/invitations' }"
+            >
+              <q-item-section avatar>
+                <q-icon name="mdi-account-plus" />
+              </q-item-section>
+              <q-item-section>Invitations</q-item-section>
+            </q-item>
           </q-list>
         </div>
 

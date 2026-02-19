@@ -6,7 +6,7 @@ import type { MailOptions } from '.';
 
 const _getBrevo = once(() => {
   Brevo.ApiClient.instance.authentications['api-key'].apiKey =
-    process.env.BREVO_API_KEY;
+    process.env.BREVO_API_KEY ?? '';
 
   return new Brevo.TransactionalEmailsApi();
 });
@@ -20,7 +20,7 @@ export async function sendBrevoMail({ from, to, subject, html }: MailOptions) {
 
     to: to.map((email) => ({ email })),
 
-    subject: iif(process.env.DEV, '[Brevo] ', '') + subject,
+    subject: iif(!!process.env.DEV, '[Brevo] ', '') + subject,
 
     htmlContent: html,
   });

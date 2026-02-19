@@ -38,16 +38,6 @@
               </q-item-section>
               <q-item-section>Login</q-item-section>
             </q-item>
-
-            <q-item
-              clickable
-              :to="{ name: 'register' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-account-plus" />
-              </q-item-section>
-              <q-item-section>Sign Up</q-item-section>
-            </q-item>
           </template>
 
           <template v-if="uiStore().loggedIn">
@@ -63,37 +53,6 @@
           </template>
 
           <template v-if="uiStore().width < BREAKPOINT_LG_MIN">
-            <q-item
-              clickable
-              :to="{ name: 'pricing' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-currency-usd" />
-              </q-item-section>
-              <q-item-section>Pricing</q-item-section>
-            </q-item>
-
-            <q-item
-              v-if="isIncluded(quasarMode, ['ssr', 'spa'])"
-              clickable
-              :to="{ name: 'download' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-download" />
-              </q-item-section>
-              <q-item-section>Download</q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              :to="{ name: 'whitepaper' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-file-document" />
-              </q-item-section>
-              <q-item-section>Whitepaper</q-item-section>
-            </q-item>
-
             <q-item
               clickable
               :to="{ name: 'help' }"
@@ -123,9 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { BREAKPOINT_LG_MIN, BREAKPOINT_MD_MIN, isIncluded } from '@stdlib/misc';
+import { BREAKPOINT_LG_MIN, BREAKPOINT_MD_MIN } from '@stdlib/misc';
 import { logout } from 'src/code/areas/auth/logout';
 import { selfUserName } from 'src/code/self-user-name';
-
-const quasarMode = process.env.MODE;
 </script>

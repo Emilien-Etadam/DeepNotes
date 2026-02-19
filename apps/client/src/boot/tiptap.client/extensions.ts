@@ -1,6 +1,6 @@
 import 'highlight.js/styles/atom-one-dark.css';
 
-import { columnResizing } from '@_ueberdosis/prosemirror-tables';
+import { columnResizing } from '@tiptap/pm/tables';
 import CodeBlockLowlightExtension from '@tiptap/extension-code-block-lowlight';
 import HighlightExtension from '@tiptap/extension-highlight';
 import HorizontalRuleExtension from '@tiptap/extension-horizontal-rule';

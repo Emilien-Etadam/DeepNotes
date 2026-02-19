@@ -2,10 +2,21 @@
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm use 18
+nvm use 22
 
-# Start Docker containers if not running
-docker-compose up -d 2>/dev/null || true
+# Docker-only mode: start all services via Docker Compose
+if [ "$1" = "--docker" ]; then
+  [ ! -f .env ] && cp template.env .env
+  docker compose up -d
+  echo ""
+  echo "DeepNotes (Docker) running. Use 'docker compose ps' to check status."
+  echo "  Client: http://localhost:80"
+  echo "  App server: http://localhost:48922"
+  exit 0
+fi
+
+# Start Docker containers if not running (Postgres, KeyDB)
+docker compose up -d 2>/dev/null || true
 
 # Fix KeyDB write error
 redis-cli -a "keydb_password_here" config set stop-writes-on-bgsave-error no 2>/dev/null || true
@@ -17,7 +28,7 @@ redis-cli -a "keydb_password_here" config set stop-writes-on-bgsave-error no 2>/
 [ ! -d node_modules ] && pnpm install
 
 # Build packages (tsc + tsc-alias)
-npx tsc --build tsconfig.packages.json --force 2>/dev/null || true
+pnpm exec tsc --build tsconfig.packages.json --force 2>/dev/null || true
 pnpm exec turbo run repo:build --parallel 2>/dev/null || true
 
 # Start backend in background

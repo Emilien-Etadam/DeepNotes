@@ -7,7 +7,7 @@ import { once } from 'lodash';
 import type { InferProcedureOpts } from 'src/trpc/helpers';
 import { publicProcedure } from 'src/trpc/helpers';
 import { derivePasswordValues } from 'src/utils/crypto';
-import { registerUser, userRegistrationSchema } from 'src/utils/users';
+import { hasAnyUser, registerUser, userRegistrationSchema } from 'src/utils/users';
 import { z } from 'zod';
 
 import { verifyEmail } from './verify-email';
@@ -30,6 +30,14 @@ export async function register({
   ctx,
   input,
 }: InferProcedureOpts<typeof baseProcedure>) {
+  const anyUser = await hasAnyUser();
+  throw new TRPCError({
+    message: anyUser
+      ? 'Registration is disabled. Contact your administrator.'
+      : 'Use the setup page to create the first account.',
+    code: 'FORBIDDEN',
+  });
+
   let emailVerificationCode: string | null;
 
   await ctx.dataAbstraction.transaction(async (dtrx) => {

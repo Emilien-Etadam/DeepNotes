@@ -6,15 +6,6 @@
       class="toolbar-btn"
       :to="{ name: 'login' }"
     />
-
-    <div style="width: 16px"></div>
-
-    <DeepBtn
-      label="Start for free"
-      class="toolbar-btn"
-      color="primary"
-      :to="{ name: 'register' }"
-    />
   </template>
 
   <template v-if="uiStore().loggedIn">

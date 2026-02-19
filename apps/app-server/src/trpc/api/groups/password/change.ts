@@ -72,7 +72,7 @@ export async function change({
           input.groupId,
           {
             encrypted_rehashed_password_hash: encryptGroupRehashedPasswordHash(
-              computePasswordHash(input.groupNewPasswordHash),
+              computePasswordHash(input.groupNewPasswordHash) as unknown as string,
             ),
 
             encrypted_content_keyring: input.groupEncryptedContentKeyring,

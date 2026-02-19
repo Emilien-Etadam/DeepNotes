@@ -24,14 +24,14 @@
   "main": "dist/index.js",
   "module": "src/index.ts",
   "peerDependencies": {
-    "ioredis": "npm:@deepnotes/ioredis@^5.3.1",
+    "ioredis": ">=5.0.0",
     "objection": "3.0.1"
   },
   "scripts": {
     "build": "tsc --build ./tsconfig.json && tsc-alias -p tsconfig.json",
     "build:watch": "concurrently \"tsc --build ./tsconfig.json --watch\" \"tsc-alias -p tsconfig.json --watch\"",
     "clean": "rimraf --glob ./dist *.tsbuildinfo",
-    "fix": "eslint --fix --ext .js,.ts,.vue ./",
+    "fix": "eslint --fix .",
     "npkill": "rimraf --glob ./node_modules",
     "preinstall": "npx only-allow pnpm",
     "repo:build": "tsc-alias -p tsconfig.json",

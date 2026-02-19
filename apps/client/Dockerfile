@@ -1,35 +1,17 @@
-FROM node:16 AS builder
+FROM node:22-slim AS builder
 
-ARG STAGING=${STAGING}
-ARG HOST=${HOST}
-ARG APP_SERVER_URL=${APP_SERVER_URL}
-ARG CLIENT_PORT=${CLIENT_PORT}
-ARG REALTIME_SERVER_URL=${REALTIME_SERVER_URL}
-ARG COLLAB_SERVER_URL=${COLLAB_SERVER_URL}
-
-RUN npm install -g pnpm@^8.0.0
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
 WORKDIR /build
 COPY ./ ./
 RUN pnpm install --filter deepnotes --filter @deepnotes/client...
-RUN pnpm turbo run build --filter @deepnotes/client...
-WORKDIR /build/apps/client
-RUN pnpm run build:ssr
-RUN pnpm tsup
+RUN pnpm run repo:build
+RUN pnpm --filter @deepnotes/client run build:spa
 
-FROM node:16-alpine AS runner
+FROM nginx:alpine AS runner
 
-RUN npm install -g pnpm@^8.0.0
-RUN mkdir /usr/local/pnpm
-ENV PNPM_HOME="/usr/local/pnpm"
-ENV PATH="${PATH}:/usr/local/pnpm"
-RUN pnpm add -g pm2
+COPY --from=builder /build/apps/client/dist/spa /usr/share/nginx/html
+COPY apps/client/nginx.conf /etc/nginx/conf.d/default.conf
 
-WORKDIR /app
-COPY --from=builder /build/apps/client/dist/ssr ./
-COPY --from=builder /build/.npmrc ./
-RUN sed -i 's/"use strict";//g' ./index.cjs
-RUN pnpm remove @deeplib/data @deeplib/misc @stdlib/base64 \
-  @stdlib/color @stdlib/crypto @stdlib/data @stdlib/misc \
-  @stdlib/vue @deepnotes/app-server
-CMD pm2 start ./index.cjs -i max && pm2 logs
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

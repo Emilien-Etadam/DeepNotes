@@ -64,7 +64,7 @@ export async function enable({
           input.groupId,
           {
             encrypted_rehashed_password_hash: encryptGroupRehashedPasswordHash(
-              computePasswordHash(input.groupPasswordHash),
+              computePasswordHash(input.groupPasswordHash) as unknown as string,
             ),
 
             encrypted_content_keyring: input.groupEncryptedContentKeyring,

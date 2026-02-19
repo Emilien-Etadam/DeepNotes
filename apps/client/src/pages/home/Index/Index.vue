@@ -39,12 +39,28 @@
             <template v-if="!authStore().loggedIn">
               <Gap style="height: 30px" />
 
-              <DeepBtn
-                label="Get started for free"
-                color="primary"
-                style="padding: 14px 25px; font-size: 15.5px; font-weight: bold"
-                :to="{ name: 'register' }"
-              />
+              <div
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 12px;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <DeepBtn
+                  label="Get started for free"
+                  color="primary"
+                  style="padding: 14px 25px; font-size: 15.5px; font-weight: bold"
+                  :to="{ name: 'register' }"
+                />
+                <DeepBtn
+                  label="Login"
+                  flat
+                  style="padding: 14px 25px; font-size: 15.5px; font-weight: bold"
+                  :to="{ name: 'login' }"
+                />
+              </div>
             </template>
           </div>
         </div>

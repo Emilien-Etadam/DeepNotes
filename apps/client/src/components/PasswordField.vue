@@ -1,8 +1,8 @@
 <template>
   <q-input
+    v-bind="props"
     :type="showPassword ? 'text' : 'password'"
     filled
-    label-color="grey-5"
     :model-value="modelValue"
     :autocomplete="autocomplete"
     @update:model-value="$emit('update:modelValue', $event)"
@@ -29,7 +29,7 @@ export interface PasswordFieldProps extends QInputProps {
 </script>
 
 <script setup lang="ts">
-defineProps<PasswordFieldProps>();
+const props = defineProps<PasswordFieldProps>();
 
 const showPassword = ref(false);
 </script>

@@ -6,11 +6,11 @@ export const knex = Knex({
   client: 'pg',
   useNullAsDefault: true,
   connection: {
-    host: process.env.POSTGRES_HOST,
-    port: parseInt(process.env.POSTGRES_PORT ?? ''),
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DATABASE,
+    host: process.env.POSTGRES_HOST ?? 'localhost',
+    port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
+    user: process.env.POSTGRES_USER ?? '',
+    password: process.env.POSTGRES_PASSWORD ?? '',
+    database: process.env.POSTGRES_DATABASE ?? '',
     ssl: process.env.POSTGRES_CA_CERTIFICATE
       ? { ca: base64ToText(process.env.POSTGRES_CA_CERTIFICATE) }
       : undefined,

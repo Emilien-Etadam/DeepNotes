@@ -1,157 +1,77 @@
 <template>
   <q-footer
+    class="footer-minimal"
     style="
       background-color: #202020;
-      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
     "
   >
     <ResponsiveContainer>
-      <Gap style="height: 64px" />
-
-      <div class="row">
-        <div
-          class="footer-section col-12 col-md-3"
-          style="margin-top: -2px"
+      <div class="footer-line">
+        <router-link
+          :to="{ name: 'home' }"
+          class="footer-link"
         >
-          <router-link :to="{ name: 'home' }">
-            <div
-              class="footer-header"
-              style="display: flex; align-items: center"
-            >
-              <img
-                src="~assets/white-logo-outline.webp"
-                style="
-                  margin-top: -2px;
-                  width: 28px;
-                  height: 28px;
-                  opacity: 95%;
-                "
-              />
-
-              <Gap style="width: 4px" />
-
-              <div style="color: rgba(255, 255, 255, 0.9); font-size: 17px">
-                DeepNotes
-              </div>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="footer-section col-4 col-md-3">
-          <div class="footer-header">Product</div>
-
-          <router-link
-            :to="{ name: 'pricing' }"
-            class="footer-item"
-          >
-            Pricing
-          </router-link>
-
-          <router-link
-            v-if="isIncluded(quasarMode, ['ssr', 'spa'])"
-            :to="{ name: 'download' }"
-            class="footer-item"
-          >
-            Download
-          </router-link>
-
-          <router-link
-            :to="{ name: 'whitepaper' }"
-            class="footer-item"
-          >
-            Whitepaper
-          </router-link>
-
-          <router-link
-            :to="{ name: 'help' }"
-            class="footer-item"
-          >
-            Help
-          </router-link>
-        </div>
-
-        <div class="footer-section col-4 col-md-3">
-          <div class="footer-header">Socials</div>
-
-          <a
-            class="footer-item"
-            href="https://discord.gg/UaF2gPTUPh"
-          >
-            Discord
-          </a>
-
-          <a
-            class="footer-item"
-            href="https://www.reddit.com/r/DeepNotesApp/"
-          >
-            Reddit
-          </a>
-
-          <a
-            class="footer-item"
-            href="https://github.com/DeepNotesApp/DeepNotes"
-          >
-            GitHub
-          </a>
-        </div>
-
-        <div class="footer-section col-4 col-md-3">
-          <div class="footer-header">Legal</div>
-
-          <router-link
-            :to="{ name: 'privacy-policy' }"
-            class="footer-item"
-          >
-            Privacy policy
-          </router-link>
-
-          <router-link
-            :to="{ name: 'terms-of-service' }"
-            class="footer-item"
-          >
-            Terms of service
-          </router-link>
-        </div>
+          DeepNotes
+        </router-link>
+        <span class="footer-sep">·</span>
+        <router-link
+          :to="{ name: 'help' }"
+          class="footer-link"
+        >
+          Help
+        </router-link>
+        <span class="footer-sep">·</span>
+        <a
+          href="https://github.com/DeepNotesApp/DeepNotes"
+          class="footer-link"
+        >
+          GitHub
+        </a>
+        <span class="footer-sep">·</span>
+        <router-link
+          :to="{ name: 'privacy-policy' }"
+          class="footer-link"
+        >
+          Privacy
+        </router-link>
+        <span class="footer-sep">·</span>
+        <router-link
+          :to="{ name: 'terms-of-service' }"
+          class="footer-link"
+        >
+          Terms
+        </router-link>
+        <span class="footer-sep">·</span>
+        <span class="footer-copy">© {{ new Date().getFullYear() }}</span>
       </div>
-
-      <Gap style="height: 100px" />
-
-      <q-separator />
-
-      <Gap style="height: 20px" />
-
-      <div style="font-size: 13px; text-align: center">
-        @ {{ new Date().getFullYear() }} DeepNotes |
-        <a href="mailto:contact@deepnotes.app">contact@deepnotes.app</a>
-      </div>
-
-      <Gap style="height: 20px" />
     </ResponsiveContainer>
   </q-footer>
 </template>
 
-<script setup lang="ts">
-import { isIncluded } from '@stdlib/misc';
-
-const quasarMode = process.env.MODE;
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
-.footer-section {
-  margin-bottom: 48px;
+.footer-minimal {
+  padding: 8px 0;
 }
-.footer-header {
-  font-weight: bold;
-  font-size: 15px;
+.footer-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 8px;
+  font-size: 12px;
 }
-.footer-item {
-  display: block;
-
-  margin-top: 6px;
-
-  color: #c8c8c8 !important;
+.footer-sep {
+  color: rgba(255, 255, 255, 0.35);
+  user-select: none;
 }
-.footer-item:hover {
-  color: #ffffff !important;
+.footer-link,
+.footer-copy {
+  color: #c8c8c8;
+}
+.footer-link:hover {
+  color: #fff;
 }
 </style>

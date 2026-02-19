@@ -1,11 +1,11 @@
 <template>
   <q-btn
-    :loading="loading"
     v-bind="{
+      ...props,
       ...$attrs,
-
-      onClick: (...args) => onClick(args, $attrs),
+      onClick: (...args) => onClick(args, { ...props, ...$attrs }),
     }"
+    :loading="loading"
   >
     <slot></slot>
   </q-btn>

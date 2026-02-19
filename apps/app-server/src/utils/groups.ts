@@ -67,7 +67,7 @@ export async function createGroup(
       encrypted_rehashed_password_hash:
         input.groupPasswordHash != null
           ? encryptGroupRehashedPasswordHash(
-              computePasswordHash(input.groupPasswordHash),
+              computePasswordHash(input.groupPasswordHash) as unknown as string,
             )
           : undefined,
 

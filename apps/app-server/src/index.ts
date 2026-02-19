@@ -7,7 +7,7 @@ import { fastify } from './fastify/server';
 
 void fastify().then(async (fastify) => {
   await fastify.listen({
-    port: parseInt(process.env.APP_SERVER_PORT),
+    port: parseInt(process.env.APP_SERVER_PORT ?? '3000', 10),
     host: '0.0.0.0',
   });
 

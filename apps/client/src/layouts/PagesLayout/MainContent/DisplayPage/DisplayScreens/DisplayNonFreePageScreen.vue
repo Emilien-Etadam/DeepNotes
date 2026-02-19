@@ -1,16 +1,11 @@
 <template>
-  <div>This page was created with the Pro plan.</div>
-  <div>Upgrade your subscription to access this page.</div>
+  <div>You don’t have access to this page.</div>
 
   <Gap style="height: 16px" />
 
   <DeepBtn
-    label="See subscription plans"
+    label="Help"
     color="primary"
-    :href="multiModePath('/pricing')"
+    :to="{ name: 'help' }"
   />
 </template>
-
-<script setup lang="ts">
-import { multiModePath } from 'src/code/utils/misc';
-</script>

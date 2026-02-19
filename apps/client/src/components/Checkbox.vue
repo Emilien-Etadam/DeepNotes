@@ -1,6 +1,7 @@
 <template>
   <q-checkbox
     class="checkbox"
+    v-bind="props"
     :model-value="modelValue"
     @update:model-value="$emit('update:model-value', $event)"
   >
@@ -15,7 +16,7 @@ interface Props extends QCheckboxProps {
   modelValue: any;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 </script>
 
 <style scoped>

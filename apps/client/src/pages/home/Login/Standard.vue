@@ -55,16 +55,6 @@
     @click="onSubmit()"
   />
 
-  <Gap style="height: 16px" />
-
-  <div style="text-align: center">
-    Not registered yet?
-
-    <router-link :to="{ name: 'register', query: $route.query }">
-      Sign up
-    </router-link>
-  </div>
-
   <Gap style="height: 24px" />
 
   <details

@@ -1,18 +1,13 @@
 <template>
   <div style="max-width: 250px">
-    <div>This page is part of a private group.</div>
-    <div>Access private groups with a Pro plan subscription.</div>
+    <div>You don’t have access to this group.</div>
   </div>
 
   <Gap style="height: 16px" />
 
   <DeepBtn
-    label="See subscription plans"
+    label="Help"
     color="primary"
-    :href="multiModePath('/pricing')"
+    :to="{ name: 'help' }"
   />
 </template>
-
-<script setup lang="ts">
-import { multiModePath } from 'src/code/utils/misc';
-</script>

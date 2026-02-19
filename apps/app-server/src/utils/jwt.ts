@@ -8,20 +8,20 @@ import { createDecoder } from 'fast-jwt';
 import { createSigner, createVerifier } from 'fast-jwt';
 
 const signAccessJWT = createSigner({
-  key: process.env.ACCESS_SECRET,
+  key: process.env.ACCESS_SECRET!,
   expiresIn: ACCESS_TOKEN_DURATION,
 });
 const signShortRefreshJWT = createSigner({
-  key: process.env.REFRESH_SECRET,
+  key: process.env.REFRESH_SECRET!,
   expiresIn: REFRESH_TOKEN_SHORT_DURATION,
 });
 const signLongRefreshJWT = createSigner({
-  key: process.env.REFRESH_SECRET,
+  key: process.env.REFRESH_SECRET!,
   expiresIn: REFRESH_TOKEN_LONG_DURATION,
 });
 
 const _verifyAccessJWT = createVerifier({
-  key: process.env.ACCESS_SECRET,
+  key: process.env.ACCESS_SECRET!,
 });
 export function verifyAccessJWT<TokenType>(
   token: string | Buffer,
@@ -33,7 +33,7 @@ export function verifyAccessJWT<TokenType>(
   }
 }
 const _verifyRefreshJWT = createVerifier({
-  key: process.env.REFRESH_SECRET,
+  key: process.env.REFRESH_SECRET!,
 });
 export function verifyRefreshJWT<TokenType>(
   token: string | Buffer,

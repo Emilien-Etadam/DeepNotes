@@ -19,7 +19,6 @@
             uiStore().width < BREAKPOINT_LG_MIN &&
             ($route.name === 'privacy-policy' ||
               $route.name === 'terms-of-service' ||
-              $route.name === 'whitepaper' ||
               $route.path.startsWith('/account/'))
           "
         >
@@ -38,7 +37,6 @@
                 <TermsOfServiceItems
                   v-if="$route.name === 'terms-of-service'"
                 />
-                <WhitepaperItems v-if="$route.name === 'whitepaper'" />
                 <AccountItems v-if="$route.path.startsWith('/account/')" />
               </q-list>
             </q-menu>
@@ -80,53 +78,6 @@
           <Gap style="width: 32px" />
 
           <DeepBtn
-            label="Pricing"
-            flat
-            class="toolbar-btn"
-            :to="{ name: 'pricing' }"
-            :style="{
-              'background-color':
-                $route.name === 'pricing'
-                  ? 'rgba(255,255,255,0.15)'
-                  : undefined,
-            }"
-          />
-
-          <template v-if="isIncluded(quasarMode, ['ssr', 'spa'])">
-            <Gap style="width: 12px" />
-
-            <DeepBtn
-              label="Download"
-              flat
-              class="toolbar-btn"
-              :to="{ name: 'download' }"
-              :style="{
-                'background-color':
-                  $route.name === 'download'
-                    ? 'rgba(255,255,255,0.15)'
-                    : undefined,
-              }"
-            />
-          </template>
-
-          <Gap style="width: 12px" />
-
-          <DeepBtn
-            label="Whitepaper"
-            flat
-            class="toolbar-btn"
-            :to="{ name: 'whitepaper' }"
-            :style="{
-              'background-color':
-                $route.name === 'whitepaper'
-                  ? 'rgba(255,255,255,0.15)'
-                  : undefined,
-            }"
-          />
-
-          <Gap style="width: 12px" />
-
-          <DeepBtn
             label="Help"
             flat
             class="toolbar-btn"
@@ -148,18 +99,15 @@
 </template>
 
 <script setup lang="ts">
-import { BREAKPOINT_LG_MIN, isIncluded } from '@stdlib/misc';
+import { BREAKPOINT_LG_MIN } from '@stdlib/misc';
 import { useResizeObserver } from 'src/code/utils/misc';
 import AccountItems from 'src/pages/home/Account/AccountItems.vue';
 import PrivacyPolicyItems from 'src/pages/home/PrivacyPolicy/PrivacyPolicyItems.vue';
 import TermsOfServiceItems from 'src/pages/home/TermsOfService/TermsOfServiceItems.vue';
-import WhitepaperItems from 'src/pages/home/Whitepaper/WhitepaperItems.vue';
 import type { ComponentPublicInstance } from 'vue';
 
 import RightButtons from './RightButtons/RightButtons.vue';
 import RightMenu from './RightButtons/RightMenu.vue';
-
-const quasarMode = process.env.MODE;
 
 const headerRef = ref<ComponentPublicInstance>();
 

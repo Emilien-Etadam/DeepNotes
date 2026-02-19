@@ -55,6 +55,9 @@ export async function registerUser(
 
     demo?: boolean;
 
+    /** When true, user is created as already verified (e.g. first admin at setup). */
+    skipEmailVerification?: boolean;
+
     email: string;
 
     passwordValues: PasswordValues;
@@ -62,7 +65,7 @@ export async function registerUser(
     dtrx?: DataTransaction;
   } & UserRegistrationSchema,
 ) {
-  const emailVerificationCode = nanoid();
+  const emailVerificationCode = input.skipEmailVerification ? null : nanoid();
 
   await UserModel.query(input.dtrx?.trx)
     .where('email_hash', Buffer.from(hashUserEmail(input.email)))
@@ -87,8 +90,8 @@ export async function registerUser(
 
     demo: !!input.demo,
 
-    email_verified: false,
-    ...(!input.demo
+    email_verified: !!input.demo || !!input.skipEmailVerification,
+    ...(!input.demo && !input.skipEmailVerification
       ? {
           encrypted_new_email: encryptUserEmail(input.email),
           email_verification_code: emailVerificationCode,
@@ -226,4 +229,9 @@ export async function assertNonDemoAccount(input: { userId: string }) {
       message: 'This action is unavailable for demo accounts.',
     });
   }
+}
+
+export async function hasAnyUser(): Promise<boolean> {
+  const result = await UserModel.query().limit(1).first();
+  return result != null;
 }

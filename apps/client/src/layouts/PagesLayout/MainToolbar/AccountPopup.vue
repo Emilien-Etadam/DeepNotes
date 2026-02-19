@@ -58,40 +58,6 @@
       <q-item
         clickable
         v-close-popup
-        :href="multiModePath('/pricing')"
-      >
-        <q-item-section avatar>
-          <q-icon name="mdi-currency-usd" />
-        </q-item-section>
-        <q-item-section>Pricing</q-item-section>
-      </q-item>
-
-      <q-item
-        v-if="isIncluded(quasarMode, ['ssr', 'spa'])"
-        clickable
-        v-close-popup
-        :href="multiModePath('/download')"
-      >
-        <q-item-section avatar>
-          <q-icon name="mdi-download" />
-        </q-item-section>
-        <q-item-section>Download</q-item-section>
-      </q-item>
-
-      <q-item
-        clickable
-        v-close-popup
-        :href="multiModePath('/whitepaper')"
-      >
-        <q-item-section avatar>
-          <q-icon name="mdi-file-document" />
-        </q-item-section>
-        <q-item-section>Whitepaper</q-item-section>
-      </q-item>
-
-      <q-item
-        clickable
-        v-close-popup
         :href="multiModePath('/help')"
       >
         <q-item-section avatar>
@@ -116,10 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { isIncluded } from '@stdlib/misc';
 import { logout } from 'src/code/areas/auth/logout';
 import { selfUserName } from 'src/code/self-user-name';
 import { multiModePath } from 'src/code/utils/misc';
-
-const quasarMode = process.env.MODE;
 </script>

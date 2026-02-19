@@ -34,7 +34,7 @@ httpServer().on('upgrade', (req: IncomingMessage, socket: Socket, head) => {
     try {
       const jwtPayload = jwt.verify(
         cookies['accessToken'],
-        process.env.ACCESS_SECRET,
+        process.env.ACCESS_SECRET!,
       ) as unknown as AccessTokenPayload;
 
       req.sessionId = jwtPayload.sid;

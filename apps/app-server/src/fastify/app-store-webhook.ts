@@ -99,6 +99,9 @@ export async function webhook({
   _webhookLogger.info('Signed payload: %o', input);
 
   const decodedPayloadSignature = jws.decode(input.signedPayload);
+  if (decodedPayloadSignature == null) {
+    throw new Error('Invalid signed payload');
+  }
   const decodedPayload =
     decodedPayloadSignature.payload as responseBodyV2DecodedPayload;
 
@@ -107,6 +110,9 @@ export async function webhook({
   const decodedTransactionSignature = jws.decode(
     decodedPayload.data.signedTransactionInfo,
   );
+  if (decodedTransactionSignature == null) {
+    throw new Error('Invalid signed transaction info');
+  }
   const decodedTransaction =
     decodedTransactionSignature.payload as JWSTransactionDecodedPayload;
 

@@ -1,22 +1,18 @@
-FROM node:16 AS builder
+FROM node:22-slim AS builder
 
-RUN npm install -g pnpm@^8.0.0
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
 WORKDIR /build
 COPY ./ ./
 RUN pnpm install --filter deepnotes --filter @deepnotes/app-server...
 RUN pnpm --filter @deepnotes/app-server run bundle
 
-FROM node:16-alpine AS runner
-
-RUN npm install -g pnpm@^8.0.0
-RUN mkdir /usr/local/pnpm
-ENV PNPM_HOME="/usr/local/pnpm"
-ENV PATH="${PATH}:/usr/local/pnpm"
-RUN pnpm add -g pm2
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 COPY --from=builder /build/apps/app-server/dist/ ./
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 RUN pnpm init
-RUN pnpm install knex ws pg @getbrevo/brevo
-CMD pm2 start /app/index.js -i max && pm2 logs
+RUN pnpm install knex pg @getbrevo/brevo libsodium-wrappers-sumo
+
+CMD ["node", "index.js"]

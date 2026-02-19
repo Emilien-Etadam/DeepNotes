@@ -110,8 +110,8 @@ export async function createCheckoutSession({
           {
             price:
               input.billingFrequency === 'yearly'
-                ? process.env.STRIPE_YEARLY_PRICE_ID
-                : process.env.STRIPE_MONTHLY_PRICE_ID,
+                ? process.env.STRIPE_YEARLY_PRICE_ID!
+                : process.env.STRIPE_MONTHLY_PRICE_ID!,
             quantity: 1,
           },
         ],
