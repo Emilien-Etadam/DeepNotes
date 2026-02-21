@@ -13,6 +13,6 @@ WORKDIR /app
 COPY --from=builder /build/apps/collab-server/dist/ ./
 RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 RUN pnpm init
-RUN pnpm install knex pg ws
+RUN pnpm install knex pg ws libsodium-wrappers-sumo
 
 CMD ["node", "index.js"]

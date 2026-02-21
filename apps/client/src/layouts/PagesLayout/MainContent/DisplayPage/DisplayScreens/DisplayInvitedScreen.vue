@@ -26,8 +26,6 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable vue/no-mutating-props */
-
 import { rejectJoinInvitation } from 'src/code/areas/api-interface/groups/join-invitations/reject';
 import { groupNames } from 'src/code/pages/computed/group-names';
 import type { Page } from 'src/code/pages/page/page';

@@ -73,22 +73,26 @@ export async function startDemo({
 
     personalGroupId: user.personal_group_id,
 
-    publicKeyring: user.public_keyring,
-    encryptedPrivateKeyring: createPrivateKeyring(
-      user.encrypted_private_keyring,
-    ).unwrapSymmetric(passwordValues.key, {
-      associatedData: {
-        context: 'UserEncryptedPrivateKeyring',
-        userId: user.id,
-      },
-    }).wrappedValue,
-    encryptedSymmetricKeyring: createSymmetricKeyring(
-      user.encrypted_symmetric_keyring,
-    ).unwrapSymmetric(passwordValues.key, {
-      associatedData: {
-        context: 'UserEncryptedSymmetricKeyring',
-        userId: user.id,
-      },
-    }).wrappedValue,
+    publicKeyring: new Uint8Array(user.public_keyring),
+    encryptedPrivateKeyring: new Uint8Array(
+      createPrivateKeyring(user.encrypted_private_keyring)
+        .unwrapSymmetric(passwordValues.key, {
+          associatedData: {
+            context: 'UserEncryptedPrivateKeyring',
+            userId: user.id,
+          },
+        })
+        .wrappedValue,
+    ),
+    encryptedSymmetricKeyring: new Uint8Array(
+      createSymmetricKeyring(user.encrypted_symmetric_keyring)
+        .unwrapSymmetric(passwordValues.key, {
+          associatedData: {
+            context: 'UserEncryptedSymmetricKeyring',
+            userId: user.id,
+          },
+        })
+        .wrappedValue,
+    ),
   };
 }

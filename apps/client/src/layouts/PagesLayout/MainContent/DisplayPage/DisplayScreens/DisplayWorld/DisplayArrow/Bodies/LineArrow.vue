@@ -41,8 +41,8 @@ watchEffect(async () => {
     return;
   }
 
-  arrow.react.sourceHeadPos;
-  arrow.react.targetHeadPos;
+  void arrow.react.sourceHeadPos;
+  void arrow.react.targetHeadPos;
 
   await nextTick();
 

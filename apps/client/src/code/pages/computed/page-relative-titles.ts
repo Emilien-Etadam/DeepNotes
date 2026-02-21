@@ -96,7 +96,7 @@ export const pageRelativeTitles = once(() =>
         _getLogger.info(`${pageId}: ${result}`);
 
         return { text: result, status: 'success' };
-      } catch (error) {
+      } catch (_error) {
         _getLogger.info(`${pageId}: Failed to decrypt page title`);
 
         return { text: '[Failed to decrypt]', status: 'success' };

@@ -203,15 +203,16 @@ export class PageSelection {
     chainFunc: (chain: ChainedCommands, editor: Editor) => ChainedCommands,
   ) {
     this.page.collab.doc.transact(() => {
-      if (this.page.editing.react.editor != null) {
+      const editor = this.page.editing.react.editor;
+      if (editor != null) {
         chainFunc(
-          this.page.editing.react.editor.chain().focus(),
-          this.page.editing.react.editor,
+          editor.chain().focus(),
+          editor,
         ).run();
       } else {
         for (const elem of this.react.elems) {
-          for (const editor of elem.react.editors) {
-            chainFunc(editor.chain().selectAll(), editor).run();
+          for (const ed of elem.react.editors) {
+            chainFunc(ed.chain().selectAll(), ed).run();
           }
         }
       }

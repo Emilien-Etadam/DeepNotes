@@ -13,6 +13,6 @@ WORKDIR /app
 COPY --from=builder /build/apps/scheduler/dist/ ./
 RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 RUN pnpm init
-RUN pnpm install knex pg
+RUN pnpm install knex pg libsodium-wrappers-sumo
 
 CMD ["node", "index.js"]

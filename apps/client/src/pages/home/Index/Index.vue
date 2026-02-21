@@ -51,13 +51,21 @@
                 <DeepBtn
                   label="Get started for free"
                   color="primary"
-                  style="padding: 14px 25px; font-size: 15.5px; font-weight: bold"
+                  style="
+                    padding: 14px 25px;
+                    font-size: 15.5px;
+                    font-weight: bold;
+                  "
                   :to="{ name: 'register' }"
                 />
                 <DeepBtn
                   label="Login"
                   flat
-                  style="padding: 14px 25px; font-size: 15.5px; font-weight: bold"
+                  style="
+                    padding: 14px 25px;
+                    font-size: 15.5px;
+                    font-weight: bold;
+                  "
                   :to="{ name: 'login' }"
                 />
               </div>

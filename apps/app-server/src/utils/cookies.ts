@@ -5,6 +5,14 @@ import {
 import type { CookieSerializeOptions } from '@fastify/cookie';
 import type { FastifyReply } from 'fastify';
 
+function isSecureConnection(reply: FastifyReply): boolean {
+  const raw = reply.request.raw;
+  const proto = raw?.headers?.['x-forwarded-proto'];
+  if (proto === 'https') return true;
+  if (proto === 'http') return false;
+  return (raw?.socket as { encrypted?: boolean })?.encrypted === true;
+}
+
 export function setCookie(
   reply: FastifyReply,
   name: string,
@@ -12,7 +20,7 @@ export function setCookie(
   options?: CookieSerializeOptions,
 ) {
   void reply.setCookie(name, value, {
-    secure: !process.env.DEV,
+    secure: isSecureConnection(reply),
     domain: process.env.HOST,
     path: '/',
     sameSite: 'strict',
@@ -27,7 +35,7 @@ export function clearCookie(
   options?: CookieSerializeOptions,
 ) {
   void reply.clearCookie(name, {
-    secure: !process.env.DEV,
+    secure: isSecureConnection(reply),
     domain: process.env.HOST,
     path: '/',
     sameSite: 'strict',

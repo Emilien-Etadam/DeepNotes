@@ -492,7 +492,7 @@ export const PageWebsocket = once(
               }),
               this,
             );
-          } catch (error) {
+          } catch (_error) {
             // this._logger.error(error);
           }
         }
@@ -544,7 +544,7 @@ export const PageWebsocket = once(
                 },
               });
               Y.applyUpdateV2(this.doc, rawUpdate, this);
-            } catch (error) {
+            } catch (_error) {
               // this._logger.error(error);
             }
           }
@@ -624,7 +624,7 @@ export const PageWebsocket = once(
             },
           });
           Y.applyUpdateV2(this.doc, rawUpdate, this);
-        } catch (error) {
+        } catch (_error) {
           // this._logger.error(error);
         }
       }

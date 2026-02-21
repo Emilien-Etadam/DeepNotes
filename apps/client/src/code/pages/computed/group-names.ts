@@ -77,7 +77,7 @@ export const groupNames = once(() =>
         _getLogger.info(`${groupId}: ${groupName}`);
 
         return { status: 'success', text: groupName };
-      } catch (error) {
+      } catch (_error) {
         _getLogger.info(`${groupId}: Failed to decrypt group name`);
 
         return { status: 'success', text: `[Group ${groupId}]` };

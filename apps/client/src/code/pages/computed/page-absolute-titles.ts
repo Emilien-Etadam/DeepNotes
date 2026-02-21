@@ -96,7 +96,7 @@ export const pageAbsoluteTitles = once(() =>
         _getLogger.info(`${pageId}: ${pageAbsoluteTitle}`);
 
         return { text: pageAbsoluteTitle, status: 'success' };
-      } catch (error) {
+      } catch (_error) {
         _getLogger.info(`${pageId}: Failed to decrypt page title`);
 
         return { text: '[Failed to decrypt]', status: 'success' };

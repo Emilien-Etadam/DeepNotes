@@ -38,7 +38,10 @@ export async function getRedirectDest(input: {
   if (process.env.CLIENT) {
     try {
       const { needsSetup } = await trpcClient.setup.getSetupStatus.query();
-      if (needsSetup && (input.route.name === 'home' || input.route.name === 'login')) {
+      if (
+        needsSetup &&
+        (input.route.name === 'home' || input.route.name === 'login')
+      ) {
         return { name: 'setup' };
       }
       if (needsSetup && input.route.name === 'register') {

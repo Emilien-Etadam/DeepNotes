@@ -142,6 +142,24 @@ module.exports = configure(function (ctx) {
           'libsodium-wrappers-sumo': require.resolve('libsodium-wrappers-sumo'),
           unilogr: path.resolve(__dirname, 'src/unilogr-browser.ts'),
         };
+        // Une seule instance des modules ProseMirror (évite "multiple versions" et TypeError localsInner/members)
+        viteConf.resolve.dedupe = [
+          ...(viteConf.resolve.dedupe || []),
+          'prosemirror-model',
+          'prosemirror-state',
+          'prosemirror-view',
+        ];
+        // Capacitor-only packages: stub for non-capacitor builds (SPA, SSR, Docker)
+        if (!ctx.mode.capacitor) {
+          viteConf.resolve.alias['@revenuecat/purchases-capacitor'] = path.resolve(
+            __dirname,
+            'src/stubs/revenuecat.ts',
+          );
+          viteConf.resolve.alias['@capacitor/clipboard'] = path.resolve(
+            __dirname,
+            'src/stubs/capacitor-clipboard.ts',
+          );
+        }
       },
       // viteVuePluginOptions: {},
 

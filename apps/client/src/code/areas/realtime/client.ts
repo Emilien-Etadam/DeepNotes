@@ -484,7 +484,7 @@ export const RealtimeClient = once(
 
       markAsDependencies(fullKeys: string[]) {
         for (const fullKey of fullKeys) {
-          this.values[fullKey];
+          void this.values[fullKey];
         }
       }
     },

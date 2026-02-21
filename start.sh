@@ -4,19 +4,25 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 nvm use 22
 
+# Use "docker compose" (v2) if available, else "docker-compose" (v1)
+DOCKER_COMPOSE="docker compose"
+if ! docker compose version &>/dev/null; then
+  DOCKER_COMPOSE="docker-compose"
+fi
+
 # Docker-only mode: start all services via Docker Compose
 if [ "$1" = "--docker" ]; then
   [ ! -f .env ] && cp template.env .env
-  docker compose up -d
+  $DOCKER_COMPOSE up -d
   echo ""
-  echo "DeepNotes (Docker) running. Use 'docker compose ps' to check status."
+  echo "DeepNotes (Docker) running. Use '$DOCKER_COMPOSE ps' to check status."
   echo "  Client: http://localhost:80"
   echo "  App server: http://localhost:48922"
   exit 0
 fi
 
 # Start Docker containers if not running (Postgres, KeyDB)
-docker compose up -d 2>/dev/null || true
+$DOCKER_COMPOSE up -d 2>/dev/null || true
 
 # Fix KeyDB write error
 redis-cli -a "keydb_password_here" config set stop-writes-on-bgsave-error no 2>/dev/null || true

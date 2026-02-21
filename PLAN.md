@@ -4,6 +4,34 @@ The work is organized in sequential phases. Each phase leaves the project in a b
 
 ---
 
+## Où on en est (sync multi-PC / nouvelle session)
+
+À mettre à jour quand on avance, pour reprendre sur un autre PC ou dans un nouveau chat.
+
+| Info | Valeur |
+|------|--------|
+| **Branche** | `dev` |
+| **Dernier commit** | `git log -1 --oneline` pour voir (ex. `9b77142 fix: login/setup UI, backend unavailable...`) |
+| **Dernière mise à jour** | 2025-02 (à mettre à jour après chaque grosse étape) |
+
+**Fait récemment (résumé)**  
+- Accueil = login, pas de site de vente ; comptes créés par l’admin uniquement (setup puis invitations).  
+- Page Setup (premier admin), page AcceptInvite (lien d’invitation), onglet Invitations dans Account.  
+- Login/Setup : textes et boutons visibles (TextField, PasswordField, DeepBtn, Checkbox + styles).  
+- Message « Backend unavailable » quand PostgreSQL/Redis down ou réponse non-JSON (handleError + Login).  
+- Footer minimal (une ligne).  
+- Docker app-server : build OK (libsodium externalisé dans tsup, installé dans l’image).  
+- Nettoyage deps client : axios supprimé, browserslist → devDeps, js-base64 retiré (voir `docs/AUDIT-DEPENDANCIES-CLIENT.md`).  
+- Phase 5 ESLint : en cours (ignorer dist, supprimer .eslintignore, corriger erreurs sur src).
+
+**Pour reprendre sur un autre PC**  
+`git pull origin dev` → `pnpm install` → `cp template.env .env` → lancer Postgres + Redis (Docker ou local) → `apps/app-server`: `pnpm run dev`, `apps/client`: `pnpm run dev`. Voir plus bas pour le statut des commandes (build, lint).
+
+**Docker vs code local**  
+Quand tu testes via `http://localhost:80`, c’est le **conteneur client** (nginx) qui sert le bundle SPA **déjà buildé dans l’image**. Les conteneurs **app-server**, **collab-server**, etc. exécutent aussi le code **inclus dans leurs images**. Les changements de code sur le disque ne sont pas pris en compte tant qu’on ne rebuild pas les images. Après modification du code ou des deps : `docker-compose build <service>` puis `docker-compose up -d <service>` (ou `docker-compose rm -sf <service>` si erreur ContainerConfig).
+
+---
+
 ## Statut actuel (dernière vérification)
 
 | Commande | Résultat |
@@ -12,14 +40,15 @@ The work is organized in sequential phases. Each phase leaves the project in a b
 | `npx tsc --build tsconfig.packages.json` | OK |
 | `pnpm run repo:build` | OK (18 tasks) |
 | `pnpm run build` | OK (18 tasks) |
-| `pnpm run lint` | **Échec** : `@deepnotes/client` uniquement (≈257 erreurs, 22 warnings). Causes : globals auto-import non reconnus par ESLint dans les `.vue` (useMeta, route, onMounted, pagesStore…), et erreurs de parsing TypeScript dans certains `.vue`. Les autres packages passent. |
+| `pnpm run lint` | **OK** (0 erreur). Client : 27 warnings (unused `error` / `_error` dans catch, args `_page` / `_pipeline`). Racine et client : `**/dist/**` ignoré, `.eslintignore` supprimés, parser TS pour `.vue`, globals Vue ajoutés. |
 | `cd apps/client && pnpm run build:spa` | **OK** sous Node 20+ (tsconfig extends `.quasar/tsconfig.json`, alias libsodium + stub unilogr, fix Vue `@vue-ignore` dans TextEditor.vue). |
 | `@stdlib/nestjs` | Non référencé dans le repo ; pas dans `tsconfig.packages.json`. À supprimer si le package existe. |
 
 **Reste à faire :**
 
-- **Phase 5 (ESLint)** : Le lint client peut encore afficher des erreurs de parsing sur certains `.vue` (parser Vue + TS). Les globals auto-importés sont déclarés dans `eslint.config.mjs`.
+- **Phase 5 (ESLint)** : **DONE**. Lint passe (0 erreur). Optionnel : traiter les 27 warnings (catch sans usage → `} catch {` ou garder tel quel).
 - **Phase 7.2** : Supprimer `packages/@stdlib/nestjs` s’il existe (aucune référence trouvée).
+- **Bug toolbar** : **RÉSOLU** — Cause : `q-btn` (Quasar) interceptait le mousedown ; fix : bouton natif avec `@mousedown.prevent` dans `ToolbarBtn.vue`. Détails : `docs/TOOLBAR-FORMATTING-BUG.md`.
 
 **Documentation** : `STACK.md` résume la stack à jour et les points techniques. `README.md` mis à jour (Node 20+, pnpm 9, `./start.sh`).
 
@@ -173,7 +202,7 @@ Remove from pnpm.patchedDependencies in root package.json.
 Delete /home/user/DeepNotes/patches/dotenv-expand@9.0.0.patch.
 Commit: chore: replace all custom forks with official packages
 
-Phase 5 — ESLint 8 → 9 flat config — **PARTIAL** (lint client en échec, voir statut ci‑dessus)
+Phase 5 — ESLint 8 → 9 flat config — **DONE**
 Step 5.1: Upgrade ESLint + plugins — **DONE**
 File: /home/user/DeepNotes/package.json devDependencies:
 
@@ -201,7 +230,8 @@ Remove --ext .js,.ts,.vue flags (not supported in ESLint 9):
 "lint": "eslint --ext .js,.ts,.vue ./" → "lint": "eslint ."
 "fix": "eslint --fix --ext .js,.ts,.vue ./" → "fix": "eslint --fix ."
 
-Step 5.7: Verify — **PARTIAL** (lint échoue sur client uniquement : globals Vue/parsing .vue)
+Step 5.7: Verify — **DONE** (lint OK, 0 erreur ; 27 warnings optionnels)
+- Fix : `**/dist/**` dans ignores, suppression `.eslintignore` (racine + client), parser TS pour `*.vue` (parserOptions.parser), globals (watchEffect, watchPostEffect, shallowRef, triggerRef), corrections no-empty-object-type / no-unused-expressions / vue/no-reserved-props (TextEditor), catch _error / void pour réactivité.
 Commit: chore: migrate ESLint to v9 flat config
 
 Phase 6 — Docker modernization — **DONE**

@@ -71,6 +71,10 @@
     "packages/**"
   ],
   "pnpm": {
+    "overrides": {
+      "prosemirror-model": "~1.18.3",
+      "prosemirror-view": "~1.29.2"
+    },
     "patchedDependencies": {
       "libsodium-wrappers-sumo@0.7.16": "patches/libsodium-wrappers-sumo@0.7.16.patch"
     }

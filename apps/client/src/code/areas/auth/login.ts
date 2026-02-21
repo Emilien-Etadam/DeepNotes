@@ -32,8 +32,10 @@ export async function login(input: {
 
   if (input.rememberSession) {
     internals.storage = internals.localStorage;
+    internals.localStorage.setItem('rememberSession', 'true');
   } else {
     internals.storage = internals.sessionStorage;
+    internals.localStorage.removeItem('rememberSession');
   }
 
   internals.storage.setItem('loggedIn', 'true');

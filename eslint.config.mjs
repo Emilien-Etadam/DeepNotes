@@ -9,7 +9,7 @@ import vue from 'eslint-plugin-vue';
 export default tseslint.config(
   {
     ignores: [
-      'dist/**',
+      '**/dist/**',
       'node_modules/**',
       '**/*.tsbuildinfo',
       '.eslintrc.js',
@@ -115,6 +115,10 @@ export default tseslint.config(
         ref: 'readonly',
         computed: 'readonly',
         watch: 'readonly',
+        watchEffect: 'readonly',
+        watchPostEffect: 'readonly',
+        shallowRef: 'readonly',
+        triggerRef: 'readonly',
         reactive: 'readonly',
         toRef: 'readonly',
         toRefs: 'readonly',
@@ -138,13 +142,14 @@ export default tseslint.config(
       },
     },
   },
-  // Vue-specific rules for client .vue files
+  // Vue-specific rules for client .vue files (TypeScript in script blocks)
   {
     files: ['apps/client/**/*.vue'],
     plugins: { vue },
     extends: [...vue.configs['flat/essential']],
     languageOptions: {
       parserOptions: {
+        parser: tseslint.parser,
         extraFileExtensions: ['.vue'],
       },
     },

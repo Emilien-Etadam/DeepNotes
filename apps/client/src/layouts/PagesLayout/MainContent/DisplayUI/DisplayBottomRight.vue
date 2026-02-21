@@ -54,7 +54,9 @@ const subscriptionExpired = computed(
 </script>
 
 <style scoped lang="scss">
+@use 'sass:color';
+
 .selection-count {
-  color: lighten(#006dd2, 23%);
+  color: color.adjust(#006dd2, $lightness: 23%);
 }
 </style>

@@ -8,13 +8,15 @@
   <Gap style="height: 24px" />
 
   <div>
-    <p v-if="
-      internals.realtime.globalCtx.hget(
-        'user',
-        authStore().userId,
-        'plan',
-      ) !== 'pro'
-    ">
+    <p
+      v-if="
+        internals.realtime.globalCtx.hget(
+          'user',
+          authStore().userId,
+          'plan',
+        ) !== 'pro'
+      "
+    >
       DeepNotes is free and open source.
     </p>
 

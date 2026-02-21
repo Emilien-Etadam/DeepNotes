@@ -63,7 +63,7 @@ export const groupContentKeyrings = once(() =>
               },
             },
           );
-        } catch (error) {
+        } catch (_error) {
           //
         }
       }

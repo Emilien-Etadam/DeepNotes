@@ -45,7 +45,7 @@ export const pageKeyrings = once(() =>
               pageId,
             },
           });
-        } catch (error) {
+        } catch (_error) {
           //
         }
       }

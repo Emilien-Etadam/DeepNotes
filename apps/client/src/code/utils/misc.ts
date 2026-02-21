@@ -150,18 +150,22 @@ export function multiModePath(path: string) {
 }
 
 export function useResizeObserver(
-  elemFunc: () => Element | PromiseLike<Element>,
+  elemFunc: () => Element | PromiseLike<Element> | null | undefined,
   listener: ResizeListener,
 ) {
-  let elem: Element;
+  let elem: Element | null = null;
 
   onMounted(async () => {
-    elem = await elemFunc();
-
-    observeResize(elem, listener);
+    const resolved = await elemFunc();
+    elem = resolved instanceof Element ? resolved : null;
+    if (elem != null) {
+      observeResize(elem, listener);
+    }
   });
-  onBeforeUnmount(async () => {
-    unobserveResize(elem, listener);
+  onBeforeUnmount(() => {
+    if (elem != null) {
+      unobserveResize(elem, listener);
+    }
   });
 }
 

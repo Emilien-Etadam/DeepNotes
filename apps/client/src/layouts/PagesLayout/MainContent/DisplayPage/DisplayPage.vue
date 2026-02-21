@@ -18,8 +18,6 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable vue/no-mutating-props */
-
 import { DataLayer } from '@stdlib/crypto';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';
 import { groupContentKeyrings } from 'src/code/pages/computed/group-content-keyrings';

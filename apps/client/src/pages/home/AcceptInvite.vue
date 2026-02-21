@@ -12,12 +12,8 @@
         v-else-if="!valid"
         style="margin: 0 auto; max-width: 270px; text-align: center"
       >
-        <template v-if="expired">
-          This invitation has expired.
-        </template>
-        <template v-else>
-          Invalid invitation link.
-        </template>
+        <template v-if="expired"> This invitation has expired. </template>
+        <template v-else> Invalid invitation link. </template>
         <Gap style="height: 16px" />
         <DeepBtn
           label="Go to login"
@@ -128,7 +124,9 @@ const repeatPassword = ref('');
 
 onMounted(async () => {
   try {
-    const res = await trpcClient.users.invites.getInvite.query({ token: token.value });
+    const res = await trpcClient.users.invites.getInvite.query({
+      token: token.value,
+    });
     loading.value = false;
     valid.value = res.valid;
     expired.value = res.expired;

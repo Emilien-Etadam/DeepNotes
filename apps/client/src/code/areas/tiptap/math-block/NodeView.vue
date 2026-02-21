@@ -40,8 +40,7 @@ import type { NodeViewProps } from '@tiptap/vue-3';
 import { NodeViewWrapper } from '@tiptap/vue-3';
 import katex from 'katex';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props extends NodeViewProps {}
+type Props = NodeViewProps;
 
 const props = defineProps<Props>();
 

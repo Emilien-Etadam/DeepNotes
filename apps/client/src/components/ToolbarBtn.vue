@@ -1,15 +1,15 @@
 <template>
-  <q-btn
-    type="a"
-    dense
-    flat
-    :round="round"
-    style="padding: 0; margin: 4px 0px"
+  <button
+    type="button"
+    :disabled="disable"
+    class="toolbar-btn"
     :style="{
       'min-width': round ? undefined : (btnSize ?? '28px'),
       height: btnSize ?? '28px',
       width: btnSize ?? '28px',
+      'border-radius': round ? '50%' : '4px',
     }"
+    @mousedown.prevent
   >
     <q-icon
       :size="iconSize ?? '19px'"
@@ -32,19 +32,40 @@
         {{ line }}
       </div>
     </q-tooltip>
-  </q-btn>
+  </button>
 </template>
 
 <script setup lang="ts">
-import type { QBtnProps } from 'quasar';
-
-interface Props extends QBtnProps {
+interface Props {
   icon: string;
   tooltip?: string;
   iconSize?: string;
   btnSize?: string;
   round?: boolean;
+  disable?: boolean;
 }
 
 defineProps<Props>();
 </script>
+
+<style scoped>
+.toolbar-btn {
+  padding: 0;
+  margin: 4px 0px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  opacity: 1;
+}
+.toolbar-btn:disabled {
+  cursor: default;
+  opacity: 0.3;
+}
+.toolbar-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+</style>

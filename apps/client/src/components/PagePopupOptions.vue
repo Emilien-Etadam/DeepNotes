@@ -100,7 +100,6 @@ import { pageSelectionStore } from 'src/stores/page-selection';
 
 import type { DeepBtnProps } from './DeepBtn.vue';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props extends DeepBtnProps {
   pageId: string;
 

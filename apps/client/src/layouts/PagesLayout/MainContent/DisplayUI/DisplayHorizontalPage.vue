@@ -98,6 +98,8 @@ const isEmpty = computed(
 </script>
 
 <style scoped lang="scss">
+@use 'sass:color';
+
 .horizontal-page {
   pointer-events: auto;
   cursor: pointer;
@@ -116,7 +118,7 @@ const isEmpty = computed(
 }
 
 .group-title {
-  color: lighten(#006dd2, 23%);
+  color: color.adjust(#006dd2, $lightness: 23%);
 
   font-size: 12px;
 
@@ -124,7 +126,7 @@ const isEmpty = computed(
   text-overflow: ellipsis;
 }
 .horizontal-page:hover > .group-title {
-  color: lighten(lighten(#006dd2, 23%), 10%);
+  color: color.adjust(color.adjust(#006dd2, $lightness: 23%), $lightness: 10%);
 }
 
 .page-title {
@@ -136,7 +138,7 @@ const isEmpty = computed(
   text-overflow: ellipsis;
 }
 .horizontal-page:hover > .page-title {
-  color: lighten(#d0d0d0, 10%);
+  color: color.adjust(#d0d0d0, $lightness: 10%);
 }
 .page-title.encrypted {
   color: rgba(150, 150, 255, 1);

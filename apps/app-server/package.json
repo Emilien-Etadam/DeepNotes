@@ -42,7 +42,7 @@
     "otplib": "^12.0.1",
     "redlock": "5.0.0-beta.2",
     "stripe": "^14.3.0",
-    "superjson": "^1.13.3",
+    "superjson": "^2.2.2",
     "unilogr": "^0.0.27",
     "zod": "^3.22.4"
   },
@@ -59,7 +59,7 @@
     "build:watch": "concurrently \"tsc --build ./tsconfig.json --watch\" \"tsc-alias -p tsconfig.json --watch\"",
     "bundle": "tsup",
     "clean": "rimraf --glob ./dist *.tsbuildinfo",
-    "dev": "tsx --inspect-brk ./src/index.ts",
+    "dev": "tsx ./src/index.ts",
     "fix": "eslint --fix .",
     "npkill": "rimraf --glob ./node_modules",
     "preinstall": "npx only-allow pnpm",

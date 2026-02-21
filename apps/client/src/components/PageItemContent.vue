@@ -81,8 +81,10 @@ const isEmpty = computed(
 </script>
 
 <style scoped lang="scss">
+@use 'sass:color';
+
 .group-name {
-  color: lighten(#006dd2, 23%);
+  color: color.adjust(#006dd2, $lightness: 23%);
 }
 
 .page-title {

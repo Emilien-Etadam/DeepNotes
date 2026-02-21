@@ -14,11 +14,11 @@ export class PageUndoRedo {
     key: 0,
 
     canUndo: computed(() => {
-      this.react.key;
+      void this.react.key;
       return this.undoManager?.canUndo() ?? false;
     }),
     canRedo: computed(() => {
-      this.react.key;
+      void this.react.key;
       return this.undoManager?.canRedo() ?? false;
     }),
   });

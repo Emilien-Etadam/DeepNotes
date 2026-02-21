@@ -5,7 +5,7 @@
         class="login-form"
         style="margin: 0px auto; max-width: 270px"
       >
-        <q-form>
+        <q-form @submit.prevent>
           <Standard v-if="authType === 'standard'" />
           <Authenticator v-else-if="authType === 'authenticator'" />
           <Recovery v-else-if="authType === 'recovery'" />

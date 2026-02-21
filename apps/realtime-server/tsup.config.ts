@@ -9,5 +9,6 @@ export default defineConfig({
   sourcemap: false,
   splitting: false,
   dts: false,
-  noExternal: [/^(?!knex|ws).+$/],
+  external: ['libsodium-sumo', 'libsodium-wrappers-sumo'],
+  noExternal: [/^(?!knex|ws|libsodium).+$/],
 });

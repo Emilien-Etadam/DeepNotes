@@ -3,19 +3,21 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable vue/no-reserved-props -- Props forwards TipTap EditorContent type (key/ref come from lib) */
 import 'katex/dist/katex.min.css';
 
 const EditorContent = internals.tiptap().EditorContent;
 
 type _EditorContent = typeof EditorContent;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface Props extends /* @vue-ignore */ _EditorContent {}
+type Props = /* @vue-ignore */ _EditorContent;
 
 defineProps<Props>();
 </script>
 
 <style scoped lang="scss">
+@use 'sass:color';
+
 .text-editor {
   :deep() {
     .ProseMirror {
@@ -247,7 +249,7 @@ defineProps<Props>();
         color: #60b2ff !important;
       }
       &[contenteditable='false'] a:hover {
-        color: lighten(#60b2ff, 10%) !important;
+        color: color.adjust(#60b2ff, $lightness: 10%) !important;
       }
 
       // Blockquotes

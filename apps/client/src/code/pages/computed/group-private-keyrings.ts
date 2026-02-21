@@ -49,7 +49,7 @@ export const groupPrivateKeyrings = once(() =>
             },
           },
         );
-      } catch (error) {
+      } catch (_error) {
         //
       }
     },

@@ -2,6 +2,7 @@
   <div
     ref="toolbarRef"
     style="flex: 1; width: 0; display: flex; align-items: center"
+    
   >
     <template
       v-for="(numSubgroups, groupIndex) in toolbarStructure"
@@ -30,7 +31,7 @@
           <ToolbarBtn
             v-bind="button"
             :disable="button.disable?.(page)"
-            @click="button.click?.(page)"
+            @click="onToolbarBtnClick(button)"
           />
         </template>
       </template>
@@ -71,7 +72,7 @@
                 <ToolbarBtn
                   v-bind="button"
                   :disable="button.disable?.(page)"
-                  @click="button.click?.(page)"
+                  @click="onToolbarBtnClick(button)"
                 />
               </template>
             </template>
@@ -627,6 +628,14 @@ const toolbarGroups: ToolbarButtonGroup[] = [
 ];
 
 const page = computed(() => internals.pages.react.page);
+
+
+
+function onToolbarBtnClick(button: (typeof toolbarGroups)[number]['subgroups'][number][number]) {
+  if (page.value) {
+    button.click(page.value);
+  }
+}
 
 const toolbarRef = ref<HTMLElement>();
 const toolbarWidth = ref(0);

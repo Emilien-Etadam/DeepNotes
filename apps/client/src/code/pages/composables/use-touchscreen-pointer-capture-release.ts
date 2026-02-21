@@ -4,11 +4,19 @@ export function useTouchscreenPointerCaptureRelease() {
   useEventListener(
     'pointerdown',
     (event) => {
-      mainLogger
-        .sub('useTouchscreenPointerCaptureRelease')
-        .info('Release pointer capture');
-
-      (event.target as Element).releasePointerCapture(event.pointerId);
+      if (event.pointerType !== 'touch') return;
+      const target = event.target as Element;
+      if (!target?.hasPointerCapture?.(event.pointerId)) return;
+      if (target?.closest?.('.q-toolbar')) return;
+      if (!target?.releasePointerCapture) return;
+      try {
+        target.releasePointerCapture(event.pointerId);
+        mainLogger
+          .sub('useTouchscreenPointerCaptureRelease')
+          .info('Release pointer capture');
+      } catch {
+        // leave event chain intact
+      }
     },
     { capture: true },
   );

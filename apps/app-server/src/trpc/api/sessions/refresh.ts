@@ -82,7 +82,7 @@ export async function refresh({
   });
 
   return {
-    oldSessionKey: session.encryption_key,
-    newSessionKey,
+    oldSessionKey: new Uint8Array(session.encryption_key),
+    newSessionKey: new Uint8Array(newSessionKey),
   };
 }

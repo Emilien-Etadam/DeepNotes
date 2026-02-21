@@ -14,10 +14,19 @@
 
     <template v-else>
       <p style="margin-bottom: 16px">
-        Create an invitation link for a new user. They will set their password when they open the link.
+        Create an invitation link for a new user. They will set their password
+        when they open the link.
       </p>
 
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; max-width: 400px">
+      <div
+        style="
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          align-items: flex-end;
+          max-width: 400px;
+        "
+      >
         <TextField
           v-model="inviteEmail"
           label="Email"
@@ -45,13 +54,11 @@
           max-width: 500px;
         "
       >
-        <div style="font-weight: 500; margin-bottom: 8px">Invitation link (valid 7 days)</div>
+        <div style="font-weight: 500; margin-bottom: 8px">
+          Invitation link (valid 7 days)
+        </div>
         <div
-          style="
-            word-break: break-all;
-            font-size: 13px;
-            margin-bottom: 12px;
-          "
+          style="word-break: break-all; font-size: 13px; margin-bottom: 12px"
         >
           {{ lastInviteLink }}
         </div>
@@ -106,7 +113,9 @@ async function createInvite() {
   creating.value = true;
   lastInviteLink.value = '';
   try {
-    const { token } = await trpcClient.users.invites.createInvite.mutate({ email });
+    const { token } = await trpcClient.users.invites.createInvite.mutate({
+      email,
+    });
     const path = `/accept-invite/${token}`;
     lastInviteLink.value =
       typeof window !== 'undefined'

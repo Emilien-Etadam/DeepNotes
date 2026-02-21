@@ -6,11 +6,13 @@
     style="
       background-color: transparent;
       border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+      z-index: 100;
+      pointer-events: auto;
     "
   >
     <q-toolbar
       class="bg-grey-10"
-      style="padding: 0"
+      style="padding: 0; pointer-events: auto"
     >
       <DeepBtn
         round

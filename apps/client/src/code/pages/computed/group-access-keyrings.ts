@@ -39,7 +39,7 @@ export const groupAccessKeyrings = once(() =>
           accessKeyring = accessKeyring.unwrapAsymmetric(
             internals.keyPair.privateKey,
           );
-        } catch (error) {
+        } catch (_error) {
           //
         }
       }

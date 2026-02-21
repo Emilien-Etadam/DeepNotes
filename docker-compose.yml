@@ -47,6 +47,9 @@ services:
       keydb:
         condition: service_healthy
     env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      KEYDB_HOSTS: keydb:6379
     ports:
       - '48922:48922'
 
@@ -62,6 +65,10 @@ services:
       keydb:
         condition: service_healthy
     env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      KEYDB_HOSTS: keydb:6379
+      COLLAB_SERVER_PORT: '48923'
     ports:
       - '48923:48923'
 
@@ -77,6 +84,10 @@ services:
       keydb:
         condition: service_healthy
     env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      KEYDB_HOSTS: keydb:6379
+      REALTIME_SERVER_PORT: '48924'
     ports:
       - '48924:48924'
 
@@ -92,6 +103,9 @@ services:
       keydb:
         condition: service_healthy
     env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      KEYDB_HOSTS: keydb:6379
 
   client:
     build:

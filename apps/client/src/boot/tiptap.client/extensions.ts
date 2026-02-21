@@ -1,6 +1,5 @@
 import 'highlight.js/styles/atom-one-dark.css';
 
-import { columnResizing } from '@tiptap/pm/tables';
 import CodeBlockLowlightExtension from '@tiptap/extension-code-block-lowlight';
 import HighlightExtension from '@tiptap/extension-highlight';
 import HorizontalRuleExtension from '@tiptap/extension-horizontal-rule';
@@ -14,6 +13,7 @@ import TableRowExtension from '@tiptap/extension-table-row';
 import TaskListExtension from '@tiptap/extension-task-list';
 import TextAlignExtension from '@tiptap/extension-text-align';
 import UnderlineExtension from '@tiptap/extension-underline';
+import { columnResizing } from '@tiptap/pm/tables';
 import StarterKit from '@tiptap/starter-kit';
 import { Extension } from '@tiptap/vue-3';
 import { once } from 'lodash';

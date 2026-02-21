@@ -9,5 +9,7 @@ export default defineConfig({
   sourcemap: false,
   splitting: false,
   dts: false,
-  noExternal: [/^(?!knex|ws).+$/],
+  // Keep libsodium out of bundle (top-level await in ESM, incompatible with CJS)
+  external: ['libsodium-sumo', 'libsodium-wrappers-sumo'],
+  noExternal: [/^(?!knex|ws|libsodium).+$/],
 });
