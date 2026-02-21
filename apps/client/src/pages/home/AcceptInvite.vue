@@ -105,7 +105,7 @@ import { maxEmailLength, w3cEmailRegex } from '@stdlib/misc';
 import { getRegistrationValues } from 'src/code/areas/auth/register';
 import { deriveUserValues } from 'src/code/crypto';
 import { handleError } from 'src/code/utils/misc';
-import { zxcvbn } from 'src/code/utils/zxcvbn';
+import { zxcvbnAsync } from 'src/code/utils/zxcvbn';
 
 useMeta(() => ({
   title: 'Accept invitation - DeepNotes',
@@ -151,7 +151,7 @@ async function completeRegistration() {
     if (password.value !== repeatPassword.value) {
       throw new Error('Passwords do not match.');
     }
-    const zxcvbnResult = zxcvbn(password.value);
+    const zxcvbnResult = await zxcvbnAsync(password.value);
     if (zxcvbnResult.score <= 0) {
       $quasar().notify({
         message: 'Password is too weak. Please use a stronger password.',

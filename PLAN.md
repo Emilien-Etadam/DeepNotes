@@ -39,6 +39,10 @@ Phases 1 à 7 : **DONE**. Bug toolbar (bouton natif) : **RÉSOLU** — voir `doc
 - Traiter les 27 warnings ESLint (ex. `} catch {`).  
 - Réduire la taille des chunks SPA : `build.rollupOptions.output.manualChunks` dans `quasar.config.cjs` (Quasar, Vue, TipTap).
 
+**Optimisations bundle (fait / à faire)**  
+- **zxcvbn** (~1,7 MB) : lazy-load implémenté — chargé uniquement sur les pages/écrans mot de passe (register, setup, accept-invite, change-password, création de groupe protégé, EvaluatedPasswordField). Voir `apps/client/src/code/utils/zxcvbn.ts` (`zxcvbnAsync`).  
+- **libsodium** (~1 MB) : chargé au boot (`sodium.universal.ts`) puis utilisé dans `crypto.ts`, key-rotation, rotate-keys, demo. Pour plus tard : évaluer chargement à la demande (premier usage crypto) au lieu du boot — attention à `sodium.ready` et à tous les chemins qui importent sodium.
+
 **Documentation** : `STACK.md`, `README.md` (Node 20+, pnpm 10, `./start.sh`).
 
 ---

@@ -42,7 +42,7 @@ import { QForm } from 'quasar';
 import { changePassword } from 'src/code/areas/api-interface/users/change-password';
 import { logout } from 'src/code/areas/auth/logout';
 import { asyncDialog, handleError } from 'src/code/utils/misc';
-import { zxcvbn } from 'src/code/utils/zxcvbn';
+import { zxcvbnAsync } from 'src/code/utils/zxcvbn';
 
 // Change password
 
@@ -62,7 +62,7 @@ async function _changePassword() {
 
     // Check password strength
 
-    const zxcvbnResult = zxcvbn(newPassword.value);
+    const zxcvbnResult = await zxcvbnAsync(newPassword.value);
 
     if (zxcvbnResult.score <= 1) {
       $quasar().notify({

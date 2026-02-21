@@ -514,6 +514,9 @@ importers:
       browserslist:
         specifier: ^4.22.1
         version: 4.28.1
+      rollup-plugin-visualizer:
+        specifier: ^5.14.0
+        version: 5.14.0(rollup@4.57.1)
       sass-embedded:
         specifier: ^1.83.0
         version: 1.97.3

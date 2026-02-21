@@ -43,6 +43,16 @@ const env = Object.assign(
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 
+// Analyse du bundle : ANALYZE=true pnpm run build:spa
+const visualizerPlugin =
+  process.env.ANALYZE === 'true'
+    ? require('rollup-plugin-visualizer').visualizer({
+        open: true,
+        gzipSize: true,
+        filename: path.resolve(__dirname, 'dist/stats.html'),
+      })
+    : null;
+
 module.exports = configure(function (ctx) {
   const port =
     1024 + (Math.abs(hashFNV1a(JSON.stringify(ctx.mode))) % (65536 - 1024));
@@ -90,18 +100,8 @@ module.exports = configure(function (ctx) {
     css: ['app.scss'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
-    extras: [
-      // 'ionicons-v4',
-      'mdi-v7',
-      // 'fontawesome-v6',
-      // 'eva-icons',
-      // 'themify',
-      // 'line-awesome',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-
-      'roboto-font', // optional, you are not bound to it
-      'material-icons', // optional, you are not bound to it
-    ],
+    // Uniquement mdi-v7 : toutes les icônes du projet sont mdi-* (material-design-icons)
+    extras: ['mdi-v7'],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
@@ -172,6 +172,11 @@ module.exports = configure(function (ctx) {
           if (onwarn) onwarn(warning, warn);
           else warn(warning);
         };
+        if (visualizerPlugin) {
+          viteConf.build.rollupOptions.plugins =
+            viteConf.build.rollupOptions.plugins || [];
+          viteConf.build.rollupOptions.plugins.push(visualizerPlugin);
+        }
       },
       // viteVuePluginOptions: {},
 
@@ -265,18 +270,14 @@ module.exports = configure(function (ctx) {
         dark: true,
       },
 
-      // iconSet: 'material-icons', // Quasar icon set
+      iconSet: 'mdi-v7', // aligné avec extras (icônes mdi-* uniquement dans le code)
       // lang: 'en-US', // Quasar language pack
 
-      // For special cases outside of where the auto-import strategy can have an impact
-      // (like functional components as one of the examples),
-      // you can manually specify Quasar components/directives to be available everywhere:
-      //
-      // components: [],
-      // directives: [],
+      // components/directives : auto-import via unplugin-vue-components (tree-shaking)
+      // directives utilisées : v-ripple, v-close-popup
 
-      // Quasar plugins
-      plugins: ['Notify', 'Cookies', 'Meta', 'Dialog'],
+      // Quasar plugins (Dialog, Notify, Loading, $q ; Cookies/Meta utilisés dans le code)
+      plugins: ['Notify', 'Cookies', 'Meta', 'Dialog', 'Loading'],
     },
 
     // animations: 'all', // --- includes all animations

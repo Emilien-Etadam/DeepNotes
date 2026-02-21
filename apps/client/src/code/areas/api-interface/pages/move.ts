@@ -14,7 +14,7 @@ import { pageKeyrings } from 'src/code/pages/computed/page-keyrings';
 import { createPageDoc } from 'src/code/pages/utils';
 import { asyncDialog } from 'src/code/utils/misc';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
-import { zxcvbn } from 'src/code/utils/zxcvbn';
+import { zxcvbnAsync } from 'src/code/utils/zxcvbn';
 
 export async function movePage(input: {
   pageId: string;
@@ -63,22 +63,24 @@ export async function movePage(input: {
         throw new Error('Please enter an user alias.');
       }
 
-      if (
-        input.groupCreation.groupPassword != null &&
-        zxcvbn(input.groupCreation.groupPassword).score <= 2
-      ) {
-        await asyncDialog({
-          title: 'Weak password',
-          html: true,
-          message:
-            'Your password is relatively weak.<br/>Are you sure you want to continue?',
-          style: { width: 'max-content', padding: '4px 8px' },
+      if (input.groupCreation.groupPassword != null) {
+        const zxcvbnResult = await zxcvbnAsync(
+          input.groupCreation.groupPassword,
+        );
+        if (zxcvbnResult.score <= 2) {
+          await asyncDialog({
+            title: 'Weak password',
+            html: true,
+            message:
+              'Your password is relatively weak.<br/>Are you sure you want to continue?',
+            style: { width: 'max-content', padding: '4px 8px' },
 
-          focus: 'cancel',
+            focus: 'cancel',
 
-          cancel: { label: 'No', flat: true, color: 'primary' },
-          ok: { label: 'Yes', flat: true, color: 'negative' },
-        });
+            cancel: { label: 'No', flat: true, color: 'primary' },
+            ok: { label: 'Yes', flat: true, color: 'negative' },
+          });
+        }
       }
 
       const groupValues = await generateGroupValues({

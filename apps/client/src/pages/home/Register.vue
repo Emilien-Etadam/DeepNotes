@@ -152,7 +152,7 @@ import { enterDemo } from 'src/code/areas/auth/demo';
 import { getRegistrationValues } from 'src/code/areas/auth/register';
 import { deriveUserValues } from 'src/code/crypto';
 import { asyncDialog, handleError } from 'src/code/utils/misc';
-import { zxcvbn } from 'src/code/utils/zxcvbn';
+import { zxcvbnAsync } from 'src/code/utils/zxcvbn';
 
 useMeta(() => ({
   title: 'Register - DeepNotes',
@@ -187,7 +187,7 @@ async function register() {
 
     // Check password strength
 
-    const zxcvbnResult = zxcvbn(password.value);
+    const zxcvbnResult = await zxcvbnAsync(password.value);
 
     if (zxcvbnResult.score <= 0) {
       $quasar().notify({

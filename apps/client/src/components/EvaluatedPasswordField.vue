@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from 'src/code/utils/misc';
-import { zxcvbn } from 'src/code/utils/zxcvbn';
+import { zxcvbnAsync } from 'src/code/utils/zxcvbn';
 import type { ComponentPublicInstance } from 'vue';
 
 import type { PasswordFieldProps } from './PasswordField.vue';
@@ -89,13 +89,18 @@ const passwordStrength = ref(0);
 const passwordFeedback = ref<string[]>([]);
 const passwordWarning = ref('');
 
-watchEffect(() => {
-  const zxcvbnResult = zxcvbn(props.modelValue);
-
-  passwordStrength.value = zxcvbnResult.score;
-  passwordFeedback.value = zxcvbnResult.feedback.suggestions;
-  passwordWarning.value = zxcvbnResult.feedback.warning;
-});
+watch(
+  () => props.modelValue,
+  async (value) => {
+    const result = await zxcvbnAsync(value);
+    if (props.modelValue === value) {
+      passwordStrength.value = result.score;
+      passwordFeedback.value = result.feedback.suggestions;
+      passwordWarning.value = result.feedback.warning;
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped lang="scss">

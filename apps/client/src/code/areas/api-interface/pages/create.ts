@@ -7,7 +7,7 @@ import {
 } from 'src/code/crypto';
 import { groupContentKeyrings } from 'src/code/pages/computed/group-content-keyrings';
 import { asyncDialog } from 'src/code/utils/misc';
-import { zxcvbn } from 'src/code/utils/zxcvbn';
+import { zxcvbnAsync } from 'src/code/utils/zxcvbn';
 
 export async function createPage(input: {
   parentPageId: string;
@@ -42,11 +42,10 @@ export async function createPage(input: {
       throw new Error('Please enter an user alias.');
     }
 
-    if (
-      input.createGroup.groupPassword != null &&
-      zxcvbn(input.createGroup.groupPassword).score <= 2
-    ) {
-      await asyncDialog({
+    if (input.createGroup.groupPassword != null) {
+      const zxcvbnResult = await zxcvbnAsync(input.createGroup.groupPassword);
+      if (zxcvbnResult.score <= 2) {
+        await asyncDialog({
         title: 'Weak password',
         html: true,
         message:
@@ -57,7 +56,8 @@ export async function createPage(input: {
 
         cancel: { label: 'No', flat: true, color: 'primary' },
         ok: { label: 'Yes', flat: true, color: 'negative' },
-      });
+        });
+      }
     }
 
     const groupValues = await generateGroupValues({
