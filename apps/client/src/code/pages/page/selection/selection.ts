@@ -157,9 +157,8 @@ export class PageSelection {
     // Add root notes and arrows and gather descendant arrows
 
     for (const note of this.page.activeRegion.react.value.react.notes) {
-      elemsToSelect.push(note);
-
       elemsToSelect.push(
+        note,
         ...this.page.arrows.fromIds([
           ...note.incomingArrowIds,
           ...note.outgoingArrowIds,

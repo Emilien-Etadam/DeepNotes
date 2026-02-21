@@ -114,9 +114,9 @@ export function createSymmetricKeyring(
     ): Uint8Array {
       let _error;
 
-      for (let i = 0; i < this.keys.length; i++) {
+      for (const key of this.keys) {
         try {
-          return this.keys[i].decrypt(ciphertext, params);
+          return key.decrypt(ciphertext, params);
         } catch (error) {
           _error = error;
         }

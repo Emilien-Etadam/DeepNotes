@@ -5,6 +5,8 @@ import { once } from 'lodash';
 import { db } from './knex';
 import { getRedis, getSub } from './redis';
 
-export const dataAbstraction = once(
-  () => new DataAbstraction(db, dataHashes, getRedis(), getSub()),
-);
+export const dataAbstraction = once(async () => {
+  const da = new DataAbstraction(db, dataHashes, getRedis(), getSub());
+  await da.init();
+  return da;
+});

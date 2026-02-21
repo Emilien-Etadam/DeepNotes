@@ -36,8 +36,8 @@ httpServer().on('upgrade', (req: IncomingMessage, socket: Socket, head) => {
       moduleLogger.info(
         `${socket.remoteAddress}${req.url}: Authentication successful`,
       );
-    } catch (error) {
-      //
+    } catch {
+      // Intentionally ignored: JWT verification failure, connection will be rejected
     }
   }
 

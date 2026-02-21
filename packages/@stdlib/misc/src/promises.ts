@@ -82,18 +82,23 @@ export async function allSettledResults<T extends readonly [...any]>(
   ) as any;
 }
 
+/** Intentional thenable — lazy PromiseLike, defers execution until .then() is called. */
+class LazyPromiseLike implements PromiseLike<any> {
+  private _promise: PromiseLike<any> | undefined;
+
+  constructor(private readonly _asyncFunc: () => PromiseLike<any>) {}
+
+  then<TResult1 = any, TResult2 = never>(
+    onFulfilled?: ((value: any) => TResult1 | PromiseLike<TResult1>) | null,
+    onRejected?: ((reason?: any) => TResult2 | PromiseLike<TResult2>) | null,
+  ): PromiseLike<TResult1 | TResult2> {
+    this._promise ??= this._asyncFunc();
+    return this._promise.then(onFulfilled, onRejected);
+  }
+}
+
 export function makeLazyPromise(
   asyncFunc: () => PromiseLike<any>,
 ): PromiseLike<any> {
-  let promise: PromiseLike<any> | undefined;
-
-  return {
-    then: (onFulfilled, onRejected) => {
-      if (promise == null) {
-        promise = asyncFunc();
-      }
-
-      return promise.then(onFulfilled, onRejected);
-    },
-  };
+  return new LazyPromiseLike(asyncFunc);
 }

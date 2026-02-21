@@ -1,6 +1,5 @@
 import { isNanoID } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
-import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
 import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { createGroup, groupCreationSchema } from 'src/utils/groups';

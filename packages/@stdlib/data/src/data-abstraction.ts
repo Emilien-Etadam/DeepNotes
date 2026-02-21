@@ -221,8 +221,14 @@ export class DataAbstraction<
         }
       },
     );
+  }
 
-    this.sub.subscribe('local-cache-update', 'local-cache-clear');
+  /**
+   * Initializes async subscription. Must be called once after construction
+   * before using the instance (e.g. from a factory: create then await init()).
+   */
+  async init(): Promise<void> {
+    await this.sub.subscribe('local-cache-update', 'local-cache-clear');
   }
 
   // Get
@@ -525,8 +531,8 @@ export class DataAbstraction<
                   suffix,
                   dataAbstraction: this,
                 })) ?? model?.[field?.columns?.[0] as any];
-            } catch (error) {
-              //
+            } catch {
+              // Intentionally ignored: optional field get may fail for missing/default value
             }
 
             return [name, value];
@@ -695,8 +701,8 @@ export class DataAbstraction<
                   suffix,
                   dataAbstraction: this,
                 });
-              } catch (error) {
-                //
+              } catch {
+                // Intentionally ignored: optional field get may fail for missing/default value
               }
 
               return [name, value];

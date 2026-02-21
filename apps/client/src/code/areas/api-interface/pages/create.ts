@@ -63,10 +63,7 @@ export async function createPage(input: {
     const groupValues = await generateGroupValues({
       userKeyPair: internals.keyPair,
       isPublic: input.createGroup.groupIsPublic,
-      password:
-        input.createGroup.groupPassword != null
-          ? input.createGroup.groupPassword
-          : undefined,
+      password: input.createGroup.groupPassword ?? undefined,
     });
 
     groupId = groupValues.groupId;

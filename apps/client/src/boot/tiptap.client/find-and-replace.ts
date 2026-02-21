@@ -92,15 +92,12 @@ function processFinds(
 
   textNodesWithPosition = textNodesWithPosition.filter(Boolean);
 
-  for (let i = 0; i < textNodesWithPosition.length; i += 1) {
-    const { text, pos } = textNodesWithPosition[i];
-
+  for (const { text, pos } of textNodesWithPosition) {
     const matches = Array.from(text.matchAll(findTerm)).filter(([matchText]) =>
       matchText.trim(),
     );
 
-    for (let j = 0; j < matches.length; j += 1) {
-      const m = matches[j];
+    for (const m of matches) {
 
       if (m[0] === '') {
         break;
@@ -115,8 +112,7 @@ function processFinds(
     }
   }
 
-  for (let i = 0; i < results.length; i += 1) {
-    const r = results[i];
+  for (const r of results) {
     decorations.push(
       Decoration.inline(r.from, r.to, { class: findResultClass }),
     );

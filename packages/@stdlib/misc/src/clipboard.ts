@@ -10,8 +10,8 @@ export async function getClipboardText(): Promise<string> {
       return await navigator.clipboard.readText();
     }
 
-    if (window.clipboardData != null) {
-      return window.clipboardData.getData('Text');
+    if ((globalThis as unknown as Window).clipboardData != null) {
+      return (globalThis as unknown as Window).clipboardData.getData('Text');
     }
 
     if (document.queryCommandSupported?.('paste')) {
@@ -29,7 +29,9 @@ export async function getClipboardText(): Promise<string> {
 
       return text;
     }
-  } catch (error) {}
+  } catch {
+    // Intentionally ignored: clipboard read may be denied or unsupported
+  }
 
   return '';
 }
@@ -41,8 +43,8 @@ export async function setClipboardText(text: string): Promise<boolean> {
       return true;
     }
 
-    if (window.clipboardData != null) {
-      window.clipboardData.setData('Text', text);
+    if ((globalThis as unknown as Window).clipboardData != null) {
+      (globalThis as unknown as Window).clipboardData.setData('Text', text);
       return true;
     }
 
@@ -57,7 +59,7 @@ export async function setClipboardText(text: string): Promise<boolean> {
 
       document.body.appendChild(elem);
 
-      const selection = window.getSelection();
+      const selection = (globalThis as unknown as Window).getSelection();
       const range = document.createRange();
       selection?.removeAllRanges();
       range.selectNode(elem);
@@ -70,7 +72,9 @@ export async function setClipboardText(text: string): Promise<boolean> {
 
       return (await getClipboardText()) === text;
     }
-  } catch (error) {}
+  } catch {
+    // Intentionally ignored: clipboard write may be denied or unsupported
+  }
 
   return false;
 }

@@ -79,7 +79,7 @@ export class SocketAuxObject {
 
   private async _checkSessionInvalidated() {
     if (this.sessionId != null) {
-      const sessionInvalidated = await dataAbstraction().hget(
+      const sessionInvalidated = await (await dataAbstraction()).hget(
         'session',
         this.sessionId,
         'invalidated',
@@ -105,9 +105,9 @@ export class SocketAuxObject {
       const roomName = (req.url ?? '').slice(1);
       const pageId = splitStr(roomName, ':', 2)[1];
 
-      const groupId = await dataAbstraction().hget('page', pageId, 'group-id');
+      const groupId = await (await dataAbstraction()).hget('page', pageId, 'group-id');
 
-      const groupIsPublic = await dataAbstraction().hget(
+      const groupIsPublic = await (await dataAbstraction()).hget(
         'group',
         groupId,
         'is-public',
@@ -117,7 +117,7 @@ export class SocketAuxObject {
         let sessionInvalidated;
 
         [this.userId, sessionInvalidated] = await Promise.all([
-          dataAbstraction().hget('session', this.sessionId, 'user-id'),
+          (await dataAbstraction()).hget('session', this.sessionId, 'user-id'),
 
           this._checkSessionInvalidated(),
         ]);
@@ -128,7 +128,7 @@ export class SocketAuxObject {
         }
 
         if (!groupIsPublic) {
-          const groupMemberRole = await dataAbstraction().hget(
+          const groupMemberRole = await (await dataAbstraction()).hget(
             'group-member',
             `${groupId}:${this.userId}`,
             'role',
@@ -168,7 +168,7 @@ export class SocketAuxObject {
     ] = await Promise.all([
       getAllPageUpdates(this.room.pageId, getRedis(), db),
 
-      dataAbstraction().hmget('page', this.room.pageId, [
+      (await dataAbstraction()).hmget('page', this.room.pageId, [
         'next-snapshot-date',
         'next-snapshot-update-index',
 
@@ -195,7 +195,7 @@ export class SocketAuxObject {
       pageUpdateIndex >= nextSnapshotUpdateIndex;
 
     if (createSnapshot) {
-      void dataAbstraction().patch('page', this.room.pageId, {
+      void (await dataAbstraction()).patch('page', this.room.pageId, {
         next_snapshot_date: addMinutes(new Date(), 15),
         next_snapshot_update_index: pageUpdateIndex + 200,
       });
@@ -218,7 +218,7 @@ export class SocketAuxObject {
         await usingLocks(
           [[`page-lock:${this.room.pageId}`]],
           async (signals) => {
-            const groupId = await dataAbstraction().hget(
+            const groupId = await (await dataAbstraction()).hget(
               'page',
               this.room.pageId,
               'group-id',
@@ -229,7 +229,7 @@ export class SocketAuxObject {
               async (signals) => {
                 // Recheck page key rotation, but within locks
 
-                const nextKeyRotationDate = await dataAbstraction().hget(
+                const nextKeyRotationDate = await (await dataAbstraction()).hget(
                   'page',
                   this.room.pageId,
                   'next-key-rotation-date',
@@ -245,7 +245,7 @@ export class SocketAuxObject {
                   return;
                 }
 
-                await dataAbstraction().patch('page', this.room.pageId, {
+                await (await dataAbstraction()).patch('page', this.room.pageId, {
                   next_key_rotation_date: addDays(new Date(), 7),
                 });
 
@@ -254,13 +254,13 @@ export class SocketAuxObject {
                   pageEncryptedAbsoluteTitle,
                   pageSnapshots,
                 ] = await Promise.all([
-                  dataAbstraction().hget(
+                  (await dataAbstraction()).hget(
                     'page',
                     this.room.pageId,
                     'encrypted-relative-title',
                   ),
 
-                  dataAbstraction().hget(
+                  (await dataAbstraction()).hget(
                     'page',
                     this.room.pageId,
                     'encrypted-absolute-title',
@@ -382,8 +382,8 @@ export class SocketAuxObject {
 
   private async _handleMessage(messageBuffer: ArrayBuffer) {
     const [sessionInvalidated, pageGroupId] = await Promise.all([
-      dataAbstraction().hget('session', this.sessionId!, 'invalidated'),
-      dataAbstraction().hget('page', this.room.pageId, 'group-id'),
+      (await dataAbstraction()).hget('session', this.sessionId!, 'invalidated'),
+      (await dataAbstraction()).hget('page', this.room.pageId, 'group-id'),
     ]);
 
     // Check if session is invalidated
@@ -396,7 +396,7 @@ export class SocketAuxObject {
 
     // Check if has permission to edit
 
-    const role = await dataAbstraction().hget(
+    const role = await (await dataAbstraction()).hget(
       'group-member',
       `${pageGroupId}:${this.userId}`,
       'role',
@@ -445,7 +445,7 @@ export class SocketAuxObject {
       );
     }
 
-    // Remove expired awareness updates
+    // Remove expired awareness updates; reset expiration and publish awareness message
 
     promises.push(
       getRedis().zremrangebyscore(
@@ -453,11 +453,6 @@ export class SocketAuxObject {
         0,
         Date.now(),
       ),
-    );
-
-    // Reset expiration for awareness buffer, and publish awareness message
-
-    promises.push(
       getRedis().expire(`page-awareness-buffer:{${this.room.pageId}}`, 30),
       this._publish(message),
     );
@@ -500,7 +495,7 @@ export class SocketAuxObject {
     _pendingRequests.delete(requestIdBase64);
 
     await usingLocks([[`page-lock:${this.room.pageId}`]], async (signals) => {
-      const groupId = await dataAbstraction().hget(
+      const groupId = await (await dataAbstraction()).hget(
         'page',
         this.room.pageId,
         'group-id',
@@ -509,7 +504,7 @@ export class SocketAuxObject {
       await usingLocks(
         [[`group-lock:${groupId}`]],
         async (signals) => {
-          await dataAbstraction().transaction(async (dtrx) => {
+          await (await dataAbstraction()).transaction(async (dtrx) => {
             // Rotate page key
 
             const rotatePageKey = decoding.readUint8(decoder) === 1;
@@ -538,7 +533,7 @@ export class SocketAuxObject {
                 );
               }
 
-              await dataAbstraction().patch(
+              await (await dataAbstraction()).patch(
                 'page',
                 this.room.pageId,
                 {
@@ -578,7 +573,7 @@ export class SocketAuxObject {
               const snapshotEncryptedData = decoding.readVarUint8Array(decoder);
 
               await insertPageSnapshot({
-                dataAbstraction: dataAbstraction(),
+                dataAbstraction: (await dataAbstraction()),
                 pageId: this.room.pageId,
                 authorId: this.userId!,
                 encryptedSymmetricKey: snapshotEncryptedSymmetricKey,

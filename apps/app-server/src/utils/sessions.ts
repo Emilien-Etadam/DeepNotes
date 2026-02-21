@@ -88,9 +88,10 @@ export async function invalidateAllSessions(
     .select('id')
     .execute();
 
+  const da = await dataAbstraction();
   await Promise.all(
     sessions.map((session) =>
-      dataAbstraction().patch(
+      da.patch(
         'session',
         session.id,
         { invalidated: true },

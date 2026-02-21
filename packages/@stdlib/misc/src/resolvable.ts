@@ -1,3 +1,4 @@
+/** Intentional thenable — implements Promise<T> / PromiseLike<T> for await and Promise chains. */
 export class Resolvable<T = void> implements Promise<T> {
   [Symbol.toStringTag]!: string;
 

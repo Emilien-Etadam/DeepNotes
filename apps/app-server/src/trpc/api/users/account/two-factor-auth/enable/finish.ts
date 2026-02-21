@@ -4,7 +4,6 @@ import sodium from 'libsodium-wrappers-sumo';
 import { once } from 'lodash';
 import { authenticator } from 'otplib';
 import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
-import { db } from 'src/data/knex';
 import {
   decryptUserAuthenticatorSecret,
   encryptRecoveryCodes,

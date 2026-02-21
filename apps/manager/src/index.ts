@@ -40,7 +40,7 @@ async function handleCommand(command: string) {
         break;
       case 'hget':
         mainLogger.info(
-          `Result: ${await dataAbstraction().hget(
+          `Result: ${await (await dataAbstraction()).hget(
             args[0] as any,
             args[1],
             args[2],
@@ -57,7 +57,7 @@ async function handleCommand(command: string) {
           );
           return;
         }
-        await dataAbstraction().hmset(args[0] as any, args[1], {
+        await (await dataAbstraction()).hmset(args[0] as any, args[1], {
           [args[2]]: value,
         });
         break;
@@ -112,8 +112,9 @@ async function handleCommand(command: string) {
 }
 
 async function deleteUser(userId: string) {
-  await dataAbstraction().transaction(async (dtrx) => {
+  await (await dataAbstraction()).transaction(async (dtrx) => {
     const trx = dtrx.trx!;
+    const da = await dataAbstraction();
 
     // Check if any group has more than one member
 
@@ -201,28 +202,28 @@ async function deleteUser(userId: string) {
 
     await Promise.all([
       ...groupPageIds.map((page) =>
-        dataAbstraction().delete('page', page.id, {
+        da.delete('page', page.id, {
           dtrx,
           cacheOnly: true,
         }),
       ),
 
       ...invitations.map((invitation) =>
-        dataAbstraction().delete(
+        da.delete(
           'group-join-invitation',
           `${invitation.group_id}:${userId}`,
           { dtrx, cacheOnly: true },
         ),
       ),
       ...requests.map((request) =>
-        dataAbstraction().delete(
+        da.delete(
           'group-join-request',
           `${request.group_id}:${userId}`,
           { dtrx, cacheOnly: true },
         ),
       ),
       ...memberships.map((member) =>
-        dataAbstraction().delete(
+        da.delete(
           'group-member',
           `${member.group_id}:${userId}`,
           {
@@ -233,20 +234,20 @@ async function deleteUser(userId: string) {
       ),
 
       ...idsOfGroupsToDelete.map((groupId) =>
-        dataAbstraction().delete('group', groupId, {
+        da.delete('group', groupId, {
           dtrx,
         }),
       ),
 
       ...visitedPageIds.map((page) =>
-        dataAbstraction().delete('user-page', `${userId}:${page.page_id}`, {
+        da.delete('user-page', `${userId}:${page.page_id}`, {
           dtrx,
           cacheOnly: true,
         }),
       ),
 
       ...sessions.map((session) =>
-        dataAbstraction().patch(
+        da.patch(
           'session',
           session.id,
           { invalidated: true },
@@ -257,13 +258,13 @@ async function deleteUser(userId: string) {
       ...(user.customer_id == null
         ? []
         : [
-            dataAbstraction().delete('customer', user.customer_id, {
+            da.delete('customer', user.customer_id, {
               dtrx,
               cacheOnly: true,
             }),
           ]),
 
-      dataAbstraction().delete(
+      da.delete(
         'email',
         decryptUserEmail(user.encrypted_email),
         {
@@ -272,7 +273,7 @@ async function deleteUser(userId: string) {
         },
       ),
 
-      dataAbstraction().delete('user', userId, { dtrx }),
+      da.delete('user', userId, { dtrx }),
     ]);
   });
 }

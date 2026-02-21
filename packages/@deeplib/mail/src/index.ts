@@ -35,8 +35,8 @@ export async function sendMail(opts: MailOptions) {
       funcLogger.info(`Mail sent via ${serviceName}.`);
 
       return;
-    } catch (error) {
-      //
+    } catch {
+      // Intentionally ignored: one provider failed, try next
     }
   }
 

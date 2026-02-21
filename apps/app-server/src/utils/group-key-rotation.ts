@@ -65,7 +65,7 @@ export async function getGroupKeyRotationValues(
 
     groupPages,
   ] = await Promise.all([
-    dataAbstraction().hmget('group', groupId, [
+    (await dataAbstraction()).hmget('group', groupId, [
       'access-keyring',
       'encrypted-name',
       'encrypted-content-keyring',
@@ -74,7 +74,7 @@ export async function getGroupKeyRotationValues(
       'encrypted-private-keyring',
     ]),
 
-    dataAbstraction().hmget('group-member', `${groupId}:${userId}`, [
+    (await dataAbstraction()).hmget('group-member', `${groupId}:${userId}`, [
       'encrypted-access-keyring',
       'encrypted-internal-keyring',
     ]),
@@ -171,12 +171,11 @@ export async function rotateGroupKeys(
     dtrx?: DataTransaction;
   } & GroupKeyRotationValues,
 ) {
-  await dataAbstraction().patch(
+  await (await dataAbstraction()).patch(
     'group',
     input.groupId,
     {
-      access_keyring:
-        input.groupAccessKeyring != null ? input.groupAccessKeyring : null,
+      access_keyring: input.groupAccessKeyring ?? null,
 
       encrypted_name: input.groupEncryptedName,
       encrypted_content_keyring: input.groupEncryptedContentKeyring,
@@ -188,14 +187,12 @@ export async function rotateGroupKeys(
   );
 
   for (const [userId, groupMember] of Object.entries(input.groupMembers)) {
-    await dataAbstraction().patch(
+    await (await dataAbstraction()).patch(
       'group-member',
       `${input.groupId}:${userId}`,
       {
         encrypted_access_keyring:
-          groupMember.encryptedAccessKeyring != null
-            ? groupMember.encryptedAccessKeyring
-            : null,
+          groupMember.encryptedAccessKeyring ?? null,
         encrypted_internal_keyring: groupMember.encryptedInternalKeyring,
 
         encrypted_name: groupMember.encryptedName,
@@ -207,14 +204,12 @@ export async function rotateGroupKeys(
   for (const [userId, groupJoinInvitation] of Object.entries(
     input.groupJoinInvitations,
   )) {
-    await dataAbstraction().patch(
+    await (await dataAbstraction()).patch(
       'group-join-invitation',
       `${input.groupId}:${userId}`,
       {
         encrypted_access_keyring:
-          groupJoinInvitation.encryptedAccessKeyring != null
-            ? groupJoinInvitation.encryptedAccessKeyring
-            : null,
+          groupJoinInvitation.encryptedAccessKeyring ?? null,
         encrypted_internal_keyring:
           groupJoinInvitation.encryptedInternalKeyring,
 
@@ -227,7 +222,7 @@ export async function rotateGroupKeys(
   for (const [userId, groupJoinRequest] of Object.entries(
     input.groupJoinRequests,
   )) {
-    await dataAbstraction().patch(
+    await (await dataAbstraction()).patch(
       'group-join-request',
       `${input.groupId}:${userId}`,
       { encrypted_name: groupJoinRequest.encryptedName },
@@ -236,7 +231,7 @@ export async function rotateGroupKeys(
   }
 
   for (const [pageId, groupPage] of Object.entries(input.groupPages)) {
-    await dataAbstraction().patch(
+    await (await dataAbstraction()).patch(
       'page',
       pageId,
       {

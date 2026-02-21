@@ -53,7 +53,7 @@ export async function createGroup(
     dtrx?: DataTransaction;
   } & GroupCreationSchema,
 ) {
-  await dataAbstraction().insert(
+  await (await dataAbstraction()).insert(
     'group',
     input.groupId,
     {
@@ -83,7 +83,7 @@ export async function createGroup(
     { dtrx: input.dtrx },
   );
 
-  await dataAbstraction().insert(
+  await (await dataAbstraction()).insert(
     'group-member',
     `${input.groupId}:${input.userId}`,
     {
@@ -194,7 +194,7 @@ export async function assertSufficientGroupPermissions(input: {
 }) {
   if (
     !(await userHasPermission(
-      dataAbstraction(),
+      (await dataAbstraction()),
       input.userId,
       input.groupId,
       input.permission,

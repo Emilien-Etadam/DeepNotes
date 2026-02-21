@@ -1,7 +1,7 @@
 import { Vec2 } from './vec2';
 
 export function hasVertScrollbar(elem: HTMLElement) {
-  const computedStyle = window.getComputedStyle(elem);
+  const computedStyle = (globalThis as unknown as Window).getComputedStyle(elem);
 
   return (
     computedStyle.overflowY === 'scroll' ||
@@ -10,7 +10,7 @@ export function hasVertScrollbar(elem: HTMLElement) {
   );
 }
 export function hasHorizScrollbar(elem: HTMLElement) {
-  const computedStyle = window.getComputedStyle(elem);
+  const computedStyle = (globalThis as unknown as Window).getComputedStyle(elem);
 
   return (
     computedStyle.overflowX === 'scroll' ||

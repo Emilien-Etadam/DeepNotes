@@ -1,4 +1,3 @@
-import { isIncluded } from '@stdlib/misc';
 import type { AuthStore } from 'src/stores/auth';
 import type { RouteLocationNormalized, Router } from 'vue-router';
 

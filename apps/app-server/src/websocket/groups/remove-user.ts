@@ -4,7 +4,6 @@ import { isNanoID, objFromEntries } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
 import { type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
-import { db } from 'src/data/knex';
 import { getGroupMembers } from 'src/utils/groups';
 import { type NotificationsResponse, notificationsRequestSchema, notifyUsers } from 'src/utils/notifications';
 import { createWebsocketEndpoint } from 'src/utils/websocket-endpoints';

@@ -49,8 +49,8 @@ export const groupPrivateKeyrings = once(() =>
             },
           },
         );
-      } catch (_error) {
-        //
+      } catch {
+        // Intentionally ignored: decryption may fail for old keys or wrong password
       }
     },
 

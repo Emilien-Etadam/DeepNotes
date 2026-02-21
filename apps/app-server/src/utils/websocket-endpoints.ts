@@ -126,8 +126,8 @@ export function createWebsocketEndpoint<Input>(input: {
           await ctxReadyPromise;
 
           await messageHandler.handle(message);
-        } catch (error) {
-          //
+        } catch {
+          // Intentionally ignored: message handling errors are logged elsewhere or non-fatal
         }
       });
 

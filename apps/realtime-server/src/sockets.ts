@@ -80,7 +80,7 @@ export class SocketAuxObject {
 
   private async _checkSessionInvalidated() {
     if (this.sessionId != null) {
-      const sessionInvalidated = await dataAbstraction().hget(
+      const sessionInvalidated = await (await dataAbstraction()).hget(
         'session',
         this.sessionId,
         'invalidated',
@@ -107,7 +107,7 @@ export class SocketAuxObject {
       let sessionInvalidated;
 
       [this.userId, sessionInvalidated] = await Promise.all([
-        dataAbstraction().hget('session', this.sessionId, 'user-id'),
+        (await dataAbstraction()).hget('session', this.sessionId, 'user-id'),
 
         this._checkSessionInvalidated(),
       ]);
@@ -249,7 +249,7 @@ export class SocketAuxObject {
 
     if (
       !(dataHashes[prefix] as DataHash)?.fields[field]?.userGettable?.({
-        dataAbstraction: dataAbstraction(),
+        dataAbstraction: (await dataAbstraction()),
         userId: this.userId,
         suffix,
       })
@@ -300,7 +300,7 @@ export class SocketAuxObject {
 
       objPromises[key] = objectifyPromiseResults(
         fields,
-        dataAbstraction().hmget(prefix as any, suffix, fields),
+        (await dataAbstraction()).hmget(prefix as any, suffix, fields),
       );
     }
 
@@ -320,7 +320,7 @@ export class SocketAuxObject {
 
     if (
       !(await (dataHashes[prefix] as DataHash)?.fields[field]?.userSettable?.({
-        dataAbstraction: dataAbstraction(),
+        dataAbstraction: (await dataAbstraction()),
         userId: this.userId,
         suffix,
       }))
@@ -370,7 +370,7 @@ export class SocketAuxObject {
       const [prefix, suffix] = splitStr(key, ':', 2);
 
       promises.push(
-        dataAbstraction().hmset(prefix as any, suffix, obj, {
+        (await dataAbstraction()).hmset(prefix as any, suffix, obj, {
           origin: this.socket,
         }),
       );
@@ -413,7 +413,7 @@ export class SocketAuxObject {
 
           if (
             !(await fieldInfo?.userGettable?.({
-              dataAbstraction: dataAbstraction(),
+              dataAbstraction: (await dataAbstraction()),
               userId: this.userId,
               suffix,
             }))
@@ -429,7 +429,7 @@ export class SocketAuxObject {
         );
       };
 
-      await dataAbstraction().addUpdateListener(
+      await (await dataAbstraction()).addUpdateListener(
         prefix as any,
         suffix,
         field,
@@ -441,12 +441,12 @@ export class SocketAuxObject {
 
     if (
       await fieldInfo?.userGettable?.({
-        dataAbstraction: dataAbstraction(),
+        dataAbstraction: (await dataAbstraction()),
         userId: this.userId,
         suffix,
       })
     ) {
-      const value = await dataAbstraction().hget(prefix as any, suffix, field);
+      const value = await (await dataAbstraction()).hget(prefix as any, suffix, field);
 
       this._dataNotificationBuffer.push([prefix, suffix, field, value]);
     } else {
@@ -464,7 +464,7 @@ export class SocketAuxObject {
       return;
     }
 
-    await dataAbstraction().removeUpdateListener(updateListener);
+    await (await dataAbstraction()).removeUpdateListener(updateListener);
   }
 
   _flushDataNotificationBuffer = debounce(() => {
@@ -503,10 +503,12 @@ export class SocketAuxObject {
 
     getSub().off('message', this._handleUserNotification);
 
-    // Remove update listeners
-
-    for (const updateListener of this._listeners.values()) {
-      void dataAbstraction().removeUpdateListener(updateListener);
-    }
+    // Remove update listeners (fire-and-forget: get instance then remove listeners)
+    void (async () => {
+      const da = await dataAbstraction();
+      for (const updateListener of this._listeners.values()) {
+        void da.removeUpdateListener(updateListener);
+      }
+    })();
   }
 }

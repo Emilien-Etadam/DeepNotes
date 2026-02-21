@@ -26,7 +26,7 @@ export const pageKeyRotationSchema = once(() =>
 export async function addPageBacklink(input: {
   targetPageId: string;
   sourcePageId: string;
-  dataAbstraction: ReturnType<typeof dataAbstraction>;
+  dataAbstraction: Awaited<ReturnType<typeof dataAbstraction>>;
 }) {
   // Insert page link
 

@@ -37,7 +37,7 @@ export async function notifyUsers(
     encryptedContent: Uint8Array;
   }[],
 ) {
-  await dataAbstraction().transaction(async (dtrx) => {
+  await (await dataAbstraction()).transaction(async (dtrx) => {
     const trx = dtrx.trx!;
     const dateTime = new Date();
 

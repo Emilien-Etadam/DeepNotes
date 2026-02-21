@@ -45,8 +45,8 @@ export const pageKeyrings = once(() =>
               pageId,
             },
           });
-        } catch (_error) {
-          //
+        } catch {
+          // Intentionally ignored: decryption may fail for old keys
         }
       }
 

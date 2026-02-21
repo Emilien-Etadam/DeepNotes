@@ -34,8 +34,8 @@ export const groupInternalKeyrings = once(() =>
           accessKeyring = accessKeyring.unwrapAsymmetric(
             internals.keyPair.privateKey,
           );
-        } catch (_error) {
-          //
+        } catch {
+          // Intentionally ignored: unwrap may fail if key not available
         }
       }
 

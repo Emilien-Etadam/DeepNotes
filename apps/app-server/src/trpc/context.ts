@@ -13,13 +13,13 @@ import {
   assertUserSubscribed,
 } from 'src/utils/users';
 
-export function createContext({ req, res }: CreateFastifyContextOptions) {
+export async function createContext({ req, res }: CreateFastifyContextOptions) {
   return {
     req,
     res,
 
     redis: getRedis(),
-    dataAbstraction: dataAbstraction(),
+    dataAbstraction: (await dataAbstraction()),
 
     usingLocks,
 

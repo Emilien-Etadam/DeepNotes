@@ -491,8 +491,8 @@ export const PageWebsocket = once(
               }),
               this,
             );
-          } catch (_error) {
-            // this._logger.error(error);
+          } catch {
+            // Intentionally ignored: awareness update decode/apply may fail for malformed data
           }
         }
       }
@@ -543,8 +543,8 @@ export const PageWebsocket = once(
                 },
               });
               Y.applyUpdateV2(this.doc, rawUpdate, this);
-            } catch (_error) {
-              // this._logger.error(error);
+            } catch {
+              // Intentionally ignored: doc update decode/apply may fail for malformed data
             }
           }
         });
@@ -623,8 +623,8 @@ export const PageWebsocket = once(
             },
           });
           Y.applyUpdateV2(this.doc, rawUpdate, this);
-        } catch (_error) {
-          // this._logger.error(error);
+        } catch {
+          // Intentionally ignored: doc update decode/apply may fail for malformed data
         }
       }
 

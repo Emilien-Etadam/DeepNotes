@@ -130,7 +130,7 @@ export async function registerUser(
     encrypted_default_arrow: input.userEncryptedDefaultArrow,
   } as UserRow;
 
-  await dataAbstraction().insert('user', input.userId, userModel, {
+  await (await dataAbstraction()).insert('user', input.userId, userModel, {
     dtrx: input.dtrx,
   });
 
@@ -146,7 +146,7 @@ export async function registerUser(
     dtrx: input.dtrx,
   });
 
-  await dataAbstraction().insert(
+  await (await dataAbstraction()).insert(
     'page',
     input.pageId,
     {
@@ -165,7 +165,7 @@ export async function registerUser(
     { dtrx: input.dtrx },
   );
 
-  await dataAbstraction().insert(
+  await (await dataAbstraction()).insert(
     'user-page',
     `${input.userId}:${input.pageId}`,
     {
@@ -222,7 +222,7 @@ export async function assertUserSubscribed(_input: { userId: string }) {
 }
 
 export async function assertNonDemoAccount(input: { userId: string }) {
-  if (await dataAbstraction().hget('user', input.userId, 'demo')) {
+  if (await (await dataAbstraction()).hget('user', input.userId, 'demo')) {
     throw new TRPCError({
       code: 'FORBIDDEN',
       message: 'This action is unavailable for demo accounts.',

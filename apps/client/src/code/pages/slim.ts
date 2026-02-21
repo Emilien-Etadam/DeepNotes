@@ -38,10 +38,14 @@ type WrapSlimAux = {
   value: any;
 };
 
+function createDefaultWrapSlimAux<T extends object>(root: T): WrapSlimAux {
+  return { value: root };
+}
+
 export function wrapSlim<T extends object>(
   root: T,
   defaults: any,
-  aux: WrapSlimAux = { value: root },
+  aux: WrapSlimAux = createDefaultWrapSlimAux(root),
 ): T {
   const computedDict = createComputedDict<keyof T>({
     get: (key) => {

@@ -116,7 +116,6 @@
 </template>
 
 <script setup lang="ts">
-import { isIncluded } from '@stdlib/misc';
 import { multiModePath } from 'src/code/utils/misc';
 
 import AccountPopup from './AccountPopup.vue';

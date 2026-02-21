@@ -86,10 +86,7 @@ export async function movePage(input: {
       const groupValues = await generateGroupValues({
         userKeyPair: internals.keyPair,
         isPublic: input.groupCreation.groupIsPublic,
-        password:
-          input.groupCreation.groupPassword != null
-            ? input.groupCreation.groupPassword
-            : undefined,
+        password: input.groupCreation.groupPassword ?? undefined,
       });
 
       destGroupId = groupValues.groupId;

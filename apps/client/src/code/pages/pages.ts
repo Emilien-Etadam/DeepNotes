@@ -116,9 +116,6 @@ export class Pages {
         pagesStore().notifications =
           await trpcClient.users.pages.notifications.load.query();
       })(),
-    );
-
-    promises.push(
       (async () => {
         const [encryptedDefaultNote, encryptedDefaultArrow, isNewUser] =
           await internals.realtime.hmget('user', authStore().userId, [
