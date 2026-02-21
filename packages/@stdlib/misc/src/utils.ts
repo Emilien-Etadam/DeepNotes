@@ -5,8 +5,10 @@ export function negateProp<T extends Record<any, any>>(obj: T, key: keyof T) {
   obj[key] = !obj[key];
 }
 
+/** Accepts numbers and numeric strings (e.g. from Yjs store). Do not use Number.isFinite(n) alone—it rejects strings. */
 export function isNumeric(n: any): n is number {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+  const num = Number(n);
+  return !Number.isNaN(num) && Number.isFinite(num);
 }
 
 export function sleep(ms = 0): Promise<void> {

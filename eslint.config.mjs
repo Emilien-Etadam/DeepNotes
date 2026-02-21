@@ -9,8 +9,12 @@ import vue from 'eslint-plugin-vue';
 export default tseslint.config(
   {
     ignores: [
+      '**/node_modules/**',
       '**/dist/**',
-      'node_modules/**',
+      '**/.turbo/**',
+      '**/.quasar/**',
+      '**/src-capacitor/**',
+      '**/src-electron/**',
       '**/*.tsbuildinfo',
       '.eslintrc.js',
       'commitlint.config.js',
@@ -19,10 +23,7 @@ export default tseslint.config(
       '**/quasar.config.js',
       '**/quasar.config.cjs',
       '**/postcss.config.js',
-      '**/src-capacitor/**',
-      '**/src-electron/**',
       '**/src-ssr/**',
-      '**/.quasar/**',
       '**/public/argon2-bundled.min.js',
       'apps/client/src/**/*.d.ts',
     ],

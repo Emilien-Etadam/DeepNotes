@@ -7,7 +7,7 @@ Fork maintained by [Emilien-Etadam](https://github.com/Emilien-Etadam) with buil
 ## Prerequisites
 
 - **Node 20+** (recommandé : Node 22 via [nvm](https://github.com/nvm-sh/nvm) — `nvm use 22` ou `nvm alias default 22`)
-- **pnpm 9** (géré par le repo via `packageManager`)
+- **pnpm** (version gérée par le repo via `packageManager`)
 - **Docker** (pour PostgreSQL et KeyDB en dev)
 
 ## Installation
@@ -25,7 +25,6 @@ cd DeepNotes
 pnpm install
 
 # 4. Build des packages
-npx tsc --build tsconfig.packages.json
 pnpm run repo:build
 
 # 5. Environnement
@@ -41,7 +40,10 @@ cp template.env .env
 ./start.sh
 ```
 
-Démarre Postgres/KeyDB (Docker), backend puis frontend. Frontend : http://localhost:61033 — Backend : http://localhost:48922
+Démarre Postgres/KeyDB (Docker), backend puis frontend.
+
+- Frontend : http://localhost:61033  
+- Backend : http://localhost:48922
 
 **Option Docker uniquement :**
 
@@ -51,28 +53,31 @@ Démarre Postgres/KeyDB (Docker), backend puis frontend. Frontend : http://local
 
 **Option manuelle (2 terminaux) :**
 
-Terminal 1 : `pnpm run dev` (attendre "app-server started on port 48922")
-Terminal 2 : `pnpm run spa:dev` → http://localhost:61033
+- Terminal 1 : `pnpm run dev` (attendre « app-server started on port 48922 »)
+- Terminal 2 : `pnpm run spa:dev` → http://localhost:61033
 
-Default Ports
-Service	Port
-Frontend (SPA)	61033
-App Server	48922
-Realtime Server	31074
-Collab Server	33245
-PostgreSQL	5432
-KeyDB (Redis)	6379
-Troubleshooting
-KeyDB write errors: Run redis-cli -a "keydb_password_here" config set stop-writes-on-bgsave-error no.
+## Ports par défaut
 
-Port already in use: Stop native PostgreSQL/Redis if running (sudo service postgresql stop && sudo service redis-server stop) before starting Docker.
+| Service            | Port  |
+| ------------------ | ----- |
+| Frontend (SPA)     | 61033 |
+| App Server         | 48922 |
+| Realtime Server    | 31074 |
+| Collab Server      | 33245 |
+| PostgreSQL         | 5432  |
+| KeyDB (Redis)      | 6379  |
 
-Node version: Le projet requiert Node 20+. Utiliser `nvm use 22` (ou `nvm alias default 22`).
+## Troubleshooting
 
-Slow first load: Normal in dev mode. Vite pre-bundles dependencies on first request.
+- **KeyDB write errors** : `redis-cli -a "keydb_password_here" config set stop-writes-on-bgsave-error no`
+- **Port already in use** : Arrêter PostgreSQL/Redis système si besoin (`sudo service postgresql stop && sudo service redis-server stop`) avant de lancer Docker.
+- **Node version** : Le projet requiert Node 20+. Utiliser `nvm use 22` (ou `nvm alias default 22`).
+- **Slow first load** : Normal en dev. Vite pré-bundle les dépendances au premier chargement.
 
-Tech Stack
-TypeScript, Vue 3, Quasar, Vite, tRPC, Tiptap, Yjs, PostgreSQL, KeyDB, libsodium (E2EE)
+## Tech stack
 
-License
-AGPL-3.0 EOF
+TypeScript, Vue 3, Quasar, Vite, tRPC, Tiptap, Yjs, PostgreSQL, KeyDB, libsodium (E2EE). Monorepo pnpm (Turborepo, workspaces `apps/` et `packages/`).
+
+## License
+
+AGPL-3.0
