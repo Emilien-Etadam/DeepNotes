@@ -6,7 +6,7 @@ export function negateProp<T extends Record<any, any>>(obj: T, key: keyof T) {
 }
 
 export function isNumeric(n: any): n is number {
-  return !Number.isNaN(Number.parseFloat(n)) && Number.isFinite(n);
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 export function sleep(ms = 0): Promise<void> {
