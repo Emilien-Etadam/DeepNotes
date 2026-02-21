@@ -1,21 +1,21 @@
-import type { SocketStream } from '@fastify/websocket';
 import { mainLogger, Resolvable } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import type { AnyProcedure } from '@trpc/server';
-import type Fastify from 'fastify';
+import type { FastifyInstance } from 'fastify';
 import { pack, unpack } from 'msgpackr';
+import { WebSocket } from 'ws';
 import { createContext } from 'src/trpc/context';
 import { authHelper } from 'src/trpc/helpers';
 
 const moduleLogger = mainLogger.sub('Websocket endpoints');
 
-function sendErrorAndDisconnect(connection: SocketStream, error: string) {
-  if (connection.socket.readyState !== connection.socket.OPEN) {
+function sendErrorAndDisconnect(socket: WebSocket, error: string) {
+  if (socket.readyState !== WebSocket.OPEN) {
     return;
   }
 
   try {
-    connection.socket.send(
+    socket.send(
       pack({
         success: false,
 
@@ -23,14 +23,14 @@ function sendErrorAndDisconnect(connection: SocketStream, error: string) {
       }),
     );
 
-    connection.end();
+    socket.close();
   } catch (error) {
     moduleLogger.error('Error while disconnecting websocket: %o', error);
   }
 }
 
 function createWebsocketMessageHandler(input: {
-  connection: SocketStream;
+  socket: WebSocket;
   ctx: any;
   acquireLocks: (input) => any;
   procedures: [AnyProcedure, (...args: any) => any][];
@@ -42,8 +42,8 @@ function createWebsocketMessageHandler(input: {
 
   const finishPromise = new Resolvable();
 
-  finishPromise.catch((reason) =>
-    sendErrorAndDisconnect(input.connection, reason),
+  finishPromise.catch((error_) =>
+    sendErrorAndDisconnect(input.socket, error_),
   );
 
   const timeout = setTimeout(() => {
@@ -65,7 +65,7 @@ function createWebsocketMessageHandler(input: {
         moduleLogger.info('Received message %d', step);
 
         const input_ = (
-          input.procedures[step - 1][0]._def.inputs[0] as any
+          input.procedures[step - 1][0]._def.inputs[0]
         ).parse(unpack(message));
 
         if (step === 1) {
@@ -81,7 +81,7 @@ function createWebsocketMessageHandler(input: {
 
         moduleLogger.info('Sending message %d', step);
 
-        input.connection.socket.send(
+        input.socket.send(
           pack({
             success: true,
 
@@ -90,7 +90,7 @@ function createWebsocketMessageHandler(input: {
         );
 
         if (step === input.procedures.length) {
-          input.connection.end();
+          input.socket.close();
           finishPromise.resolve();
 
           moduleLogger.info('Finished websocket request');
@@ -105,7 +105,7 @@ function createWebsocketMessageHandler(input: {
 }
 
 export function createWebsocketEndpoint<Input>(input: {
-  fastify: ReturnType<typeof Fastify>;
+  fastify: FastifyInstance;
   url: string;
   lockCommunication: (input: {
     ctx: Exclude<Awaited<ReturnType<typeof authHelper>>, false>;
@@ -115,13 +115,13 @@ export function createWebsocketEndpoint<Input>(input: {
   }) => Promise<void>;
   procedures: [AnyProcedure, (...args: any) => any][];
 }) {
-  input.fastify.get(input.url, { websocket: true }, async (connection, req) => {
+  input.fastify.get(input.url, { websocket: true }, async (socket, req) => {
     const ctxReadyPromise = new Resolvable();
 
     try {
       moduleLogger.info(`Starting websocket request: ${input.url}`);
 
-      connection.socket.on('message', async (message: Buffer) => {
+      socket.on('message', async (message: Buffer) => {
         try {
           await ctxReadyPromise;
 
@@ -136,13 +136,13 @@ export function createWebsocketEndpoint<Input>(input: {
       const ctx = await authHelper({ ctx: originalCtx } as any);
 
       if (!ctx) {
-        sendErrorAndDisconnect(connection, 'Unauthorized.');
+        sendErrorAndDisconnect(socket, 'Unauthorized.');
 
         return;
       }
 
       const messageHandler = createWebsocketMessageHandler({
-        connection,
+        socket,
         ctx,
         acquireLocks: (input_) => {
           const lockAcquisitionPromise = new Resolvable();
@@ -162,12 +162,12 @@ export function createWebsocketEndpoint<Input>(input: {
                 await messageHandler.finishPromise;
               },
             })
-            .catch((reason) => {
-              moduleLogger.error(reason);
+            .catch((error_) => {
+              moduleLogger.error(error_);
 
-              lockAcquisitionPromise.reject(reason);
+              lockAcquisitionPromise.reject(error_);
 
-              sendErrorAndDisconnect(connection, reason);
+              sendErrorAndDisconnect(socket, error_);
             });
 
           return lockAcquisitionPromise;
@@ -179,7 +179,7 @@ export function createWebsocketEndpoint<Input>(input: {
     } catch (error: any) {
       moduleLogger.error(error);
 
-      sendErrorAndDisconnect(connection, String(error));
+      sendErrorAndDisconnect(socket, String(error));
 
       ctxReadyPromise.reject(error);
     }
