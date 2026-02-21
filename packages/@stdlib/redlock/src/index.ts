@@ -1,10 +1,10 @@
-import type { default as Redlock, RedlockAbortSignal } from 'redlock';
+import type { Redlock } from '@sesamecare-oss/redlock';
 
 export function usingLocks<TResult>(
   redlock: Redlock,
   resources: string[][],
-  routine: (signals: RedlockAbortSignal[]) => Promise<TResult>,
-  signals: RedlockAbortSignal[] = [],
+  routine: (signals: AbortSignal[]) => Promise<TResult>,
+  signals: AbortSignal[] = [],
 ) {
   let func = routine;
 
@@ -20,10 +20,10 @@ export function usingLocks<TResult>(
   return func(signals);
 }
 
-export function checkRedlockSignalAborted(signals: RedlockAbortSignal[] = []) {
+export function checkRedlockSignalAborted(signals: AbortSignal[] = []) {
   for (const signal of signals) {
     if (signal.aborted) {
-      throw signal.error;
+      throw signal.reason;
     }
   }
 }

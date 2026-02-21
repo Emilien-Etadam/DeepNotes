@@ -4,7 +4,6 @@ import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import type { AnyProcedure } from '@trpc/server';
 import type Fastify from 'fastify';
 import { pack, unpack } from 'msgpackr';
-import type { RedlockAbortSignal } from 'redlock';
 import { createContext } from 'src/trpc/context';
 import { authHelper } from 'src/trpc/helpers';
 
@@ -55,7 +54,7 @@ function createWebsocketMessageHandler(input: {
     clearTimeout(timeout);
   });
 
-  const redlockSignals: RedlockAbortSignal[] = [];
+  const redlockSignals: AbortSignal[] = [];
 
   return {
     finishPromise,
@@ -112,7 +111,7 @@ export function createWebsocketEndpoint<Input>(input: {
     ctx: Exclude<Awaited<ReturnType<typeof authHelper>>, false>;
     input: Input;
 
-    performCommunication(signals: RedlockAbortSignal[]): Promise<void>;
+    performCommunication(signals: AbortSignal[]): Promise<void>;
   }) => Promise<void>;
   procedures: [AnyProcedure, (...args: any) => any][];
 }) {
@@ -153,7 +152,7 @@ export function createWebsocketEndpoint<Input>(input: {
               ctx: ctx as any,
               input: input_,
 
-              async performCommunication(signals: RedlockAbortSignal[]) {
+              async performCommunication(signals: AbortSignal[]) {
                 messageHandler.redlockSignals.push(...signals);
 
                 // Locks acquired and signals added to the list

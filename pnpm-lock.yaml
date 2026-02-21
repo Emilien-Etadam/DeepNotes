@@ -125,6 +125,9 @@ importers:
       '@fastify/websocket':
         specifier: ^8.2.0
         version: 8.3.1(utf-8-validate@5.0.10)
+      '@sesamecare-oss/redlock':
+        specifier: ^1.4.0
+        version: 1.4.0(ioredis@5.9.3)
       '@stdlib/base64':
         specifier: workspace:*
         version: link:../../packages/@stdlib/base64
@@ -197,9 +200,6 @@ importers:
       pg:
         specifier: ^8.18.0
         version: 8.18.0
-      redlock:
-        specifier: 5.0.0-beta.2
-        version: 5.0.0-beta.2
       superjson:
         specifier: ^2.2.2
         version: 2.2.6
@@ -544,6 +544,9 @@ importers:
       '@deeplib/misc':
         specifier: workspace:*
         version: link:../../packages/@deeplib/misc
+      '@sesamecare-oss/redlock':
+        specifier: ^1.4.0
+        version: 1.4.0(ioredis@5.9.3)
       '@stdlib/base64':
         specifier: workspace:*
         version: link:../../packages/@stdlib/base64
@@ -589,9 +592,6 @@ importers:
       pg:
         specifier: ^8.18.0
         version: 8.18.0
-      redlock:
-        specifier: 5.0.0-beta.2
-        version: 5.0.0-beta.2
       unilogr:
         specifier: ^0.0.27
         version: 0.0.27
@@ -934,9 +934,9 @@ importers:
 
   packages/@stdlib/redlock:
     dependencies:
-      redlock:
-        specifier: 5.0.0-beta.2
-        version: 5.0.0-beta.2
+      '@sesamecare-oss/redlock':
+        specifier: ^1.4.0
+        version: 1.4.0(ioredis@5.9.3)
 
   packages/@stdlib/testing: {}
 
@@ -2388,6 +2388,12 @@ packages:
   '@sendgrid/mail@7.7.0':
     resolution: {integrity: sha512-5+nApPE9wINBvHSUxwOxkkQqM/IAAaBYoP9hw7WwgDNQPxraruVqHizeTitVtKGiqWCKm2mnjh4XGN3fvFLqaw==}
     engines: {node: 6.* || 8.* || >=10.*}
+
+  '@sesamecare-oss/redlock@1.4.0':
+    resolution: {integrity: sha512-2z589R+yxKLN4CgKxP1oN4dsg6Y548SE4bVYam/R0kHk7Q9VrQ9l66q+k1ehhSLLY4or9hcchuF9/MhuuZdjJg==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      ioredis: '>=5'
 
   '@sindresorhus/is@0.14.0':
     resolution: {integrity: sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==}
@@ -5971,9 +5977,6 @@ packages:
     resolution: {integrity: sha512-+CGM1L1CgmtheLcBuleyYOn7NWPVu0s0EJH2C4puxgEZb9h8QpR9G2dBfZJOAUhi7VQxuBPMd0hiISWcTyiYyQ==}
     engines: {node: '>=10'}
 
-  node-abort-controller@3.1.1:
-    resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
-
   node-addon-api@1.7.2:
     resolution: {integrity: sha512-ibPK3iA+vaY1eEjESkQkM0BbCqFOaZMiXRTtdB0u7b4djtY6JnsjvPdUHVMg6xQt3B8fpTTWHI9A+ADjM9frzg==}
 
@@ -6830,10 +6833,6 @@ packages:
   redis-parser@3.0.0:
     resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
     engines: {node: '>=4'}
-
-  redlock@5.0.0-beta.2:
-    resolution: {integrity: sha512-2RDWXg5jgRptDrB1w9O/JgSZC0j7y4SlaXnor93H/UJm/QyDiFgBKNtrh0TI6oCXqYSaSoXxFh6Sd3VtYfhRXw==}
-    engines: {node: '>=12'}
 
   regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
@@ -9841,6 +9840,10 @@ snapshots:
       '@sendgrid/helpers': 7.7.0
     transitivePeerDependencies:
       - debug
+
+  '@sesamecare-oss/redlock@1.4.0(ioredis@5.9.3)':
+    dependencies:
+      ioredis: 5.9.3
 
   '@sindresorhus/is@0.14.0': {}
 
@@ -14015,8 +14018,6 @@ snapshots:
     dependencies:
       semver: 7.7.4
 
-  node-abort-controller@3.1.1: {}
-
   node-addon-api@1.7.2:
     optional: true
 
@@ -14881,10 +14882,6 @@ snapshots:
   redis-parser@3.0.0:
     dependencies:
       redis-errors: 1.2.0
-
-  redlock@5.0.0-beta.2:
-    dependencies:
-      node-abort-controller: 3.1.1
 
   regenerator-runtime@0.13.11: {}
 

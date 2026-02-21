@@ -1,6 +1,6 @@
 import { usingLocks as _usingLocks } from '@stdlib/redlock';
 import { once } from 'lodash';
-import Redlock, { type RedlockAbortSignal } from 'redlock';
+import { Redlock } from '@sesamecare-oss/redlock';
 
 import { getRedis } from './redis';
 
@@ -31,8 +31,8 @@ export const getRedlock = once(
 
 export function usingLocks<TResult>(
   resources: string[][],
-  routine: (signals: RedlockAbortSignal[]) => Promise<TResult>,
-  signals: RedlockAbortSignal[] = [],
+  routine: (signals: AbortSignal[]) => Promise<TResult>,
+  signals: AbortSignal[] = [],
 ) {
   return _usingLocks(getRedlock(), resources, routine, signals);
 }
