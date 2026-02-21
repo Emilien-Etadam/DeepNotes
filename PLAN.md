@@ -47,10 +47,11 @@ Quand tu testes via `http://localhost:80`, c’est le **conteneur client** (ngin
 **Reste à faire :**
 
 - **Phase 5 (ESLint)** : **DONE**. Lint passe (0 erreur). Optionnel : traiter les 27 warnings (catch sans usage → `} catch {` ou garder tel quel).
-- **Phase 6.6 (Docker)** : **À faire manuellement**. Prérequis : `cp template.env .env` (et adapter si besoin). Puis `docker compose build` (ou `docker-compose build`) puis `docker compose up -d`. Vérifier que les services répondent (postgres, keydb, app-server, client sur le port 80).
+- **Phase 6.6 (Docker)** : **DONE**. Stack vérifiée : `docker compose build` puis `docker compose up -d`. Si erreur `KeyError: 'ContainerConfig'`, faire `docker-compose rm -sf app-server realtime-server collab-server scheduler client` puis `docker-compose up -d`. Client SPA sur http://localhost (port 80).
 - **Phase 7.2** : **N/A** — `@stdlib/nestjs` n’existe pas dans le repo.
 - **Phase 7.3** : **DONE** — `pnpm install` / `pnpm run build` OK ; lint OK (0 erreur). `build:spa` à valider sous Node 20+.
 - **Bug toolbar** : **RÉSOLU** — Cause : `q-btn` (Quasar) interceptait le mousedown ; fix : bouton natif avec `@mousedown.prevent` dans `ToolbarBtn.vue`. Détails : `docs/TOOLBAR-FORMATTING-BUG.md`.
+- **Client SPA (optionnel)** : Pour vraiment réduire la taille des chunks, ajouter `build.rollupOptions.output.manualChunks` dans `quasar.config.cjs` (ex. séparer Quasar, Vue, TipTap).
 
 **Documentation** : `STACK.md` résume la stack à jour et les points techniques. `README.md` mis à jour (Node 20+, pnpm 9, `./start.sh`).
 
@@ -265,7 +266,7 @@ Step 6.4: Create .dockerignore — **DONE**
 Exclude node_modules, **/dist, .git, *.tsbuildinfo, data dirs.
 Step 6.5: Update start.sh — **DONE** (--docker, nvm use 22)
 Add --docker flag for Docker mode while keeping existing dev mode.
-Step 6.6: Verify — **À faire manuellement** : `cp template.env .env` puis `docker compose build` et `docker compose up -d` (Docker doit être installé et le daemon accessible).
+Step 6.6: Verify — **DONE**. `cp template.env .env` puis `docker compose build` et `docker compose up -d`. Si `KeyError: 'ContainerConfig'` : `docker-compose rm -sf app-server realtime-server collab-server scheduler client` puis relancer `up -d`. Client sur http://localhost:80.
 Commit: feat: complete Docker setup with all services
 
 Phase 7 — Cleanup — **DONE**

@@ -121,6 +121,7 @@ module.exports = configure(function (ctx) {
       // publicPath: '/',
       // analyze: true,
       env,
+      chunkSizeWarningLimit: 800,
       // rawDefine: {}
       // ignorePublicFolder: true,
       minify: true,
@@ -160,6 +161,20 @@ module.exports = configure(function (ctx) {
             'src/stubs/capacitor-clipboard.ts',
           );
         }
+        // Réduire les warnings : boot logger (dynamically + statically imported), chunks > 500kb gérés par chunkSizeWarningLimit
+        viteConf.build = viteConf.build || {};
+        viteConf.build.rollupOptions = viteConf.build.rollupOptions || {};
+        const onwarn = viteConf.build.rollupOptions.onwarn;
+        viteConf.build.rollupOptions.onwarn = (warning, warn) => {
+          const msg = typeof warning.message === 'string' ? warning.message : '';
+          if (
+            msg.includes('dynamically imported') && msg.includes('statically imported')
+          ) {
+            return;
+          }
+          if (onwarn) onwarn(warning, warn);
+          else warn(warning);
+        };
       },
       // viteVuePluginOptions: {},
 

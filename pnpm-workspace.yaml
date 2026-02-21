@@ -1,3 +1,11 @@
 packages:
   - 'apps/**'
   - 'packages/**'
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - msgpackr-extract
+  - pngquant-bin
+  - sharp
+  - utf-8-validate
