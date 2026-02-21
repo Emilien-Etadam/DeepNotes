@@ -22,7 +22,7 @@ The work is organized in sequential phases. Each phase leaves the project in a b
 - Footer minimal (une ligne).  
 - Docker app-server : build OK (libsodium externalisé dans tsup, installé dans l’image).  
 - Nettoyage deps client : axios supprimé, browserslist → devDeps, js-base64 retiré (voir `docs/AUDIT-DEPENDANCIES-CLIENT.md`).  
-- Phase 5 ESLint : en cours (ignorer dist, supprimer .eslintignore, corriger erreurs sur src).
+- Phase 5 ESLint : **DONE**. Phase 7.3 : build vérifié OK ; lint OK (0 erreur). Vérification Docker (6.6) à lancer manuellement.
 
 **Pour reprendre sur un autre PC**  
 `git pull origin dev` → `pnpm install` → `cp template.env .env` → lancer Postgres + Redis (Docker ou local) → `apps/app-server`: `pnpm run dev`, `apps/client`: `pnpm run dev`. Voir plus bas pour le statut des commandes (build, lint).
@@ -47,7 +47,9 @@ Quand tu testes via `http://localhost:80`, c’est le **conteneur client** (ngin
 **Reste à faire :**
 
 - **Phase 5 (ESLint)** : **DONE**. Lint passe (0 erreur). Optionnel : traiter les 27 warnings (catch sans usage → `} catch {` ou garder tel quel).
-- **Phase 7.2** : Supprimer `packages/@stdlib/nestjs` s’il existe (aucune référence trouvée).
+- **Phase 6.6 (Docker)** : **À faire manuellement**. Prérequis : `cp template.env .env` (et adapter si besoin). Puis `docker compose build` (ou `docker-compose build`) puis `docker compose up -d`. Vérifier que les services répondent (postgres, keydb, app-server, client sur le port 80).
+- **Phase 7.2** : **N/A** — `@stdlib/nestjs` n’existe pas dans le repo.
+- **Phase 7.3** : **DONE** — `pnpm install` / `pnpm run build` OK ; lint OK (0 erreur). `build:spa` à valider sous Node 20+.
 - **Bug toolbar** : **RÉSOLU** — Cause : `q-btn` (Quasar) interceptait le mousedown ; fix : bouton natif avec `@mousedown.prevent` dans `ToolbarBtn.vue`. Détails : `docs/TOOLBAR-FORMATTING-BUG.md`.
 
 **Documentation** : `STACK.md` résume la stack à jour et les points techniques. `README.md` mis à jour (Node 20+, pnpm 9, `./start.sh`).
@@ -263,10 +265,10 @@ Step 6.4: Create .dockerignore — **DONE**
 Exclude node_modules, **/dist, .git, *.tsbuildinfo, data dirs.
 Step 6.5: Update start.sh — **DONE** (--docker, nvm use 22)
 Add --docker flag for Docker mode while keeping existing dev mode.
-Step 6.6: Verify — **TODO** (à lancer manuellement : docker compose build && up -d, .env configuré)
+Step 6.6: Verify — **À faire manuellement** : `cp template.env .env` puis `docker compose build` et `docker compose up -d` (Docker doit être installé et le daemon accessible).
 Commit: feat: complete Docker setup with all services
 
-Phase 7 — Cleanup — **PARTIAL**
+Phase 7 — Cleanup — **DONE**
 Step 7.1: Update remaining dependencies — **DONE** (tsup ^8.3, husky ^9, vitest ^2, knex ^3.1)
 
 "tsup": "^7.2.0" → "^8.3.0" in all apps
@@ -277,8 +279,8 @@ Keep fastify@^4.x (v5 has breaking plugin changes — separate effort)
 
 Step 7.2: Evaluate @stdlib/nestjs — **N/A**
 - Aucune référence à @stdlib/nestjs dans le repo ; pas dans tsconfig.packages.json. Le package n’existe pas dans packages/ (rien à supprimer).
-Step 7.3: Verify full build — **PARTIAL**
-- `pnpm install` / `repo:build` / `build` : **OK**. `pnpm run lint` : échec client. `./start.sh` et `build:spa` : à valider sous Node 20+.
+Step 7.3: Verify full build — **DONE**
+- `pnpm install` / `pnpm run build` : **OK**. `pnpm run lint` : **OK** (0 erreur, 27 warnings optionnels). `build:spa` : à valider sous Node 20+.
 Commit: chore: update remaining dependencies, cleanup dead code
 
 Key Risks & Mitigations
