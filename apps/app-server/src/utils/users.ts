@@ -1,22 +1,22 @@
 import { encryptUserEmail, hashUserEmail } from '@deeplib/data';
-import { UserModel } from '@deeplib/db';
-import { getPasswordHashValues } from '@stdlib/crypto';
+import type { UserRow } from '@deeplib/db';
+import { db } from 'src/data/knex';
 import {
   createPrivateKeyring,
   createSymmetricKeyring,
   encodePasswordHash,
+  getPasswordHashValues,
 } from '@stdlib/crypto';
 import type { DataTransaction } from '@stdlib/data';
-import { isNanoID } from '@stdlib/misc';
-import { addHours } from '@stdlib/misc';
+import { addHours, isNanoID } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import sodium from 'libsodium-wrappers-sumo';
 import { once } from 'lodash';
 import { nanoid } from 'nanoid';
 import { dataAbstraction } from 'src/data/data-abstraction';
-import type { PasswordValues } from 'src/utils/crypto';
-import { decryptUserRehashedLoginHash } from 'src/utils/crypto';
 import {
+  type PasswordValues,
+  decryptUserRehashedLoginHash,
   derivePasswordValues,
   encryptUserRehashedLoginHash,
 } from 'src/utils/crypto';
@@ -67,9 +67,11 @@ export async function registerUser(
 ) {
   const emailVerificationCode = input.skipEmailVerification ? null : nanoid();
 
-  await UserModel.query(input.dtrx?.trx)
-    .where('email_hash', Buffer.from(hashUserEmail(input.email)))
-    .delete();
+  const executor = (input.dtrx?.trx ?? db) as any;
+  await executor
+    .deleteFrom('users')
+    .where('email_hash', '=', Buffer.from(hashUserEmail(input.email)))
+    .execute();
 
   const userModel = {
     id: input.userId,
@@ -126,7 +128,7 @@ export async function registerUser(
     encrypted_name: input.userEncryptedName,
     encrypted_default_note: input.userEncryptedDefaultNote,
     encrypted_default_arrow: input.userEncryptedDefaultArrow,
-  } as UserModel;
+  } as UserRow;
 
   await dataAbstraction().insert('user', input.userId, userModel, {
     dtrx: input.dtrx,
@@ -180,9 +182,11 @@ export async function assertCorrectUserPassword(input: {
   userId: string;
   loginHash: Uint8Array;
 }) {
-  const user = await UserModel.query()
-    .findById(input.userId)
-    .select('encrypted_rehashed_login_hash');
+  const user = await db
+    .selectFrom('users')
+    .where('id', '=', input.userId)
+    .select('encrypted_rehashed_login_hash')
+    .executeTakeFirst();
 
   if (user?.encrypted_rehashed_login_hash == null) {
     throw new TRPCError({
@@ -213,13 +217,8 @@ export async function assertCorrectUserPassword(input: {
   }
 }
 
-export async function assertUserSubscribed(input: { userId: string }) {
-  if ((await dataAbstraction().hget('user', input.userId, 'plan')) !== 'pro') {
-    throw new TRPCError({
-      code: 'FORBIDDEN',
-      message: 'This action requires a Pro plan subscription.',
-    });
-  }
+export async function assertUserSubscribed(_input: { userId: string }) {
+  // Commercialization removed: no plan check, all users have full access.
 }
 
 export async function assertNonDemoAccount(input: { userId: string }) {
@@ -232,6 +231,10 @@ export async function assertNonDemoAccount(input: { userId: string }) {
 }
 
 export async function hasAnyUser(): Promise<boolean> {
-  const result = await UserModel.query().limit(1).first();
+  const result = await db
+    .selectFrom('users')
+    .select('id')
+    .limit(1)
+    .executeTakeFirst();
   return result != null;
 }

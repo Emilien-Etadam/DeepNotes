@@ -93,7 +93,7 @@
       >
         <AccountPopup>
           <q-item
-            v-if="isIncluded(quasarMode, ['ssr', 'spa'])"
+            v-if="true"
             clickable
             v-close-popup
             :href="multiModePath('/')"

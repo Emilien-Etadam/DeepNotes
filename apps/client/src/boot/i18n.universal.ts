@@ -8,8 +8,8 @@ export type MessageSchema = (typeof messages)['en-US'];
 
 // See https://vue-i18n.intlify.dev/guide/advanced/typescript.html#global-resource-schema-type-definition
 declare module 'vue-i18n' {
-  // define the locale messages schema
-  export type DefineLocaleMessage = MessageSchema;
+  // define the locale messages schema (same as MessageSchema, inlined to avoid redundant alias)
+  export type DefineLocaleMessage = (typeof messages)['en-US'];
 
   // define the datetime format schema
   export type DefineDateTimeFormat = Record<string, unknown>;

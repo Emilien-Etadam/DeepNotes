@@ -1,36 +1,37 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
 import { splitStr } from '@stdlib/misc';
-import { once } from 'lodash';
+import type { GroupJoinInvitationRow } from '@deeplib/db';
 
 import { encryptedName } from './encrypted-name';
 import { encryptedNameForUser } from './encrypted-name-for-user';
 import { exists } from './exists';
 import { role } from './role';
 
-const GroupJoinInvitationModel = once(
-  async () =>
-    (process.env.CLIENT
-      ? null
-      : (await import('@deeplib/db')).GroupJoinInvitationModel)!,
-);
-
 export const groupJoinInvitation = validateDataHash({
-  model: GroupJoinInvitationModel,
+  table: 'group_join_invitations',
+  idColumns: ['group_id', 'user_id'],
 
-  get: async ({ suffix, columns, trx }) =>
-    await (
-      await GroupJoinInvitationModel()
-    )
-      .query(trx)
-      .findById(splitStr(suffix, ':', 2))
-      .select(columns),
-  set: async ({ suffix, model, trx }) =>
-    await (
-      await GroupJoinInvitationModel()
-    )
-      .query(trx)
-      .findById(splitStr(suffix, ':', 2))
-      .patch(model),
+  get: async ({ suffix, columns, executor }) => {
+    const [group_id, user_id] = splitStr(suffix, ':', 2);
+    const q = (executor as any)
+      .selectFrom('group_join_invitations')
+      .where('group_id', '=', group_id)
+      .where('user_id', '=', user_id);
+    return (columns?.length
+      ? q.select(columns as any)
+      : q.selectAll()
+    ).executeTakeFirst();
+  },
+  set: async ({ suffix, model, executor }) => {
+    const [group_id, user_id] = splitStr(suffix, ':', 2);
+    return (executor as any)
+      .updateTable('group_join_invitations')
+      .set(model)
+      .where('group_id', '=', group_id)
+      .where('user_id', '=', user_id)
+      .executeTakeFirst();
+  },
 
   fields: {
     'encrypted-name-for-user': encryptedNameForUser,
@@ -38,4 +39,4 @@ export const groupJoinInvitation = validateDataHash({
     exists: exists,
     role: role,
   },
-});
+}) as DataHash<GroupJoinInvitationRow, any>;

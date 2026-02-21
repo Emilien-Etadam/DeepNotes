@@ -1,13 +1,3 @@
-import { Model } from 'objection';
+import type { DeviceRow } from '../db-types';
 
-export class DeviceModel extends Model {
-  static override tableName = 'devices';
-
-  id!: string;
-
-  user_id!: string;
-
-  hash!: Uint8Array;
-
-  trusted!: boolean;
-}
+export type DeviceModel = DeviceRow;

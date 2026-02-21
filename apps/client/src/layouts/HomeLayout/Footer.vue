@@ -30,13 +30,6 @@
         </a>
         <span class="footer-sep">·</span>
         <router-link
-          :to="{ name: 'privacy-policy' }"
-          class="footer-link"
-        >
-          Privacy
-        </router-link>
-        <span class="footer-sep">·</span>
-        <router-link
           :to="{ name: 'terms-of-service' }"
           class="footer-link"
         >

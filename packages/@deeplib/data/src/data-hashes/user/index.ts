@@ -1,5 +1,6 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
-import { once } from 'lodash';
+import type { UserRow } from '@deeplib/db';
 
 import { customerId } from './customer-id';
 import { demo } from './demo';
@@ -20,18 +21,23 @@ import { startingPageId } from './starting-page-id';
 import { subscriptionId } from './subscription-id';
 import { twoFactorAuthEnabled } from './two-factor-auth-enabled';
 
-const UserModel = once(
-  async () =>
-    (process.env.CLIENT ? null : (await import('@deeplib/db')).UserModel)!,
-);
-
 export const user = validateDataHash({
-  model: UserModel,
+  table: 'users',
+  idColumns: ['id'],
 
-  get: async ({ suffix: userId, columns, trx }) =>
-    await (await UserModel()).query(trx).findById(userId).select(columns),
-  set: async ({ suffix: userId, model, trx }) =>
-    await (await UserModel()).query(trx).findById(userId).patch(model),
+  get: async ({ suffix: userId, columns, executor }) => {
+    const q = (executor as any).selectFrom('users').where('id', '=', userId);
+    return (columns?.length
+      ? q.select(columns as any)
+      : q.selectAll()
+    ).executeTakeFirst();
+  },
+  set: async ({ suffix: userId, model, executor }) =>
+    (executor as any)
+      .updateTable('users')
+      .set(model)
+      .where('id', '=', userId)
+      .executeTakeFirst(),
 
   fields: {
     'customer-id': customerId,
@@ -53,4 +59,4 @@ export const user = validateDataHash({
     'subscription-id': subscriptionId,
     'two-factor-auth-enabled': twoFactorAuthEnabled,
   },
-});
+}) as DataHash<UserRow, any>;

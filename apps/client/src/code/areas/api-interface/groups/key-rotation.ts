@@ -128,8 +128,8 @@ export async function processGroupKeyRotationValues(
           },
         },
       );
-    } catch (_error) {
-      throw new Error('Incorrect group password.');
+    } catch (error) {
+      throw new Error('Incorrect group password.', { cause: error });
     }
   }
 

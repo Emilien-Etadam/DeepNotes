@@ -180,6 +180,16 @@ useIntervalFn(() => {
 
 const fileInput = ref<HTMLInputElement>();
 
+/** Removes script elements and event handler attributes to prevent XSS when using content from imported files. */
+function stripScriptsAndEventHandlers(node: HTMLElement) {
+  node.querySelectorAll('script').forEach((el) => el.remove());
+  for (const el of node.querySelectorAll('*')) {
+    Array.from(el.attributes)
+      .filter((a) => a.name.startsWith('on'))
+      .forEach((a) => el.removeAttribute(a.name));
+  }
+}
+
 function changeProp(value: any, func: (note: PageNote, value: any) => void) {
   page.value.collab.doc.transact(() => {
     for (const selectedNote of page.value.selection.react.notes) {
@@ -200,63 +210,69 @@ async function createChildFromFile(file: File) {
       edit: false,
     });
 
-    if (childNote != null) {
-      childNote.react.collab.head.enabled = true;
-      childNote.react.collab.body.enabled = false;
-      childNote.react.collab.container.enabled = false;
+    if (childNote == null) {
+      return;
+    }
 
-      if (file.name.endsWith('.md')) {
-        const converter = new showdown.Converter({
-          emoji: true,
-          parseImgDimensions: true,
-          strikethrough: true,
-          tables: true,
-          underline: true,
-        });
+    childNote.react.collab.head.enabled = true;
+    childNote.react.collab.body.enabled = false;
+    childNote.react.collab.container.enabled = false;
 
-        converter.addExtension(() => [
-          {
-            type: 'output',
-            regex: /\$(.+?)\$/g,
-            replace: '<inline-math>$1</inline-math>',
-          },
-          {
-            type: 'output',
-            regex: /\$\$((?:.|\n)+?)\$\$/g,
-            replace: '<math-block>$1</math-block>',
-          },
-        ]);
+    if (file.name.endsWith('.md')) {
+      const converter = new showdown.Converter({
+        emoji: true,
+        parseImgDimensions: true,
+        strikethrough: true,
+        tables: true,
+        underline: true,
+      });
 
-        const initialHTML = converter
-          .makeHtml(content)
-          .replaceAll('\n', '')
-          .replaceAll(/<br \/> +/g, '<br />');
+      converter.addExtension(() => [
+        {
+          type: 'output',
+          regex: /\$(.+?)\$/g,
+          replace: '<inline-math>$1</inline-math>',
+        },
+        {
+          type: 'output',
+          regex: /\$\$((?:.|\n)+?)\$\$/g,
+          replace: '<math-block>$1</math-block>',
+        },
+      ]);
 
-        const parser = new DOMParser();
-        const parsedDoc = parser.parseFromString(initialHTML, 'text/html');
+      const initialHTML = converter
+        .makeHtml(content)
+        .replaceAll('\n', '')
+        .replaceAll(/<br \/> +/g, '<br />');
 
-        // Fix math blocks
+      const parser = new DOMParser();
+      const parsedDoc = parser.parseFromString(initialHTML, 'text/html');
 
-        for (const mathBlock of Array.from(
-          parsedDoc.querySelectorAll('p > math-block'),
-        )) {
-          mathBlock.parentElement!.outerHTML = mathBlock.outerHTML;
-        }
-
-        // Fix blockquotes
-
-        for (const paragraph of Array.from(
-          parsedDoc.querySelectorAll('blockquote > p'),
-        )) {
-          paragraph.parentElement!.innerHTML = paragraph.outerHTML;
-        }
-
-        const finalHTML = parsedDoc.body.innerHTML;
-
-        childNote.react.editors[0]?.commands.insertContent(finalHTML);
-      } else {
-        childNote.react.editors[0]?.commands.insertContent(content);
+      // Fix math blocks (unwrap <p><math-block>...</math-block></p> without using outerHTML to avoid XSS)
+      for (const mathBlock of Array.from(
+        parsedDoc.querySelectorAll('p > math-block'),
+      )) {
+        const parent = mathBlock.parentElement!;
+        const clone = mathBlock.cloneNode(true) as HTMLElement;
+        stripScriptsAndEventHandlers(clone);
+        parent.replaceWith(clone);
       }
+
+      // Fix blockquotes (unwrap <blockquote><p>...</p></blockquote> without using innerHTML to avoid XSS from imported file content)
+      for (const paragraph of Array.from(
+        parsedDoc.querySelectorAll('blockquote > p'),
+      )) {
+        const parent = paragraph.parentElement!;
+        const clone = paragraph.cloneNode(true) as HTMLElement;
+        stripScriptsAndEventHandlers(clone);
+        parent.replaceChildren(clone);
+      }
+
+      const finalHTML = parsedDoc.body.innerHTML;
+
+      childNote.react.editors[0]?.commands.insertContent(finalHTML);
+    } else {
+      childNote.react.editors[0]?.commands.insertContent(content);
     }
   };
 
@@ -283,10 +299,10 @@ async function onFileChange() {
 }
 
 async function importChildrenFromFiles() {
-  if ((window as any).showOpenFilePicker == null) {
+  if ((globalThis as Window & { showOpenFilePicker?: unknown }).showOpenFilePicker == null) {
     fileInput.value?.click();
   } else {
-    const fileHandles = await (window as any).showOpenFilePicker({
+    const fileHandles = await (globalThis as Window & { showOpenFilePicker: (options?: object) => Promise<FileSystemFileHandle[]> }).showOpenFilePicker({
       multiple: true,
 
       types: [

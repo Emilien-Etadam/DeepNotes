@@ -93,7 +93,7 @@ async function takeScreenshot() {
 
   await nextTick();
 
-  const finalMargin = parseInt(String(margin.value));
+  const finalMargin = Number.parseInt(String(margin.value));
 
   const canvas = await html2canvas(
     document.querySelector(

@@ -1,61 +1,49 @@
-Context
-DeepNotes is an open-source infinite canvas note-taking app with E2EE and real-time collaboration. The monorepo is stuck on outdated tooling (pnpm 7, Vite 2, TS 5.3, ESLint 8, forked Quasar) due to cascading dependency locks. The goal is to modernize the entire build chain without removing any features or breaking the PostgreSQL schema.
-The work is organized in sequential phases. Each phase leaves the project in a buildable/runnable state. We commit after each functional step.
+# Plan de modernisation
+
+## Contexte
+
+DeepNotes : app de notes canvas infinie, E2EE, collaboration temps réel. Le monorepo a été modernisé (pnpm 10, Vite 6, TS 5.7, ESLint 9, Quasar officiel). Les phases ci-dessous décrivent le travail effectué ; chaque phase laisse le projet buildable. Commits après chaque étape fonctionnelle.
 
 ---
 
 ## Où on en est (sync multi-PC / nouvelle session)
 
-À mettre à jour quand on avance, pour reprendre sur un autre PC ou dans un nouveau chat.
-
 | Info | Valeur |
 |------|--------|
 | **Branche** | `dev` |
-| **Dernier commit** | `git log -1 --oneline` pour voir (ex. `9b77142 fix: login/setup UI, backend unavailable...`) |
-| **Dernière mise à jour** | 2025-02 (à mettre à jour après chaque grosse étape) |
+| **Dernier commit** | `git log -1 --oneline` |
+| **Stack** | pnpm 10.30.1, Node ≥20, Quasar 2.18, Vite 6, Vue 3.5 |
 
-**Fait récemment (résumé)**  
-- Accueil = login, pas de site de vente ; comptes créés par l’admin uniquement (setup puis invitations).  
-- Page Setup (premier admin), page AcceptInvite (lien d’invitation), onglet Invitations dans Account.  
-- Login/Setup : textes et boutons visibles (TextField, PasswordField, DeepBtn, Checkbox + styles).  
-- Message « Backend unavailable » quand PostgreSQL/Redis down ou réponse non-JSON (handleError + Login).  
-- Footer minimal (une ligne).  
-- Docker app-server : build OK (libsodium externalisé dans tsup, installé dans l’image).  
-- Nettoyage deps client : axios supprimé, browserslist → devDeps, js-base64 retiré (voir `docs/AUDIT-DEPENDANCIES-CLIENT.md`).  
-- Phase 5 ESLint : **DONE**. Phase 7.3 : build vérifié OK ; lint OK (0 erreur). Vérification Docker (6.6) à lancer manuellement.
+**Reprise sur un autre PC (dev local)**  
+`git pull origin dev` → `pnpm install` → `cp template.env .env` → Postgres + Redis (Docker ou local) → `pnpm run dev` (ou `apps/app-server`: `pnpm run dev`, `apps/client`: `pnpm run dev`).
 
-**Pour reprendre sur un autre PC**  
-`git pull origin dev` → `pnpm install` → `cp template.env .env` → lancer Postgres + Redis (Docker ou local) → `apps/app-server`: `pnpm run dev`, `apps/client`: `pnpm run dev`. Voir plus bas pour le statut des commandes (build, lint).
-
-**Docker vs code local**  
-Quand tu testes via `http://localhost:80`, c’est le **conteneur client** (nginx) qui sert le bundle SPA **déjà buildé dans l’image**. Les conteneurs **app-server**, **collab-server**, etc. exécutent aussi le code **inclus dans leurs images**. Les changements de code sur le disque ne sont pas pris en compte tant qu’on ne rebuild pas les images. Après modification du code ou des deps : `docker-compose build <service>` puis `docker-compose up -d <service>` (ou `docker-compose rm -sf <service>` si erreur ContainerConfig).
+**Reprise (tout en Docker)**  
+`cp template.env .env` → `docker compose build` → `docker compose up -d`. Client : http://localhost:80. Si erreur `KeyError: 'ContainerConfig'` : `docker-compose rm -sf app-server realtime-server collab-server scheduler client` puis `docker-compose up -d` à nouveau. Rebuild après changement de code : `docker-compose build <service>` puis `docker-compose up -d <service>`.
 
 ---
 
-## Statut actuel (dernière vérification)
+## Statut des commandes
 
 | Commande | Résultat |
 |----------|----------|
 | `pnpm install` | OK |
-| `npx tsc --build tsconfig.packages.json` | OK |
-| `pnpm run repo:build` | OK (18 tasks) |
 | `pnpm run build` | OK (18 tasks) |
-| `pnpm run lint` | **OK** (0 erreur). Client : 27 warnings (unused `error` / `_error` dans catch, args `_page` / `_pipeline`). Racine et client : `**/dist/**` ignoré, `.eslintignore` supprimés, parser TS pour `.vue`, globals Vue ajoutés. |
-| `cd apps/client && pnpm run build:spa` | **OK** sous Node 20+ (tsconfig extends `.quasar/tsconfig.json`, alias libsodium + stub unilogr, fix Vue `@vue-ignore` dans TextEditor.vue). |
-| `@stdlib/nestjs` | Non référencé dans le repo ; pas dans `tsconfig.packages.json`. À supprimer si le package existe. |
+| `pnpm run lint` | OK (0 erreur ; 27 warnings optionnels) |
+| `cd apps/client && pnpm run build:spa` | OK sous Node 20+ |
+| Docker (build + up) | OK ; client sur http://localhost:80 |
 
-**Reste à faire :**
+**Synthèse des phases**  
+Phases 1 à 7 : **DONE**. Bug toolbar (bouton natif) : **RÉSOLU** — voir `docs/TOOLBAR-FORMATTING-BUG.md`.
 
-- **Phase 5 (ESLint)** : **DONE**. Lint passe (0 erreur). Optionnel : traiter les 27 warnings (catch sans usage → `} catch {` ou garder tel quel).
-- **Phase 6.6 (Docker)** : **DONE**. Stack vérifiée : `docker compose build` puis `docker compose up -d`. Si erreur `KeyError: 'ContainerConfig'`, faire `docker-compose rm -sf app-server realtime-server collab-server scheduler client` puis `docker-compose up -d`. Client SPA sur http://localhost (port 80).
-- **Phase 7.2** : **N/A** — `@stdlib/nestjs` n’existe pas dans le repo.
-- **Phase 7.3** : **DONE** — `pnpm install` / `pnpm run build` OK ; lint OK (0 erreur). `build:spa` à valider sous Node 20+.
-- **Bug toolbar** : **RÉSOLU** — Cause : `q-btn` (Quasar) interceptait le mousedown ; fix : bouton natif avec `@mousedown.prevent` dans `ToolbarBtn.vue`. Détails : `docs/TOOLBAR-FORMATTING-BUG.md`.
-- **Client SPA (optionnel)** : Pour vraiment réduire la taille des chunks, ajouter `build.rollupOptions.output.manualChunks` dans `quasar.config.cjs` (ex. séparer Quasar, Vue, TipTap).
+**Optionnel**  
+- Traiter les 27 warnings ESLint (ex. `} catch {`).  
+- Réduire la taille des chunks SPA : `build.rollupOptions.output.manualChunks` dans `quasar.config.cjs` (Quasar, Vue, TipTap).
 
-**Documentation** : `STACK.md` résume la stack à jour et les points techniques. `README.md` mis à jour (Node 20+, pnpm 9, `./start.sh`).
+**Documentation** : `STACK.md`, `README.md` (Node 20+, pnpm 10, `./start.sh`).
 
 ---
+
+## Détail des phases (référence)
 
 Phase 1 — Upgrade pnpm 7 → 9 + Node 22 + Turborepo 2 — **DONE**
 Step 1.1: pnpm 7 → 9 — **DONE**
@@ -148,19 +136,20 @@ File: /home/user/DeepNotes/apps/client/package.json
 
 "sass": "1.77.0" → "sass-embedded": "^1.83.0" (official @quasar/app-vite 2.x uses sass-embedded)
 
-Add Sass deprecation silencing in quasar.config.js via extendViteConf:
-jsextendViteConf(viteConf) {
+Add Sass deprecation silencing in quasar.config.cjs via extendViteConf:
+```js
+extendViteConf(viteConf) {
   viteConf.css = {
     preprocessorOptions: {
       scss: { silenceDeprecations: ['legacy-js-api', 'import'] }
     }
   };
 }
+```
 Step 3.5: Handle quasar.config format — **DONE**
 - Config renommée en `quasar.config.cjs` pour éviter ESM + import lodash. `hashFNV1a` et `Object.fromEntries` inlinés (plus de `require('@stdlib/misc')`). `node: 'node20'` dans build.
 
-Step 3.6: Verify — **PARTIAL**
-- `build:spa` : OK sous Node 20+ ; sous Node 18 → `crypto.hash is not a function`. À valider avec Node 20+.
+Step 3.6: Verify — **DONE** (`build:spa` OK sous Node 20+).
 Commit: feat: migrate to official Quasar 2.17, Vite 6, Vue 3.5
 Risk mitigation: If official Quasar breaks critical features, use pnpm patch quasar to apply targeted fixes. Keep the fork available as fallback.
 
@@ -242,7 +231,7 @@ Step 6.1: Update existing Dockerfiles — **DONE**
 Files: apps/app-server/Dockerfile, apps/collab-server/Dockerfile
 
 Base: node:16 → node:22-slim (builder), node:22-alpine (runner)
-pnpm: npm install -g pnpm@^8.0.0 → corepack enable && corepack prepare pnpm@9.15.4 --activate
+pnpm: corepack enable && corepack prepare pnpm@10.30.1 --activate
 Remove pm2 (use Docker restart policies)
 
 Step 6.2: Create missing Dockerfiles — **DONE**
@@ -284,5 +273,15 @@ Step 7.3: Verify full build — **DONE**
 - `pnpm install` / `pnpm run build` : **OK**. `pnpm run lint` : **OK** (0 erreur, 27 warnings optionnels). `build:spa` : à valider sous Node 20+.
 Commit: chore: update remaining dependencies, cleanup dead code
 
-Key Risks & Mitigations
-RiskMitigationQuasar fork has critical patchesUse pnpm patch to apply fixes to official packageUint8Array generics in TS 5.7skipLibCheck: true + targeted as Uint8Array castsVite 2→6 breaks client buildCoupled with Quasar upgrade — official @quasar/app-vite 2.x bundles Vite 5/6Tiptap table beta→stable breaksPin to stable 2.11 and test table editing thoroughlyknex 2→3 breaks queriesTest all DB operations, especially migrationsESLint rule renames (v6→v8)typescript-eslint v8 has compatibility, ban-types→no-restricted-types
+---
+
+## Risques et parades (référence)
+
+| Risque | Parade |
+|--------|--------|
+| Quasar fork avait des patches critiques | pnpm patch sur le package officiel si besoin |
+| Uint8Array generics (TS 5.7) | skipLibCheck + casts ciblés |
+| Vite 2→6 / Quasar | @quasar/app-vite 2.x avec Vite 5/6 |
+| Tiptap table beta→stable | Pin 2.11, tests édition tables |
+| knex 2→3 | Tester migrations et requêtes |
+| ESLint v6→v8 | typescript-eslint v8, ban-types→no-restricted-types |

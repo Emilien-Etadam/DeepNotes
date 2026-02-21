@@ -18,7 +18,10 @@ export const addInterval = noop();
 export const writeTo = noop();
 
 export class ConsoleOutput {
-  write() {}
+  write() {
+    // Stub: no-op in browser (unilogr uses Node stream write in server builds)
+    return;
+  }
 }
 
 export class Logger {

@@ -25,7 +25,7 @@ export class PageClickSelection {
 
         const step = Math.sign(toIndex - fromIndex);
 
-        for (let i = fromIndex; i !== toIndex; i += step) {
+        for (let i = fromIndex; step > 0 ? i < toIndex : i > toIndex; i += step) {
           this.page.selection.add(
             this.page.activeRegion.react.value.react.notes[i],
           );

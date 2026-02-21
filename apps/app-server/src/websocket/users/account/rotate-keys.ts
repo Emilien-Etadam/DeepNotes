@@ -1,11 +1,5 @@
 import { decryptUserEmail } from '@deeplib/data';
 import {
-  GroupJoinInvitationModel,
-  GroupJoinRequestModel,
-  GroupMemberModel,
-  UserModel,
-} from '@deeplib/db';
-import {
   createPrivateKeyring,
   createSymmetricKeyring,
   getPasswordHashValues,
@@ -13,12 +7,8 @@ import {
 import { objFromEntries } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
-import type {
-  InferProcedureContext,
-  InferProcedureInput,
-  InferProcedureOpts,
-} from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureContext, type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 import {
   decryptUserRehashedLoginHash,
   derivePasswordValues,
@@ -108,40 +98,38 @@ export async function rotateKeysStep1({
 
   const [user, groupJoinRequests, groupJoinInvitations, groupMembers] =
     await Promise.all([
-      UserModel.query().findById(ctx.userId).select(
-        'encrypted_email',
+      db
+        .selectFrom('users')
+        .where('id', '=', ctx.userId)
+        .select([
+          'encrypted_email',
+          'encrypted_rehashed_login_hash',
+          'encrypted_symmetric_keyring',
+          'encrypted_private_keyring',
+          'public_keyring',
+          'encrypted_default_note',
+          'encrypted_default_arrow',
+          'encrypted_name',
+        ])
+        .executeTakeFirst(),
 
-        'encrypted_rehashed_login_hash',
+      db
+        .selectFrom('group_join_requests')
+        .where('user_id', '=', ctx.userId)
+        .select(['group_id', 'encrypted_name_for_user'])
+        .execute(),
 
-        'encrypted_symmetric_keyring',
-        'encrypted_private_keyring',
-        'public_keyring',
+      db
+        .selectFrom('group_join_invitations')
+        .where('user_id', '=', ctx.userId)
+        .select(['group_id', 'encrypted_access_keyring', 'encrypted_internal_keyring'])
+        .execute(),
 
-        'encrypted_default_note',
-        'encrypted_default_arrow',
-
-        'encrypted_name',
-      ),
-
-      GroupJoinRequestModel.query().where('user_id', ctx.userId).select(
-        'group_id',
-
-        'encrypted_name_for_user',
-      ),
-
-      GroupJoinInvitationModel.query().where('user_id', ctx.userId).select(
-        'group_id',
-
-        'encrypted_access_keyring',
-        'encrypted_internal_keyring',
-      ),
-
-      GroupMemberModel.query().where('user_id', ctx.userId).select(
-        'group_id',
-
-        'encrypted_access_keyring',
-        'encrypted_internal_keyring',
-      ),
+      db
+        .selectFrom('group_members')
+        .where('user_id', '=', ctx.userId)
+        .select(['group_id', 'encrypted_access_keyring', 'encrypted_internal_keyring'])
+        .execute(),
     ]);
 
   if (user == null) {
@@ -220,9 +208,11 @@ export async function rotateKeysStep2({
   input,
 }: InferProcedureOpts<typeof baseProcedureStep2>) {
   return await ctx.dataAbstraction.transaction(async (dtrx) => {
-    const user = await UserModel.query()
-      .findById(ctx.userId)
-      .select('encrypted_rehashed_login_hash');
+    const user = await dtrx.trx!
+      .selectFrom('users')
+      .where('id', '=', ctx.userId)
+      .select('encrypted_rehashed_login_hash')
+      .executeTakeFirst();
 
     if (user == null) {
       throw new TRPCError({
@@ -241,7 +231,7 @@ export async function rotateKeysStep2({
     });
 
     await Promise.all([
-      await ctx.dataAbstraction.patch(
+      ctx.dataAbstraction.patch(
         'user',
         ctx.userId,
         {

@@ -1,7 +1,6 @@
 import { Vec2 } from '@stdlib/misc';
 import { watchUntilTrue } from '@stdlib/vue';
-import type { Y } from '@syncedstore/core';
-import { getYjsValue } from '@syncedstore/core';
+import { type Y, getYjsValue } from '@syncedstore/core';
 import type { Factories } from 'src/code/factories';
 
 import type { Page } from '../page';

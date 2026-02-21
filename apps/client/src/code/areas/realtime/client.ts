@@ -1,13 +1,7 @@
 import type { dataHashes, DataPrefix } from '@deeplib/data';
-import type { DeepNotesNotification } from '@deeplib/misc';
-import {
-  RealtimeClientMessageType,
-  RealtimeCommandType,
-  RealtimeServerMessageType,
-} from '@deeplib/misc';
+import { type DeepNotesNotification, RealtimeClientMessageType, RealtimeCommandType, RealtimeServerMessageType } from '@deeplib/misc';
 import { wrapSymmetricKey } from '@stdlib/crypto';
-import { getFullKey } from '@stdlib/misc';
-import { ClientSocket, Resolvable, splitStr } from '@stdlib/misc';
+import { ClientSocket, Resolvable, getFullKey, splitStr } from '@stdlib/misc';
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import { once, throttle } from 'lodash';
@@ -313,7 +307,9 @@ export const RealtimeClient = once(
             this._handleDataNotification(decoder);
             break;
           case RealtimeServerMessageType.USER_NOTIFICATION:
-            void this._handleUserNotification(decoder);
+            this._handleUserNotification(decoder).catch((err) =>
+              this._logger.sub('_handleMessage').error(err),
+            );
             break;
           default:
             throw new Error(`Unknown message type ${messageType}`);
@@ -483,8 +479,9 @@ export const RealtimeClient = once(
       }
 
       markAsDependencies(fullKeys: string[]) {
+        const noop = (_: unknown) => {};
         for (const fullKey of fullKeys) {
-          void this.values[fullKey];
+          noop(this.values[fullKey]);
         }
       }
     },

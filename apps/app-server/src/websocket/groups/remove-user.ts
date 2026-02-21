@@ -1,15 +1,12 @@
 import { hget } from '@deeplib/data';
-import { GroupMemberModel } from '@deeplib/db';
 import { canManageRole } from '@deeplib/misc';
 import { isNanoID, objFromEntries } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
-import type { InferProcedureInput, InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 import { getGroupMembers } from 'src/utils/groups';
-import type { NotificationsResponse } from 'src/utils/notifications';
-import { notifyUsers } from 'src/utils/notifications';
-import { notificationsRequestSchema } from 'src/utils/notifications';
+import { type NotificationsResponse, notificationsRequestSchema, notifyUsers } from 'src/utils/notifications';
 import { createWebsocketEndpoint } from 'src/utils/websocket-endpoints';
 import { z } from 'zod';
 
@@ -82,13 +79,15 @@ export async function removeUserStep1({
 
     // Check if is removing all group owners
 
-    const groupOwners = (await GroupMemberModel.query()
-      .where('group_members.group_id', input.groupId)
-      .where('group_members.role', 'owner')
-      .count()
-      .first()) as unknown as { count: number };
+    const row = await dtrx.trx!
+      .selectFrom('group_members')
+      .where('group_id', '=', input.groupId)
+      .where('role', '=', 'owner')
+      .select((eb) => eb.fn.countAll().as('count'))
+      .executeTakeFirst();
+    const ownerCount = Number(row?.count ?? 0);
 
-    if (targetRole === 'owner' && groupOwners.count <= 1) {
+    if (targetRole === 'owner' && ownerCount <= 1) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'Cannot remove the all group owners.',

@@ -64,14 +64,14 @@ export const useUIStore = defineStore('ui', () => {
     toggleLeftSidebar() {
       negateProp(state, 'leftSidebarExpanded');
 
-      if (state.leftSidebarExpanded && window.innerWidth < 1065) {
+      if (state.leftSidebarExpanded && globalThis.innerWidth < 1065) {
         state.rightSidebarExpanded = false;
       }
     },
     toggleRightSidebar() {
       negateProp(state, 'rightSidebarExpanded');
 
-      if (state.rightSidebarExpanded && window.innerWidth < 1065) {
+      if (state.rightSidebarExpanded && globalThis.innerWidth < 1065) {
         state.leftSidebarExpanded = false;
       }
     },

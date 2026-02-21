@@ -30,10 +30,7 @@ import type { NoteDragging } from './notes/dragging';
 import type { NoteDropping } from './notes/dropping';
 import type { PageNotes } from './notes/notes';
 import type { NoteResizing } from './notes/resizing';
-import type { IPageRegion, IRegionReact } from './regions/region';
-import { getIslandRegions } from './regions/region';
-import { getIslandRoot } from './regions/region';
-import { IRegionCollab } from './regions/region';
+import { type IPageRegion, IRegionCollab, type IRegionReact, getIslandRegions, getIslandRoot } from './regions/region';
 import type { PageRegions } from './regions/regions';
 import type { PageActiveElem } from './selection/active-elem';
 import type { PageActiveRegion } from './selection/active-region';
@@ -214,23 +211,13 @@ export class Page implements IPageRegion {
           return true;
         }
 
-        const userPlan = this.realtimeCtx.hget(
-          'user',
-          authStore().userId,
-          'plan',
-        );
-        const pageIsFree = this.realtimeCtx.hget('page', this.id, 'free');
-
         const groupMemberRole = this.realtimeCtx.hget(
           'group-member',
           `${this.react.groupId}:${authStore().userId}`,
           'role',
         );
 
-        return (
-          !rolesMap()[groupMemberRole]?.permissions.editGroupPages ||
-          (userPlan !== 'pro' && !pageIsFree)
-        );
+        return !rolesMap()[groupMemberRole]?.permissions.editGroupPages;
       }),
 
       loading: true,

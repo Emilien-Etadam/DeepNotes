@@ -1,10 +1,8 @@
-import { PageSnapshotModel } from '@deeplib/db';
 import type { PageSnapshotInfo } from '@deeplib/misc';
 import { isNanoID } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { once, remove } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
 
 const baseProcedure = authProcedure.input(
@@ -53,9 +51,10 @@ export async function delete_({
 
             // Remove page snapshot
 
-            await PageSnapshotModel.query(dtrx.trx)
-              .findById(input.snapshotId)
-              .delete();
+            await dtrx.trx!
+              .deleteFrom('page_snapshots')
+              .where('id', '=', input.snapshotId)
+              .execute();
 
             remove(
               pageSnapshotInfos,

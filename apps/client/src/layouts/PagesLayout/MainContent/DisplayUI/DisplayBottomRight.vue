@@ -31,26 +31,11 @@
 </template>
 
 <script setup lang="ts">
-import { rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
-import { useRealtimeContext } from 'src/code/areas/realtime/context';
 
 const page = computed(() => internals.pages.react.page);
 
-const realtimeCtx = useRealtimeContext();
-
-const subscriptionExpired = computed(
-  () =>
-    page.value.react.readOnly &&
-    realtimeCtx.hget('user', authStore().userId, 'plan') !== 'pro' &&
-    rolesMap()[
-      realtimeCtx.hget(
-        'group-member',
-        `${page.value.react.groupId}:${authStore().userId}`,
-        'role',
-      )
-    ]?.permissions.editGroupPages,
-);
+const subscriptionExpired = computed(() => false);
 </script>
 
 <style scoped lang="scss">

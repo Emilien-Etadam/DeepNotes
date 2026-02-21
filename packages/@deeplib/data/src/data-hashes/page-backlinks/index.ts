@@ -1,24 +1,22 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
-import { once } from 'lodash';
+import type { PageLinkRow } from '@deeplib/db';
 
 import { list } from './list';
 
-const PageLinkModel = once(
-  async () =>
-    (process.env.CLIENT ? null : (await import('@deeplib/db')).PageLinkModel)!,
-);
-
 export const pageBacklinks = validateDataHash({
-  model: PageLinkModel,
+  table: 'page_links',
+  idColumns: ['target_page_id', 'source_page_id'],
 
-  get: async ({ suffix: pageId, trx }) =>
-    await (await PageLinkModel())
-      .query(trx)
-      .where('target_page_id', pageId)
-      .orderBy('last_activity_date', 'DESC')
-      .select('source_page_id'),
+  get: async ({ suffix: pageId, executor }) =>
+    (executor as any)
+      .selectFrom('page_links')
+      .where('target_page_id', '=', pageId)
+      .orderBy('last_activity_date', 'desc')
+      .select('source_page_id')
+      .execute(),
 
   fields: {
     list,
   },
-});
+}) as DataHash<PageLinkRow[], any>;

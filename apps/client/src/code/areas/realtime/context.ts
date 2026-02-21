@@ -1,7 +1,6 @@
 import type { dataHashes, DataPrefix } from '@deeplib/data';
 import { RealtimeCommandType } from '@deeplib/misc';
-import { getFullKey } from '@stdlib/misc';
-import { Resolvable, splitStr } from '@stdlib/misc';
+import { Resolvable, getFullKey, splitStr } from '@stdlib/misc';
 import { once } from 'lodash';
 
 export const RealtimeContext = once(
@@ -89,10 +88,6 @@ export const RealtimeContext = once(
           string
         > = Extract<keyof (typeof dataHashes)[DataPrefix_]['fields'], string>,
       >(prefix: DataPrefix_, suffix: string, field: DataField) {
-        if (process.env.SERVER) {
-          return;
-        }
-
         this._subscribe(prefix, suffix, field);
 
         return internals.realtime.values[getFullKey(prefix, suffix, field)];

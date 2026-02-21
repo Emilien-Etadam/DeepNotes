@@ -19,7 +19,7 @@ export function useElementPasting() {
 
       mainLogger.sub('useElementPasting').info('Perform');
 
-      const text = (event.clipboardData || window.clipboardData).getData(
+      const text = (event.clipboardData || globalThis.clipboardData).getData(
         'text',
       );
 

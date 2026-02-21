@@ -1,13 +1,8 @@
-import {
-  GroupJoinInvitationModel,
-  GroupJoinRequestModel,
-  GroupMemberModel,
-} from '@deeplib/db';
 import { isNanoID } from '@stdlib/misc';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 const baseProcedure = authProcedure.input(
   z.object({
@@ -31,19 +26,23 @@ export async function getUserIds({
 
   // Get group user IDs
 
-  const groupUsers = await GroupMemberModel.query()
-    .where('group_id', input.groupId)
+  const groupUsers = await db
+    .selectFrom('group_members')
+    .where('group_id', '=', input.groupId)
     .select('user_id')
     .union(
-      GroupJoinRequestModel.query()
-        .where('group_id', input.groupId)
+      db
+        .selectFrom('group_join_requests')
+        .where('group_id', '=', input.groupId)
         .select('user_id'),
     )
     .union(
-      GroupJoinInvitationModel.query()
-        .where('group_id', input.groupId)
+      db
+        .selectFrom('group_join_invitations')
+        .where('group_id', '=', input.groupId)
         .select('user_id'),
-    );
+    )
+    .execute();
 
   return groupUsers.map((groupUser) => groupUser.user_id);
 }

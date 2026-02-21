@@ -18,5 +18,10 @@ deploy-*.sh
 
 postgres_data
 keydb_data
+backups/
+coverage/
 
 /.turbo
+
+.scannerwork
+.sonarlint

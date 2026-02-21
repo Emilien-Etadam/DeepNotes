@@ -1,7 +1,6 @@
 import { usingLocks as _usingLocks } from '@stdlib/redlock';
 import { once } from 'lodash';
-import type { RedlockAbortSignal } from 'redlock';
-import Redlock from 'redlock';
+import Redlock, { type RedlockAbortSignal } from 'redlock';
 
 import { getRedis } from './redis';
 

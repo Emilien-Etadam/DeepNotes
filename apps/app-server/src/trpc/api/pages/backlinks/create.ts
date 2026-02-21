@@ -1,8 +1,7 @@
 import { hget } from '@deeplib/data';
 import { isNanoID } from '@stdlib/misc';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { addPageBacklink } from 'src/utils/pages';
 import { z } from 'zod';
 

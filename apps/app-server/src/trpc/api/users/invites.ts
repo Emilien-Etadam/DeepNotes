@@ -1,9 +1,9 @@
 import { hashUserEmail } from '@deeplib/data';
-import { UserModel } from '@deeplib/db';
 import { w3cEmailRegex } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
 import { authProcedure, publicProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 import { derivePasswordValues } from 'src/utils/crypto';
 import {
   createInvite as createInviteStorage,
@@ -59,9 +59,11 @@ export const createInviteProcedure = once(() =>
       });
     }
 
-    const existing = await UserModel.query()
-      .where('email_hash', Buffer.from(hashUserEmail(input.email)))
-      .first();
+    const existing = await db
+      .selectFrom('users')
+      .where('email_hash', '=', Buffer.from(hashUserEmail(input.email)))
+      .select('id')
+      .executeTakeFirst();
 
     if (existing != null) {
       throw new TRPCError({
@@ -117,9 +119,11 @@ export const completeRegistrationWithInviteProcedure = once(() =>
         });
       }
 
-      const existing = await UserModel.query()
-        .where('email_hash', Buffer.from(hashUserEmail(input.email)))
-        .first();
+      const existing = await db
+        .selectFrom('users')
+        .where('email_hash', '=', Buffer.from(hashUserEmail(input.email)))
+        .select('id')
+        .executeTakeFirst();
 
       if (existing != null) {
         throw new TRPCError({

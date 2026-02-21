@@ -1,6 +1,4 @@
-import type { SymmetricKeyring } from '@stdlib/crypto';
-import { createSymmetricKeyring } from '@stdlib/crypto';
-import { DataLayer } from '@stdlib/crypto';
+import { DataLayer, type SymmetricKeyring, createSymmetricKeyring } from '@stdlib/crypto';
 import { createSmartComputedDict } from '@stdlib/vue';
 import { once } from 'lodash';
 import { GROUP_CONTENT_KEYRING } from 'src/stores/pages';

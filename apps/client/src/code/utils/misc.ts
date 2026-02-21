@@ -1,14 +1,7 @@
-import type { ResizeListener } from '@stdlib/misc';
-import {
-  isNumeric,
-  observeResize,
-  splitStr,
-  unobserveResize,
-} from '@stdlib/misc';
+import { type ResizeListener, isNumeric, observeResize, splitStr, unobserveResize } from '@stdlib/misc';
 import { isString, pull } from 'lodash';
 import { nanoid } from 'nanoid';
-import type { Cookies } from 'quasar';
-import type { QDialogOptions } from 'quasar';
+import type { Cookies, QDialogOptions } from 'quasar';
 
 export async function asyncDialog<T = any>(opts: QDialogOptions): Promise<T> {
   return new Promise((resolve, reject) => {
@@ -40,14 +33,18 @@ export function handleError(error: any, logger = mainLogger) {
     return;
   }
 
-  const message = isBackendUnavailableError(error)
-    ? backendUnavailableMessage
-    : isString(error)
-      ? error
-      : (error.response?.data?.errors?.[0]?.message ??
-        error.response?.data?.message ??
-        error.message ??
-        'An error has occurred.');
+  let message: string;
+  if (isBackendUnavailableError(error)) {
+    message = backendUnavailableMessage;
+  } else if (isString(error)) {
+    message = error;
+  } else {
+    message =
+      error.response?.data?.errors?.[0]?.message ??
+      error.response?.data?.message ??
+      error.message ??
+      'An error has occurred.';
+  }
 
   $quasar().notify({
     message,
@@ -135,18 +132,14 @@ export function getNameInitials(name: string): string {
   let initials = nameParts[0].substring(0, 1).toUpperCase();
 
   if (nameParts.length > 1) {
-    initials += nameParts[nameParts.length - 1].substring(0, 1).toUpperCase();
+    initials += nameParts.at(-1)?.substring(0, 1).toUpperCase();
   }
 
   return initials;
 }
 
 export function multiModePath(path: string) {
-  if (process.env.MODE === 'ssr') {
-    return path;
-  } else {
-    return `?rand=${nanoid()}#${path}`;
-  }
+  return `?rand=${nanoid()}#${path}`;
 }
 
 export function useResizeObserver(
@@ -194,16 +187,8 @@ export function isWithinTimeout() {
   return _isWithinTimeout;
 }
 
-export function getRequestConfig(cookies: Cookies | undefined) {
-  return process.env.SERVER
-    ? {
-        headers: {
-          cookie: Object.entries(cookies?.getAll())
-            .map(([name, value]) => `${name}=${value}`)
-            .join(';'),
-        },
-      }
-    : undefined;
+export function getRequestConfig(_cookies: Cookies | undefined) {
+  return undefined;
 }
 
 export async function useAsyncData<T>(
@@ -218,13 +203,7 @@ export async function useAsyncData<T>(
     return result;
   }
 
-  const result = await fn();
-
-  if (process.env.SERVER) {
-    appStore().dict[key] = result;
-  }
-
-  return result;
+  return await fn();
 }
 
 export function debounceTick(func: () => any) {

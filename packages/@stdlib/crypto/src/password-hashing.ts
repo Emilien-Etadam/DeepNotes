@@ -24,11 +24,11 @@ export function getPasswordHashValues(encodedPasswordHash: string) {
 
   return {
     algorithm: result.groups.algorithm,
-    version: parseInt(result.groups.version),
+    version: Number.parseInt(result.groups.version),
 
-    memoryCost: parseInt(result.groups.memoryCost),
-    timeCost: parseInt(result.groups.timeCost),
-    parallelism: parseInt(result.groups.parallelism),
+    memoryCost: Number.parseInt(result.groups.memoryCost),
+    timeCost: Number.parseInt(result.groups.timeCost),
+    parallelism: Number.parseInt(result.groups.parallelism),
 
     saltBase64: result.groups.saltBase64,
     hashBase64: result.groups.hashBase64,

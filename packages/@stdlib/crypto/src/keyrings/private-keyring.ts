@@ -1,8 +1,5 @@
-import type { KeyPair, PrivateKey, PublicKey, SymmetricKey } from '..';
-import { wrapPrivateKey } from '..';
-import { DataLayer } from '..';
-import type { IKeyring, KeyMetadata } from './keyring';
-import { createKeyring } from './keyring';
+import { DataLayer, type KeyPair, type PrivateKey, type PublicKey, type SymmetricKey, wrapPrivateKey } from '..';
+import { type IKeyring, type KeyMetadata, createKeyring } from './keyring';
 
 export function createPrivateKeyring(
   value: Uint8Array,

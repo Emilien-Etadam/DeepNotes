@@ -59,8 +59,8 @@ watchPostEffect(() => (uiStore().loggedIn = authStore().loggedIn));
 // Resize listener
 
 const onWindowResize = () => {
-  uiStore().width = window.innerWidth;
-  uiStore().height = window.innerHeight;
+  uiStore().width = globalThis.innerWidth;
+  uiStore().height = globalThis.innerHeight;
 };
 
 onMounted(onWindowResize);

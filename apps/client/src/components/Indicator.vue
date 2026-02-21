@@ -21,14 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CSSPosition } from 'src/code/utils/position';
-import {
-  flipPos,
-  flipPosBasis,
-  indexToPos,
-  indexToPosBasis,
-  posToIndex,
-} from 'src/code/utils/position';
+import { type CSSPosition, flipPos, flipPosBasis, indexToPos, indexToPosBasis, posToIndex } from 'src/code/utils/position';
 
 const props = defineProps<{
   pos: CSSPosition;

@@ -1,12 +1,7 @@
 import { isNanoID } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
-import type {
-  InferProcedureContext,
-  InferProcedureInput,
-  InferProcedureOpts,
-} from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureContext, type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import {
   getGroupKeyRotationValues,
   groupKeyRotationSchema,

@@ -10,7 +10,6 @@ export default boot(async ({ store }) => {
   _moduleLogger.info('Initializing authStore().loggedIn');
 
   authStore(store).loggedIn =
-    !!(await (globalThis as any).electronBridge?.isLoggedIn()) ||
     Cookies.get('loggedIn') === 'true' ||
     internals.storage.getItem('loggedIn') === 'true';
 

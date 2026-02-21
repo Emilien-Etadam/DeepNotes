@@ -1,11 +1,9 @@
-import type { Y } from '@syncedstore/core';
-import { getYjsValue } from '@syncedstore/core';
+import { type Y, getYjsValue } from '@syncedstore/core';
 import { isString } from 'lodash';
 import type { Factories } from 'src/code/factories';
 
 import type { Page } from '../page';
-import type { IArrowCollabOutput } from './arrow';
-import type { PageArrow } from './arrow';
+import type { IArrowCollabOutput, PageArrow } from './arrow';
 
 export class PageArrows {
   readonly factories: Factories;

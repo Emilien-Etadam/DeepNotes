@@ -2,12 +2,12 @@ export function useWindowResizeListener() {
   onMounted(() => {
     onResize();
 
-    window.addEventListener('resize', onResize);
+    globalThis.addEventListener('resize', onResize);
   });
 
   function onResize() {
     if (
-      window.innerWidth < 1080 &&
+      globalThis.innerWidth < 1080 &&
       uiStore().leftSidebarExpanded &&
       uiStore().rightSidebarExpanded
     ) {
@@ -18,6 +18,6 @@ export function useWindowResizeListener() {
   }
 
   onBeforeUnmount(() => {
-    window.removeEventListener('resize', onResize);
+    globalThis.removeEventListener('resize', onResize);
   });
 }

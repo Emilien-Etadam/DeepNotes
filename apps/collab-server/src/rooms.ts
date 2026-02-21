@@ -1,6 +1,5 @@
 import { getSelfPublisherIdBytes } from '@stdlib/data';
-import { bytesToText, equalUint8Arrays, splitStr } from '@stdlib/misc';
-import { mainLogger } from '@stdlib/misc';
+import { bytesToText, equalUint8Arrays, mainLogger, splitStr } from '@stdlib/misc';
 import type { WebSocket } from 'ws';
 
 import { getSub } from './data/redis';

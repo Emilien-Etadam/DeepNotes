@@ -1,5 +1,6 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
-import { once } from 'lodash';
+import type { GroupRow } from '@deeplib/db';
 
 import { accessKeyring } from './access-keyring';
 import { areJoinRequestsAllowed } from './are-join-requests-allowed';
@@ -15,18 +16,23 @@ import { permanentDeletionDate } from './permanent-deletion-date';
 import { publicKeyring } from './public-keyring';
 import { userId } from './user-id';
 
-const GroupModel = once(
-  async () =>
-    (process.env.CLIENT ? null : (await import('@deeplib/db')).GroupModel)!,
-);
-
 export const group = validateDataHash({
-  model: GroupModel,
+  table: 'groups',
+  idColumns: ['id'],
 
-  get: async ({ suffix: groupId, columns, trx }) =>
-    await (await GroupModel()).query(trx).findById(groupId).select(columns),
-  set: async ({ suffix: groupId, model, trx }) =>
-    await (await GroupModel()).query(trx).findById(groupId).patch(model),
+  get: async ({ suffix: groupId, columns, executor }) => {
+    const q = (executor as any).selectFrom('groups').where('id', '=', groupId);
+    return (columns?.length
+      ? q.select(columns as any)
+      : q.selectAll()
+    ).executeTakeFirst();
+  },
+  set: async ({ suffix: groupId, model, executor }) =>
+    (executor as any)
+      .updateTable('groups')
+      .set(model)
+      .where('id', '=', groupId)
+      .executeTakeFirst(),
 
   fields: {
     'access-keyring': accessKeyring,
@@ -43,4 +49,4 @@ export const group = validateDataHash({
     'user-id': userId,
     'are-join-requests-allowed': areJoinRequestsAllowed,
   },
-});
+}) as DataHash<GroupRow, any>;

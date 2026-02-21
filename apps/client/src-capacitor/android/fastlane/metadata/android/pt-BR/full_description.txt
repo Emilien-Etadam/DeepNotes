@@ -1,1 +1,0 @@
-O DeepNotes é uma ferramenta de anotações visuais criptografadas de ponta a ponta, de código aberto, com navegação de página bidirecional profunda e colaboração em tempo real.

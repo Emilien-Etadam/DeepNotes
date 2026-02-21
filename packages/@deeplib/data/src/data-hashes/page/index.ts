@@ -1,5 +1,6 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
-import { once } from 'lodash';
+import type { PageRow } from '@deeplib/db';
 
 import { encryptedAbsoluteTitle } from './encrypted-absolute-title';
 import { encryptedRelativeTitle } from './encrypted-relative-title';
@@ -12,18 +13,23 @@ import { nextSnapshotDate } from './next-snapshot-date';
 import { nextSnapshotUpdateIndex } from './next-snapshot-update-index';
 import { permanentDeletionDate } from './permanent-deletion-date';
 
-const PageModel = once(
-  async () =>
-    (process.env.CLIENT ? null : (await import('@deeplib/db')).PageModel)!,
-);
-
 export const page = validateDataHash({
-  model: PageModel,
+  table: 'pages',
+  idColumns: ['id'],
 
-  get: async ({ suffix: pageId, columns, trx }) =>
-    await (await PageModel()).query(trx).findById(pageId).select(columns),
-  set: async ({ suffix: pageId, model, trx }) =>
-    await (await PageModel()).query(trx).findById(pageId).patch(model),
+  get: async ({ suffix: pageId, columns, executor }) => {
+    const q = (executor as any).selectFrom('pages').where('id', '=', pageId);
+    return (columns?.length
+      ? q.select(columns as any)
+      : q.selectAll()
+    ).executeTakeFirst();
+  },
+  set: async ({ suffix: pageId, model, executor }) =>
+    (executor as any)
+      .updateTable('pages')
+      .set(model)
+      .where('id', '=', pageId)
+      .executeTakeFirst(),
 
   fields: {
     'encrypted-absolute-title': encryptedAbsoluteTitle,
@@ -37,4 +43,4 @@ export const page = validateDataHash({
     'next-snapshot-update-index': nextSnapshotUpdateIndex,
     'permanent-deletion-date': permanentDeletionDate,
   },
-});
+}) as DataHash<PageRow, any>;

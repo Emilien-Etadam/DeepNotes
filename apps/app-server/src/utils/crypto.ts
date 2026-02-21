@@ -3,13 +3,7 @@ import {
   cryptoJsWordArrayToUint8Array,
   wrapSymmetricKey,
 } from '@stdlib/crypto';
-import {
-  bytesToText,
-  concatUint8Arrays,
-  nanoidToBytes,
-  textToBytes,
-} from '@stdlib/misc';
-import { mainLogger } from '@stdlib/misc';
+import { bytesToText, concatUint8Arrays, mainLogger, nanoidToBytes, textToBytes } from '@stdlib/misc';
 import CryptoJS from 'crypto-js';
 import sodium from 'libsodium-wrappers-sumo';
 import { pack, unpack } from 'msgpackr';

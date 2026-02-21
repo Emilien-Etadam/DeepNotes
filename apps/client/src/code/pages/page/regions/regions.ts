@@ -1,5 +1,4 @@
-import { Rect } from '@stdlib/misc';
-import { Vec2 } from '@stdlib/misc';
+import { Rect, Vec2 } from '@stdlib/misc';
 
 import type { Page } from '../page';
 import type { IRegionElemsOutput, PageRegion } from './region';
@@ -79,7 +78,7 @@ export class PageRegions {
       );
     }
 
-    if (isFinite(regionWorldRect.size.x) && isFinite(regionWorldRect.size.y)) {
+    if (Number.isFinite(regionWorldRect.size.x) && Number.isFinite(regionWorldRect.size.y)) {
       return regionWorldRect;
     }
   }

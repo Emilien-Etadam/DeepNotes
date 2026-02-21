@@ -1,20 +1,20 @@
-import type { DataPrefix } from '@deeplib/data';
-import { dataHashes } from '@deeplib/data';
+import { type DataPrefix, dataHashes } from '@deeplib/data';
 import {
   RealtimeClientMessageType,
   RealtimeCommandType,
   RealtimeServerMessageType,
 } from '@deeplib/misc';
 import type { DataHash, DataUpdateListener } from '@stdlib/data';
-import { bytesToText, getFullKey } from '@stdlib/misc';
 import {
   allAsyncProps,
+  bytesToText,
+  getFullKey,
+  mainLogger,
   objectifyPromiseResults,
   Resolvable,
   splitStr,
 } from '@stdlib/misc';
-import { mainLogger } from '@stdlib/misc';
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import { debounce } from 'lodash';
@@ -125,7 +125,7 @@ export class SocketAuxObject {
     this._setupPromise.resolve();
   }
 
-  private _handleUserNotification = async (
+  private readonly _handleUserNotification = async (
     channelBuffer: Buffer,
     messageBuffer: Buffer,
   ) => {
@@ -401,28 +401,32 @@ export class SocketAuxObject {
     // Subscribe to value
 
     if (fieldInfo?.notifyUpdates && !this._listeners.has(fullKey)) {
-      const updateListener: DataUpdateListener = async ({ value, origin }) => {
-        if (this.socket === origin) {
-          return;
-        }
+      const updateListener: DataUpdateListener = ({ value, origin }) => {
+        (async () => {
+          if (this.socket === origin) {
+            return;
+          }
 
-        if (await this._checkSessionInvalidated()) {
-          return;
-        }
+          if (await this._checkSessionInvalidated()) {
+            return;
+          }
 
-        if (
-          !(await fieldInfo?.userGettable?.({
-            dataAbstraction: dataAbstraction(),
-            userId: this.userId,
-            suffix,
-          }))
-        ) {
-          return;
-        }
+          if (
+            !(await fieldInfo?.userGettable?.({
+              dataAbstraction: dataAbstraction(),
+              userId: this.userId,
+              suffix,
+            }))
+          ) {
+            return;
+          }
 
-        this._dataNotificationBuffer.push([prefix, suffix, field, value]);
+          this._dataNotificationBuffer.push([prefix, suffix, field, value]);
 
-        this._flushDataNotificationBuffer();
+          this._flushDataNotificationBuffer();
+        })().catch((err) =>
+          mainLogger.sub('RealtimeSocket.updateListener').error(err),
+        );
       };
 
       await dataAbstraction().addUpdateListener(

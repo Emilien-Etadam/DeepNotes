@@ -75,43 +75,45 @@ export const groupMemberNames = once(() =>
         return { text: '[Encrypted name]', status: 'success' };
       }
     },
-    set: async (key, value: any) => {
-      if (key == null) {
-        _setLogger.info(`${key}: No valid key`);
+    set: (key, value: any) => {
+      (async () => {
+        if (key == null) {
+          _setLogger.info(`${key}: No valid key`);
 
-        return;
-      }
+          return;
+        }
 
-      const groupId = splitStr(key, ':', 2)[0];
+        const groupId = splitStr(key, ':', 2)[0];
 
-      const publicKeyring = createKeyring(
-        await internals.realtime.globalCtx.hgetAsync(
-          'group',
-          groupId,
-          'public-keyring',
-        ),
-      );
+        const publicKeyring = createKeyring(
+          await internals.realtime.globalCtx.hgetAsync(
+            'group',
+            groupId,
+            'public-keyring',
+          ),
+        );
 
-      if (publicKeyring == null) {
-        _setLogger.info(`${key}: No valid public key found`);
+        if (publicKeyring == null) {
+          _setLogger.info(`${key}: No valid public key found`);
 
-        return;
-      }
+          return;
+        }
 
-      const encryptedName = internals.keyPair.encrypt(
-        textToBytes(value),
-        publicKeyring,
-        { padding: true },
-      );
+        const encryptedName = internals.keyPair.encrypt(
+          textToBytes(value),
+          publicKeyring,
+          { padding: true },
+        );
 
-      internals.realtime.hset(
-        'group-member',
-        key,
-        'encrypted-name',
-        encryptedName,
-      );
+        internals.realtime.hset(
+          'group-member',
+          key,
+          'encrypted-name',
+          encryptedName,
+        );
 
-      _setLogger.info(`${key}: ${value}`);
+        _setLogger.info(`${key}: ${value}`);
+      })().catch((err) => _setLogger.error(err));
     },
 
     initialValue: { text: '[Unknown user]', status: 'unknown' },

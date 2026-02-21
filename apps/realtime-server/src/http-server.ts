@@ -1,28 +1,18 @@
 import type { AccessTokenPayload } from '@deeplib/misc';
 import { mainLogger } from '@stdlib/misc';
 import cookie from 'cookie';
-import type { IncomingMessage } from 'http';
-import { createServer } from 'http';
+import { type IncomingMessage, createServer } from 'node:http';
 import jwt from 'jsonwebtoken';
 import { once } from 'lodash';
-import type { Socket } from 'net';
-import { collectDefaultMetrics, Registry } from 'prom-client';
+import type { Socket } from 'node:net';
 import { wsServer } from 'src/ws-server';
 
 const moduleLogger = mainLogger.sub('http-server.ts');
 
-const prometheusRegistry = new Registry();
-collectDefaultMetrics({ register: prometheusRegistry });
-
 export const httpServer = once(() =>
-  createServer((req, res) => {
-    if (req.url === '/metrics') {
-      res.writeHead(200, { 'Content-Type': prometheusRegistry.contentType });
-      res.end(prometheusRegistry.metrics());
-    } else {
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Okay');
-    }
+  createServer((_req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Okay');
   }),
 );
 

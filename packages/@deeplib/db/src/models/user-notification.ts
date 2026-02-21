@@ -1,12 +1,3 @@
-import { Model } from 'objection';
+import type { UserNotificationRow } from '../db-types';
 
-export class UserNotificationModel extends Model {
-  static override tableName = 'users_notifications';
-
-  static override idColumn = ['user_id', 'notification_id'];
-
-  user_id!: string;
-  notification_id!: number;
-
-  encrypted_symmetric_key!: Uint8Array;
-}
+export type UserNotificationModel = UserNotificationRow;

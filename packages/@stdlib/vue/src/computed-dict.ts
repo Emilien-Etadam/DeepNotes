@@ -1,5 +1,4 @@
-import type { ComputedRef, WritableComputedRef } from 'vue';
-import { computed } from 'vue';
+import { type ComputedRef, type WritableComputedRef, computed } from 'vue';
 
 export function createComputedDict<K = string, V = any>(params: {
   get: (key: K) => V;

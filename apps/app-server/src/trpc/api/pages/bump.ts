@@ -1,14 +1,13 @@
 import type { dataHashes } from '@deeplib/data';
-import { GroupMemberModel, PageModel } from '@deeplib/db';
 import type { DataAbstraction } from '@stdlib/data';
 import { isNanoID, mainLogger } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { bumpRecentItem } from 'src/utils';
 import { addPageBacklink } from 'src/utils/pages';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 const baseProcedure = authProcedure.input(
   z.object({
@@ -193,9 +192,11 @@ async function _updatePageBacklink(input: {
 
 async function _updatePageLastActivityDate(input: { pageId: string }) {
   try {
-    await PageModel.query().findById(input.pageId).patch({
-      last_activity_date: new Date(),
-    });
+    await db
+      .updateTable('pages')
+      .set({ last_activity_date: new Date() })
+      .where('id', '=', input.pageId)
+      .execute();
   } catch (error) {
     // Ignore error: Page doesn't need to exist for bump to succeed
   }
@@ -206,11 +207,12 @@ async function _updateGroupLastActivityDate(input: {
 }) {
   if (input.groupId != null) {
     try {
-      await GroupMemberModel.query()
-        .findById([input.groupId, input.userId])
-        .patch({
-          last_activity_date: new Date(),
-        });
+      await db
+        .updateTable('group_members')
+        .set({ last_activity_date: new Date() })
+        .where('group_id', '=', input.groupId)
+        .where('user_id', '=', input.userId)
+        .execute();
     } catch (error) {
       // Ignore error: Page doesn't need to exist for bump to succeed
     }

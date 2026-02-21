@@ -1,5 +1,4 @@
 import { getAllPageUpdates, hget } from '@deeplib/data';
-import { PageSnapshotModel, PageUpdateModel } from '@deeplib/db';
 import { patchMultiple } from '@stdlib/db';
 import {
   allAsyncProps,
@@ -9,13 +8,9 @@ import {
 } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
+import { db } from 'src/data/knex';
 import { getRedis } from 'src/data/redis';
-import type {
-  InferProcedureContext,
-  InferProcedureInput,
-  InferProcedureOpts,
-} from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureContext, type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { bumpRecentItem } from 'src/utils';
 import { createGroup, groupCreationSchema } from 'src/utils/groups';
 import { pageKeyRotationSchema } from 'src/utils/pages';
@@ -169,16 +164,18 @@ export async function moveStep1({
         ))(),
 
       pageEncryptedUpdates: (async () =>
-        (await getAllPageUpdates(input.pageId, getRedis())).map(
+        (await getAllPageUpdates(input.pageId, getRedis(), db)).map(
           (pageUpdate) => pageUpdate[1],
         ))(),
       pageEncryptedSnapshots: (async () =>
         objFromEntries(
           (
-            await PageSnapshotModel.query()
-              .where('page_id', input.pageId)
-              .select('id', 'encrypted_symmetric_key', 'encrypted_data')
+            await db
+              .selectFrom('page_snapshots')
+              .where('page_id', '=', input.pageId)
+              .select(['id', 'encrypted_symmetric_key', 'encrypted_data'])
               .orderBy('id')
+              .execute()
           ).map(({ id, encrypted_symmetric_key, encrypted_data }) => [
             id,
             {
@@ -259,6 +256,7 @@ export async function moveStep2({
       );
 
       await patchMultiple(
+        dtrx.trx!,
         'page_snapshots',
 
         ['id', 'encrypted_symmetric_key', 'encrypted_data'],
@@ -274,17 +272,20 @@ export async function moveStep2({
         'page_snapshots.id = values.id',
         `encrypted_symmetric_key = values.encrypted_symmetric_key,
          encrypted_data = values.encrypted_data`,
-        { trx: dtrx.trx },
       );
 
-      await PageUpdateModel.query(dtrx.trx)
-        .where('page_id', (ctx as Context).pageId)
-        .delete();
-      await PageUpdateModel.query(dtrx.trx).insert({
-        page_id: (ctx as Context).pageId,
-        index: 0,
-        encrypted_data: input.pageEncryptedUpdate,
-      });
+      await dtrx.trx!
+        .deleteFrom('page_updates')
+        .where('page_id', '=', (ctx as Context).pageId)
+        .execute();
+      await dtrx.trx!
+        .insertInto('page_updates')
+        .values({
+          page_id: (ctx as Context).pageId,
+          index: 0,
+          encrypted_data: input.pageEncryptedUpdate,
+        } as any)
+        .execute();
 
       await bumpRecentItem({
         userId: ctx.userId,

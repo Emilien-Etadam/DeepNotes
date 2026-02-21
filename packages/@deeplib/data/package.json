@@ -24,8 +24,7 @@
   "main": "dist/index.js",
   "module": "src/index.ts",
   "peerDependencies": {
-    "ioredis": ">=5.0.0",
-    "objection": "3.0.1"
+    "ioredis": ">=5.0.0"
   },
   "scripts": {
     "build": "tsc --build ./tsconfig.json && tsc-alias -p tsconfig.json",

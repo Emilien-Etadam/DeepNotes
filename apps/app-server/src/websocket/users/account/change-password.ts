@@ -1,4 +1,3 @@
-import { UserModel } from '@deeplib/db';
 import {
   createPrivateKeyring,
   createSymmetricKeyring,
@@ -7,8 +6,8 @@ import {
 } from '@stdlib/crypto';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
-import type { InferProcedureInput, InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 import {
   decryptUserRehashedLoginHash,
   derivePasswordValues,
@@ -72,12 +71,15 @@ export async function changePasswordStep1({
 
   // Get user data
 
-  const user = await UserModel.query().findById(ctx.userId).select(
-    'encrypted_rehashed_login_hash',
-
-    'encrypted_symmetric_keyring',
-    'encrypted_private_keyring',
-  );
+  const user = await db
+    .selectFrom('users')
+    .where('id', '=', ctx.userId)
+    .select([
+      'encrypted_rehashed_login_hash',
+      'encrypted_symmetric_keyring',
+      'encrypted_private_keyring',
+    ])
+    .executeTakeFirst();
 
   if (user == null) {
     throw new TRPCError({

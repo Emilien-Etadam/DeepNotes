@@ -210,18 +210,6 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/privacy-policy',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    children: [
-      {
-        path: '',
-        name: 'privacy-policy',
-        component: () =>
-          import('src/pages/home/PrivacyPolicy/PrivacyPolicy.vue'),
-      },
-    ],
-  },
-  {
     path: '/terms-of-service',
     component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
     children: [
@@ -261,12 +249,6 @@ const routes: RouteRecordRaw[] = [
             name: 'account/general',
             component: () =>
               import('src/pages/home/Account/General/General.vue'),
-          },
-          {
-            path: 'billing',
-            name: 'account/billing',
-            component: () =>
-              import('src/pages/home/Account/Billing/Billing.vue'),
           },
           {
             path: 'security',

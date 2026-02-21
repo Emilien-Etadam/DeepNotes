@@ -3,7 +3,6 @@ import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
 import { dataAbstraction } from 'src/data/data-abstraction';
 import { getRedis } from 'src/data/redis';
 import { usingLocks } from 'src/data/redlock';
-import { stripe } from 'src/stripe';
 import {
   assertCorrectGroupPassword,
   assertSufficientGroupPermissions,
@@ -30,8 +29,6 @@ export function createContext({ req, res }: CreateFastifyContextOptions) {
     assertCorrectUserPassword,
     assertUserSubscribed,
     assertNonDemoAccount,
-
-    stripe,
   };
 }
 

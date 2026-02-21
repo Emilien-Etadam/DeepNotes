@@ -1,14 +1,11 @@
 import type { GroupMemberModel } from '@deeplib/db';
-import { GroupJoinInvitationModel } from '@deeplib/db';
 import { isNanoID, objFromEntries } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
-import type { InferProcedureInput, InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 import { getGroupMembers } from 'src/utils/groups';
-import type { NotificationsResponse } from 'src/utils/notifications';
-import { notifyUsers } from 'src/utils/notifications';
-import { notificationsRequestSchema } from 'src/utils/notifications';
+import { type NotificationsResponse, notificationsRequestSchema, notifyUsers } from 'src/utils/notifications';
 import { createWebsocketEndpoint } from 'src/utils/websocket-endpoints';
 import { z } from 'zod';
 
@@ -73,9 +70,12 @@ export async function acceptStep1({
 
     // Accept join invitation
 
-    const groupJoinInvitation = await GroupJoinInvitationModel.query().findById(
-      [input.groupId, ctx.userId],
-    );
+    const groupJoinInvitation = await dtrx.trx!
+      .selectFrom('group_join_invitations')
+      .where('group_id', '=', input.groupId)
+      .where('user_id', '=', ctx.userId)
+      .selectAll()
+      .executeTakeFirst();
 
     if (groupJoinInvitation == null) {
       throw new TRPCError({

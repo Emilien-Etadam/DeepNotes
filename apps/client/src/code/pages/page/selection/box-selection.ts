@@ -1,6 +1,4 @@
-import { listenPointerEvents } from '@stdlib/misc';
-import { Rect } from '@stdlib/misc';
-import { Vec2 } from '@stdlib/misc';
+import { Rect, Vec2, listenPointerEvents } from '@stdlib/misc';
 import type { ComputedRef, UnwrapNestedRefs } from 'vue';
 
 import type { Page } from '../page';
@@ -75,7 +73,7 @@ export class PageBoxSelection {
     }
   }
 
-  private _dragCancel = (event: PointerEvent, external: boolean) => {
+  private readonly _dragCancel = (event: PointerEvent, external: boolean) => {
     this.react.active = false;
 
     if (!external) {
@@ -83,15 +81,15 @@ export class PageBoxSelection {
     }
   };
 
-  private _dragStart = () => {
+  private readonly _dragStart = () => {
     this.react.active = true;
   };
 
-  private _dragUpdate = (event: PointerEvent) => {
+  private readonly _dragUpdate = (event: PointerEvent) => {
     this.react.clientEndPos = this.page.pos.eventToClient(event);
   };
 
-  private _dragEnd = (event: PointerEvent) => {
+  private readonly _dragEnd = (event: PointerEvent) => {
     this.react.active = false;
 
     const boxClientRect = new Rect(

@@ -1,11 +1,11 @@
-import type { AccessTokenPayload, RefreshTokenPayload } from '@deeplib/misc';
 import {
+  type AccessTokenPayload,
+  type RefreshTokenPayload,
   ACCESS_TOKEN_DURATION,
   REFRESH_TOKEN_LONG_DURATION,
   REFRESH_TOKEN_SHORT_DURATION,
 } from '@deeplib/misc';
-import { createDecoder } from 'fast-jwt';
-import { createSigner, createVerifier } from 'fast-jwt';
+import { createDecoder, createSigner, createVerifier } from 'fast-jwt';
 
 const signAccessJWT = createSigner({
   key: process.env.ACCESS_SECRET!,

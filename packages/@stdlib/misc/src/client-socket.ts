@@ -99,7 +99,7 @@ export const ClientSocket = once(
 
           callback?.();
         } else {
-          void this.connectPromise?.then(() => {
+          this.connectPromise?.then(() => {
             this.socket?.send(message);
 
             callback?.();

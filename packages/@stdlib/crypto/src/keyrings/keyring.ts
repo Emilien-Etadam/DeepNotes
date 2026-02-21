@@ -1,8 +1,7 @@
 import { addDays } from '@stdlib/misc';
 
 import type { KeyPair, PrivateKey, PublicKey, SymmetricKey } from '..';
-import type { Wrappable } from '../wrapped-data';
-import { DataLayer, WrappedData } from '../wrapped-data';
+import { DataLayer, type Wrappable, WrappedData } from '../wrapped-data';
 
 export interface KeyMetadata {
   rotationDate: Date;

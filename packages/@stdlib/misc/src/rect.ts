@@ -1,5 +1,4 @@
-import type { IVec2 } from './vec2';
-import { Vec2 } from './vec2';
+import { type IVec2, Vec2 } from './vec2';
 
 export interface IRect {
   topLeft: IVec2;

@@ -1,9 +1,7 @@
-import type { UserModel } from '@deeplib/db';
-import { GroupJoinInvitationModel, GroupJoinRequestModel } from '@deeplib/db';
-import { GroupMemberModel, PageModel } from '@deeplib/db';
 import type { DataTransaction } from '@stdlib/data';
 import { objFromEntries } from '@stdlib/misc';
 import { dataAbstraction } from 'src/data/data-abstraction';
+import { db } from 'src/data/knex';
 import { z } from 'zod';
 
 export const groupKeyRotationSchema = z.object({
@@ -81,35 +79,38 @@ export async function getGroupKeyRotationValues(
       'encrypted-internal-keyring',
     ]),
 
-    GroupMemberModel.query()
-      .where('group_id', groupId)
-      .join('users', 'users.id', 'group_members.user_id')
-      .select(
-        'users.public_keyring',
+    db
+      .selectFrom('group_members')
+      .innerJoin('users', 'users.id', 'group_members.user_id')
+      .where('group_id', '=', groupId)
+      .select([
+        'users.public_keyring as public_keyring',
+        'group_members.user_id as user_id',
+        'group_members.encrypted_name as encrypted_name',
+      ])
+      .execute(),
+    db
+      .selectFrom('group_join_invitations')
+      .innerJoin('users', 'users.id', 'group_join_invitations.user_id')
+      .where('group_id', '=', groupId)
+      .select([
+        'users.public_keyring as public_keyring',
+        'group_join_invitations.user_id as user_id',
+        'group_join_invitations.encrypted_name as encrypted_name',
+      ])
+      .execute(),
+    db
+      .selectFrom('group_join_requests')
+      .where('group_id', '=', groupId)
+      .select(['user_id', 'encrypted_name'])
+      .execute(),
 
-        'group_members.user_id',
-        'group_members.encrypted_name',
-      ) as unknown as (GroupMemberModel & UserModel)[],
-    GroupJoinInvitationModel.query()
-      .where('group_id', groupId)
-      .join('users', 'users.id', 'group_join_invitations.user_id')
-      .select(
-        'users.public_keyring',
-
-        'group_join_invitations.user_id',
-        'group_join_invitations.encrypted_name',
-      ) as unknown as (GroupJoinInvitationModel & UserModel)[],
-    GroupJoinRequestModel.query()
-      .where('group_id', groupId)
-      .select(
-        'group_join_requests.user_id',
-        'group_join_requests.encrypted_name',
-      ) as unknown as (GroupJoinRequestModel & UserModel)[],
-
-    PageModel.query()
-      .where('group_id', groupId)
-      .select('id', 'encrypted_symmetric_keyring')
-      .orderBy('id'),
+    db
+      .selectFrom('pages')
+      .where('group_id', '=', groupId)
+      .select(['id', 'encrypted_symmetric_keyring'])
+      .orderBy('id')
+      .execute(),
   ]);
 
   return {

@@ -196,7 +196,7 @@ export function useKeyboardShortcuts() {
       if (
         modsMatch(event, ['Control']) &&
         event.code === 'KeyV' &&
-        window.clipboardData
+        globalThis.clipboardData
       ) {
         await page.clipboard.paste();
         return true;

@@ -77,8 +77,7 @@
 
 <script setup lang="ts">
 import { w3cEmailRegex } from '@stdlib/misc';
-import { multiModePath } from 'src/code/utils/misc';
-import { handleError } from 'src/code/utils/misc';
+import { handleError, multiModePath } from 'src/code/utils/misc';
 
 useMeta(() => ({
   title: 'Invitations - Account - DeepNotes',
@@ -118,8 +117,8 @@ async function createInvite() {
     });
     const path = `/accept-invite/${token}`;
     lastInviteLink.value =
-      typeof window !== 'undefined'
-        ? `${window.location.origin}${window.location.pathname}${multiModePath(path)}`
+      globalThis.window !== undefined
+        ? `${globalThis.location.origin}${globalThis.location.pathname}${multiModePath(path)}`
         : path;
     $quasar().notify({
       message: 'Invitation created. Share the link with the user.',

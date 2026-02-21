@@ -1,5 +1,4 @@
-import type { IVec2 } from '@stdlib/misc';
-import { hasScrollbar, Vec2 } from '@stdlib/misc';
+import { type IVec2, Vec2, hasScrollbar } from '@stdlib/misc';
 
 function domRectScreenToWorld(domRect: DOMRect): DOMRect {
   return new DOMRect(
@@ -33,18 +32,22 @@ export function scrollIntoView(
       const ancestorClientRight = ancestorRect.x + ancestor.clientWidth;
       const ancestorClientBottom = ancestorRect.y + ancestor.clientHeight;
 
-      let offsetX =
-        targetRect.x < ancestorRect.x
-          ? targetRect.x - ancestorRect.x
-          : targetRect.right > ancestorClientRight
-            ? targetRect.right - ancestorClientRight
-            : 0;
-      let offsetY =
-        targetRect.y < ancestorRect.y
-          ? targetRect.y - ancestorRect.y
-          : targetRect.bottom > ancestorClientBottom
-            ? targetRect.bottom - ancestorClientBottom
-            : 0;
+      let offsetX: number;
+      if (targetRect.x < ancestorRect.x) {
+        offsetX = targetRect.x - ancestorRect.x;
+      } else if (targetRect.right > ancestorClientRight) {
+        offsetX = targetRect.right - ancestorClientRight;
+      } else {
+        offsetX = 0;
+      }
+      let offsetY: number;
+      if (targetRect.y < ancestorRect.y) {
+        offsetY = targetRect.y - ancestorRect.y;
+      } else if (targetRect.bottom > ancestorClientBottom) {
+        offsetY = targetRect.bottom - ancestorClientBottom;
+      } else {
+        offsetY = 0;
+      }
 
       // Clamp offset
 

@@ -30,13 +30,14 @@ const arrow = inject<PageArrow>('arrow')!;
 
 const bodyElem = ref<SVGPathElement>();
 
+function noop(..._args: unknown[]) {}
+
 watchEffect(async () => {
   if (!arrow.react.valid) {
     return;
   }
 
-  void arrow.react.sourceHeadPos;
-  void arrow.react.targetHeadPos;
+  noop(arrow.react.sourceHeadPos, arrow.react.targetHeadPos);
 
   await nextTick();
 

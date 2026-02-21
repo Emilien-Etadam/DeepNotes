@@ -1,13 +1,11 @@
 import { encryptUserEmail, hashUserEmail } from '@deeplib/data';
-import { UserModel } from '@deeplib/db';
 import { sendMail } from '@deeplib/mail';
 import { padZeroes } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
-import { randomInt } from 'crypto';
+import { randomInt } from 'node:crypto';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
 
 const baseProcedure = authProcedure.input(
@@ -44,11 +42,13 @@ export async function request({
 
         // Check email in use
 
+        const executor = dtrx.trx!;
         if (
-          (await UserModel.query()
-            .where('email_hash', Buffer.from(hashUserEmail(input.newEmail)))
-            .select(1)
-            .first()) != null
+          (await executor
+            .selectFrom('users')
+            .where('email_hash', '=', Buffer.from(hashUserEmail(input.newEmail)))
+            .select('id')
+            .executeTakeFirst()) != null
         ) {
           throw new TRPCError({
             code: 'BAD_REQUEST',

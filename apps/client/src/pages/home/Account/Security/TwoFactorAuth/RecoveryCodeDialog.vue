@@ -163,20 +163,17 @@ const maximized = computed(() => uiStore().width < BREAKPOINT_SM_MIN);
 const recoveryCodes = ref(props.recoveryCodes);
 
 function printRecoveryCodes() {
-  // Create a new window with the recovery codes
-  const newWindow = window.open('', 'Print');
+  const newWindow = globalThis.open('', 'Print');
 
   if (newWindow == null) {
     return;
   }
 
-  // Write the recovery codes to the new window
-  newWindow.document.write(`<pre>${recoveryCodes.value.join('\n')}</pre>`);
+  const pre = newWindow.document.createElement('pre');
+  pre.textContent = recoveryCodes.value.join('\n');
+  newWindow.document.body.appendChild(pre);
 
-  // Call the print function on the new window
   newWindow.print();
-
-  // Close the new window
   newWindow.close();
 }
 </script>

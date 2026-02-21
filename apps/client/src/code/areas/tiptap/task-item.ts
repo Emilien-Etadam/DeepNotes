@@ -28,7 +28,7 @@ export const TaskItemExtension = Node.create<TaskItemOptions>({
       checked: {
         default: false,
         keepOnSplit: false,
-        parseHTML: (element) => element.getAttribute('data-checked') === 'true',
+        parseHTML: (element) => element.dataset.checked === 'true',
         renderHTML: (attributes) => ({
           'data-checked': attributes.checked,
         }),
@@ -144,7 +144,7 @@ export const TaskItemExtension = Node.create<TaskItemOptions>({
         find: /^\s*(\[([( |x])?\])\s$/,
         type: this.type,
         getAttributes: (match) => ({
-          checked: match[match.length - 1] === 'x',
+          checked: match.at(-1) === 'x',
         }),
       }),
     ];

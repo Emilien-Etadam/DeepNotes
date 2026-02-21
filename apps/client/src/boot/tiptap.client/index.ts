@@ -1,6 +1,5 @@
 import type { Y } from '@syncedstore/core';
-import { getSchema } from '@tiptap/core';
-import type { Editor as EditorType } from '@tiptap/core';
+import { type Editor as EditorType, getSchema } from '@tiptap/core';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import * as tiptapModule from '@tiptap/vue-3';

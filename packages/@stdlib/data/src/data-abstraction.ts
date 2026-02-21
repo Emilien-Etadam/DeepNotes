@@ -1,18 +1,17 @@
-import simpleLRUCache from '@deepnotes/simple-lru-cache';
-import { objFromEntries } from '@stdlib/misc';
-import { allSettledResults } from '@stdlib/misc';
+import simpleLRUCache from 'simple-lru-cache';
 import {
+  allSettledResults,
   bytesToText,
   coalesce,
   equalUint8Arrays,
+  mainLogger,
+  objFromEntries,
   splitStr,
 } from '@stdlib/misc';
-import { mainLogger } from '@stdlib/misc';
 import type { Cluster, Redis, Result } from 'ioredis';
 import { some } from 'lodash';
 import { pack, unpack } from 'msgpackr';
-import type { TransactionOrKnex } from 'objection';
-import { Model } from 'objection';
+import type { Kysely, Transaction } from 'kysely';
 import type { Logger } from 'unilogr';
 
 import type { DataField } from './data-field';
@@ -44,7 +43,7 @@ interface FieldInfo {
 }
 
 export interface HMGetParams {
-  trx?: TransactionOrKnex;
+  trx?: Transaction<any>;
   dtrx?: DataTransaction;
 }
 interface HMGetInternalParams extends HMGetParams {
@@ -63,7 +62,7 @@ interface HMGetInternalParams extends HMGetParams {
 export interface HMSetParams {
   cacheOnly?: boolean;
 
-  trx?: TransactionOrKnex;
+  trx?: Transaction<any>;
   dtrx?: DataTransaction;
 
   origin?: any;
@@ -97,9 +96,9 @@ export type DataUpdateListener = (params: DataUpdateParams) => void;
 export class DataTransaction {
   readonly operations: (() => PromiseLike<any>)[] = [];
 
-  trx?: TransactionOrKnex;
+  trx?: Transaction<any>;
 
-  constructor(trx?: TransactionOrKnex) {
+  constructor(trx?: Transaction<any>) {
     this.trx = trx;
   }
 
@@ -141,6 +140,7 @@ export class DataAbstraction<
   });
 
   constructor(
+    readonly db: Kysely<any>,
     readonly dataHashes: DataHashes_,
     readonly redis: Redis | Cluster,
     readonly sub: Redis | Cluster,
@@ -170,7 +170,7 @@ export class DataAbstraction<
 
     this.sub.on(
       'messageBuffer',
-      async (channelBuffer: Buffer, messageBuffer: Buffer) => {
+      (channelBuffer: Buffer, messageBuffer: Buffer) => {
         if (
           equalUint8Arrays(
             messageBuffer.subarray(0, getSelfPublisherIdBytes().length),
@@ -222,7 +222,7 @@ export class DataAbstraction<
       },
     );
 
-    void this.sub.subscribe('local-cache-update', 'local-cache-clear');
+    this.sub.subscribe('local-cache-update', 'local-cache-clear');
   }
 
   // Get
@@ -300,7 +300,7 @@ export class DataAbstraction<
 
     this.addToTransaction(dtrx, () => {
       for (const field of fieldInfos) {
-        void this.redis.expiremember(key, field.name, DEFAULT_REMOTE_TTL);
+        this.redis.expiremember(key, field.name, DEFAULT_REMOTE_TTL);
       }
     });
 
@@ -448,13 +448,13 @@ export class DataAbstraction<
 
     let model: any;
 
+    const executor = trx ?? this.db;
+
     try {
       model = await dataHash?.get({
         suffix,
-
         columns: Array.from(columns),
-
-        trx,
+        executor,
       });
     } catch (error) {
       classLogger.sub('hmget').error(error);
@@ -488,24 +488,28 @@ export class DataAbstraction<
 
   async insert<
     DataPrefix_ extends DataPrefix,
-    Model extends DataHashes_[DataPrefix_]['model'],
+    DataHash_ extends DataHashes_[DataPrefix_],
   >(
     prefix: DataPrefix_,
     suffix: string,
-    model: Partial<InstanceType<Awaited<ReturnType<Model>>>>,
+    model: Record<string, any>,
     params?: {
       cacheOnly?: boolean;
 
-      trx?: TransactionOrKnex;
+      trx?: Transaction<any>;
       dtrx?: DataTransaction;
     },
   ) {
     let result;
 
     if (!params?.cacheOnly) {
-      result = await (await this.dataHashes[prefix].model())
-        .query(params?.dtrx?.trx ?? params?.trx)
-        .insert(model);
+      const dataHash = this.dataHashes[prefix] as DataHash_;
+      const executor = params?.dtrx?.trx ?? params?.trx ?? this.db;
+      result = await executor
+        .insertInto(dataHash.table as any)
+        .values(model)
+        .returningAll()
+        .executeTakeFirst();
     }
 
     const values = objFromEntries(
@@ -542,24 +546,26 @@ export class DataAbstraction<
 
   async patch<
     DataPrefix_ extends DataPrefix,
-    Model extends DataHashes_[DataPrefix_]['model'],
+    DataHash_ extends DataHashes_[DataPrefix_],
   >(
     prefix: DataPrefix_,
     suffix: string,
-    model: Partial<InstanceType<Awaited<ReturnType<Model>>>>,
+    model: Record<string, any>,
     params?: {
       cacheOnly?: boolean;
 
-      trx?: TransactionOrKnex;
+      trx?: Transaction<any>;
       dtrx?: DataTransaction;
     },
   ) {
+    const dataHash = this.dataHashes[prefix] as DataHash_;
+
     // Collect the extra columns of all fields affected
 
     const extraColumns = new Set<string>();
 
     await Promise.allSettled(
-      Object.entries(this.dataHashes[prefix].fields).map(
+      Object.entries(dataHash.fields).map(
         async ([_fieldName, fieldInfos]) => {
           let modelHasSomeFieldColumns = false;
 
@@ -581,25 +587,38 @@ export class DataAbstraction<
       ),
     );
 
+    const executor = params?.dtrx?.trx ?? params?.trx ?? this.db;
+    const idParts = splitStr(suffix, ':', dataHash.idColumns.length);
+
     if (!params?.cacheOnly) {
-      let patchQuery: any = (await this.dataHashes[prefix].model())
-        .query(params?.dtrx?.trx ?? params?.trx)
-        .findById(splitStr(suffix, ':'))
-        .patch(model);
-
-      if (extraColumns.size > 0) {
-        patchQuery = patchQuery.returning(Array.from(extraColumns));
+      let query: any = executor
+        .updateTable(dataHash.table as any)
+        .set(model);
+      for (let i = 0; i < dataHash.idColumns.length; i++) {
+        query = query.where(
+          dataHash.idColumns[i] as any,
+          '=',
+          idParts[i],
+        );
       }
-
-      model = { ...model, ...(await patchQuery) };
+      if (extraColumns.size > 0) {
+        query = query.returning(Array.from(extraColumns) as any);
+      }
+      const updated = await query.executeTakeFirst();
+      model = { ...model, ...updated };
     } else if (extraColumns.size > 0) {
-      model = {
-        ...model,
-        ...(await this.dataHashes[prefix].model())
-          .query(params?.dtrx?.trx ?? params?.trx)
-          .findById(splitStr(suffix, ':'))
-          .select(Array.from(extraColumns)),
-      };
+      let selectQuery: any = executor
+        .selectFrom(dataHash.table as any)
+        .select(Array.from(extraColumns) as any);
+      for (let i = 0; i < dataHash.idColumns.length; i++) {
+        selectQuery = selectQuery.where(
+          dataHash.idColumns[i] as any,
+          '=',
+          idParts[i],
+        );
+      }
+      const row = await selectQuery.executeTakeFirst();
+      model = { ...model, ...row };
     }
 
     // Collect the new values of all fields affected
@@ -643,20 +662,25 @@ export class DataAbstraction<
     params?: {
       cacheOnly?: boolean;
 
-      trx?: TransactionOrKnex;
+      trx?: Transaction<any>;
       dtrx?: DataTransaction;
     },
   ) {
     try {
-      // Delete on database
+      const dataHash = this.dataHashes[prefix];
 
-      const model = await this.dataHashes[prefix].model();
-
-      if (!params?.cacheOnly && model != null) {
-        await model
-          .query(params?.dtrx?.trx ?? params?.trx)
-          .findById(splitStr(suffix, ':'))
-          .delete();
+      if (!params?.cacheOnly && dataHash != null) {
+        const executor = params?.dtrx?.trx ?? params?.trx ?? this.db;
+        const idParts = splitStr(suffix, ':', dataHash.idColumns.length);
+        let query: any = executor.deleteFrom(dataHash.table as any);
+        for (let i = 0; i < dataHash.idColumns.length; i++) {
+          query = query.where(
+            dataHash.idColumns[i] as any,
+            '=',
+            idParts[i],
+          );
+        }
+        await query.execute();
       }
 
       const values = objFromEntries(
@@ -750,7 +774,7 @@ export class DataAbstraction<
       Promise.allSettled(
         fields.map((field) => {
           if (!field.infos?.notifyUpdates) {
-            return;
+            return Promise.resolve();
           }
 
           this._handleDataUpdate({
@@ -859,7 +883,8 @@ export class DataAbstraction<
 
     // Save model on database
 
-    await dataHash?.set?.({ suffix, model: params.model, trx });
+    const executor = trx ?? this.db;
+    await dataHash?.set?.({ suffix, model: params.model, executor });
   }
 
   // Transactions
@@ -890,7 +915,7 @@ export class DataAbstraction<
         classLogger.sub('transaction').error(error);
       }
     } else {
-      await Model.transaction(async (trx) => {
+      await this.db.transaction().execute(async (trx) => {
         dtrx.trx = trx;
 
         result = await code(dtrx);

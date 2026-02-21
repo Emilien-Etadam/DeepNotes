@@ -1,5 +1,4 @@
-import type { IVec2 } from '@stdlib/misc';
-import { listenPointerEvents } from '@stdlib/misc';
+import { type IVec2, listenPointerEvents } from '@stdlib/misc';
 import { cloneDeep } from 'lodash';
 import { nanoid } from 'nanoid';
 import type { Factories } from 'src/code/factories';
@@ -13,9 +12,7 @@ import { makeSlim } from '../../slim';
 import { roundTimeToMinutes } from '../notes/date';
 import type { PageNote } from '../notes/note';
 import type { Page } from '../page';
-import type { IArrowCollabInput, PageArrow } from './arrow';
-import { IArrowCollabDefault } from './arrow';
-import { IArrowCollab } from './arrow';
+import { IArrowCollab, IArrowCollabDefault, type IArrowCollabInput, type PageArrow } from './arrow';
 
 export class PageArrowCreation {
   readonly page: Page;

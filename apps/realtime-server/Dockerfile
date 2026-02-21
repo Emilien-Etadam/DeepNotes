@@ -11,8 +11,8 @@ FROM node:22-alpine AS runner
 
 WORKDIR /app
 COPY --from=builder /build/apps/realtime-server/dist/ ./
-RUN corepack enable && corepack prepare pnpm@10.30.1 --activate
-RUN pnpm init
-RUN pnpm install knex pg ws libsodium-wrappers-sumo
+RUN corepack enable && corepack prepare pnpm@10.30.1 --activate && \
+    pnpm init && \
+    pnpm add pg kysely ws libsodium-wrappers-sumo
 
 CMD ["node", "index.js"]

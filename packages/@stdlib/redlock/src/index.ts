@@ -1,5 +1,4 @@
-import type { RedlockAbortSignal } from 'redlock';
-import type Redlock from 'redlock';
+import type { default as Redlock, RedlockAbortSignal } from 'redlock';
 
 export function usingLocks<TResult>(
   redlock: Redlock,

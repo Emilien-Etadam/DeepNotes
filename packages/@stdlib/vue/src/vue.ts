@@ -1,6 +1,5 @@
 import { Resolvable } from '@stdlib/misc';
-import type { UnwrapRef, WatchStopHandle } from 'vue';
-import { markRaw, ref, shallowRef, watchEffect } from 'vue';
+import { type UnwrapRef, type WatchStopHandle, markRaw, ref, shallowRef, watchEffect } from 'vue';
 
 export function refProp<T>(obj: object, key: string, value: T): UnwrapRef<T> {
   const aux = ref(value);

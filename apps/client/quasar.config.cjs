@@ -84,7 +84,6 @@ module.exports = configure(function (ctx) {
       { path: 'prosemirror.client', server: false },
       { path: 'syncedstore.client', server: false },
       { path: 'tiptap.client', server: false },
-      { path: 'stripe.client', server: false },
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -150,17 +149,15 @@ module.exports = configure(function (ctx) {
           'prosemirror-state',
           'prosemirror-view',
         ];
-        // Capacitor-only packages: stub for non-capacitor builds (SPA, SSR, Docker)
-        if (!ctx.mode.capacitor) {
-          viteConf.resolve.alias['@revenuecat/purchases-capacitor'] = path.resolve(
-            __dirname,
-            'src/stubs/revenuecat.ts',
-          );
-          viteConf.resolve.alias['@capacitor/clipboard'] = path.resolve(
-            __dirname,
-            'src/stubs/capacitor-clipboard.ts',
-          );
-        }
+        // Stubs for packages that only exist in Capacitor/native (SPA runs in browser only)
+        viteConf.resolve.alias['@revenuecat/purchases-capacitor'] = path.resolve(
+          __dirname,
+          'src/stubs/revenuecat.ts',
+        );
+        viteConf.resolve.alias['@capacitor/clipboard'] = path.resolve(
+          __dirname,
+          'src/stubs/capacitor-clipboard.ts',
+        );
         // Réduire les warnings : boot logger (dynamically + statically imported), chunks > 500kb gérés par chunkSizeWarningLimit
         viteConf.build = viteConf.build || {};
         viteConf.build.rollupOptions = viteConf.build.rollupOptions || {};
@@ -286,39 +283,6 @@ module.exports = configure(function (ctx) {
     // https://v2.quasar.dev/options/animations
     animations: [],
 
-    // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
-    // sourceFiles: {
-    //   rootComponent: 'src/App.vue',
-    //   router: 'src/router/index',
-    //   store: 'src/store/index',
-    //   registerServiceWorker: 'src-pwa/register-service-worker',
-    //   serviceWorker: 'src-pwa/custom-service-worker',
-    //   pwaManifestFile: 'src-pwa/manifest.json',
-    //   electronMain: 'src-electron/electron-main',
-    //   electronPreload: 'src-electron/electron-preload'
-    // },
-
-    // https://v2.quasar.dev/quasar-cli-vite/developing-ssr/configuring-ssr
-    ssr: {
-      // ssrPwaHtmlFilename: 'offline.html', // do NOT use index.html as name!
-      // will mess up SSR
-
-      // extendSSRWebserverConf (esbuildConf) {},
-      // extendPackageJson (json) {},
-
-      pwa: false,
-
-      // manualStoreHydration: true,
-      // manualPostHydrationTrigger: true,
-
-      prodPort: process.env.CLIENT_PORT, // The default port that the production server should use
-      // (gets superseded if process.env.PORT is specified at runtime)
-
-      middlewares: [
-        'render', // keep this as last one
-      ],
-    },
-
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
     pwa: {
       workboxMode: 'generateSW', // or 'injectManifest'
@@ -333,117 +297,5 @@ module.exports = configure(function (ctx) {
       // extendPWACustomSWConf (esbuildConf) {}
     },
 
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-cordova-apps/configuring-cordova
-    cordova: {
-      // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
-    },
-
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
-    capacitor: {
-      hideSplashscreen: true,
-    },
-
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
-    electron: {
-      // extendElectronMainConf (esbuildConf)
-      // extendElectronPreloadConf (esbuildConf)
-
-      inspectPort: 5858,
-
-      bundler: 'builder', // 'packager' or 'builder'
-
-      packager: {
-        // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
-        // Windows only
-        // win32metadata: { ... }
-
-        prune: false,
-      },
-
-      builder: {
-        // https://www.electron.build/configuration/configuration
-
-        appId: 'app.deepnotes',
-
-        publish: {
-          provider: 'github',
-
-          owner: 'DeepNotesApp',
-          repo: 'DeepNotes',
-
-          // vPrefixedTagName: true, // Whether to use `v`-prefixed tag name.
-
-          // protocol: 'https', // The protocol. GitHub Publisher supports only `https`.
-          // host: 'github.com', // The host (including the port if need).
-
-          // private: false, // Whether to use private github auto-update provider if `GH_TOKEN` environment variable is defined.
-          // token: null, // The access token to support auto-update from private github repositories.
-
-          // releaseType: 'draft', // The type of release. By default `draft` release will be created.
-        },
-
-        mac: {
-          target: 'dmg',
-
-          hardenedRuntime: true,
-          gatekeeperAssess: false,
-          entitlements: 'src-capacitor/ios/App/App/entitlements.mac.plist',
-          entitlementsInherit:
-            'src-capacitor/ios/App/App/entitlements.mac.plist',
-
-          notarize: {
-            appBundleId: 'app.deepnotes',
-            teamId: 'NK86B84G2A',
-          },
-        },
-        dmg: {
-          sign: false,
-        },
-
-        linux: {
-          target: 'AppImage',
-        },
-
-        ...(env.NSIS === 'true'
-          ? {
-              win: {
-                target: 'nsis',
-
-                certificateSubjectName: 'Open Source Developer, Gustavo Toyota',
-                certificateSha1: 'CB1E09666FC60FB06D09E9FEAD2D41F1B0626B30',
-              },
-            }
-          : {
-              win: {
-                target: 'appx',
-
-                // Don't need to sign the AppX package
-              },
-            }),
-
-        appx: {
-          applicationId: 'app.deepnotes',
-
-          displayName: 'DeepNotes',
-          identityName: '62882DeepNotes.DeepNotes-VisualNote-taking',
-
-          publisher: 'CN=07D378F2-6F19-4C16-B6BE-146DA7696C3F',
-          publisherDisplayName: 'DeepNotes',
-        },
-      },
-    },
-
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
-    bex: {
-      contentScripts: ['my-content-script'],
-
-      // extendBexScriptsConf (esbuildConf) {}
-      // extendBexManifestJson (json) {}
-    },
   };
 });

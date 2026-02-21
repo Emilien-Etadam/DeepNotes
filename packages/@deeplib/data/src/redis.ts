@@ -7,7 +7,7 @@ export function createRedisInstance() {
     return new Redis.Cluster(
       hosts.split(',').map((host) => ({
         host: host.split(':')[0],
-        port: parseInt(host.split(':')[1]),
+        port: Number.parseInt(host.split(':')[1]),
       })),
 
       {
@@ -27,7 +27,7 @@ export function createRedisInstance() {
   } else {
     return new Redis({
       host: hosts.split(':')[0],
-      port: parseInt(hosts.split(':')[1]),
+      port: Number.parseInt(hosts.split(':')[1]),
       password: process.env.KEYDB_PASSWORD,
 
       connectTimeout: 500,

@@ -1,9 +1,7 @@
-import { DeviceModel } from '@deeplib/db';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
 
 const baseProcedure = authProcedure.input(
@@ -48,9 +46,11 @@ export async function forgetTrustedDevices({
 
         // Forget all devices
 
-        await DeviceModel.query(dtrx.trx)
-          .where('user_id', ctx.userId)
-          .patch({ trusted: false });
+        await dtrx.trx!
+          .updateTable('devices')
+          .set({ trusted: false })
+          .where('user_id', '=', ctx.userId)
+          .execute();
 
         checkRedlockSignalAborted(signals);
       });

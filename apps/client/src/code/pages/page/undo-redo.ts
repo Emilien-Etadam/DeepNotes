@@ -5,6 +5,11 @@ import type { Page } from './page';
 
 const _moduleLogger = mainLogger.sub('UndoRedo');
 
+/** Ensures the computed depends on _dep for reactivity while returning value (avoids comma operator). */
+function withReactiveDep<T, R>(_dep: T, value: R): R {
+  return value;
+}
+
 export class PageUndoRedo {
   readonly page: Page;
 
@@ -13,14 +18,18 @@ export class PageUndoRedo {
   readonly react = reactive({
     key: 0,
 
-    canUndo: computed(() => {
-      void this.react.key;
-      return this.undoManager?.canUndo() ?? false;
-    }),
-    canRedo: computed(() => {
-      void this.react.key;
-      return this.undoManager?.canRedo() ?? false;
-    }),
+    canUndo: computed(() =>
+      withReactiveDep(
+        this.react.key,
+        this.undoManager?.canUndo() ?? false,
+      ),
+    ),
+    canRedo: computed(() =>
+      withReactiveDep(
+        this.react.key,
+        this.undoManager?.canRedo() ?? false,
+      ),
+    ),
   });
 
   constructor(input: { page: Page }) {
@@ -59,8 +68,6 @@ export class PageUndoRedo {
       );
     });
     this.undoManager.on('stack-item-updated', (event: any) => {
-      // _moduleLogger.debug('stack-item-updated: %o', event);
-
       this.updateReactiveData();
 
       event.stackItem.meta.set(

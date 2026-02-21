@@ -9,8 +9,7 @@ import { multiModePath } from '../utils/misc';
 import { scrollIntoView } from '../utils/scroll-into-view';
 import type { Page } from './page/page';
 import type { PageCache } from './page-cache';
-import type { ISerialArrowInput, ISerialObjectInput } from './serialization';
-import type { Serialization } from './serialization';
+import type { ISerialArrowInput, ISerialObjectInput, Serialization } from './serialization';
 
 export interface IAppReact {
   pathPageIds: string[];
@@ -257,7 +256,7 @@ export class Pages {
     // Open in a new tab
 
     if (params?.openInNewTab) {
-      window.open(
+      globalThis.open(
         multiModePath(
           `/pages/${pageId}${params?.elemId ? `?elem=${params?.elemId}` : ''}`,
         ),
@@ -281,14 +280,14 @@ export class Pages {
     const cachedPage = this.pageCache.get(pageId);
 
     if (
-      cachedPage != null &&
-      cachedPage.react.status === 'success' &&
+      cachedPage?.react.status === 'success' &&
+      cachedPage !== undefined &&
       !cachedPage.react.loading &&
       isNanoID(params?.elemId ?? '')
     ) {
       const elem =
-        cachedPage.notes.fromId(params?.elemId!) ??
-        cachedPage.arrows.fromId(params?.elemId!);
+        cachedPage.notes.fromId(params?.elemId ?? '') ??
+        cachedPage.arrows.fromId(params?.elemId ?? '');
 
       if (elem != null) {
         cachedPage.selection.set(elem);
@@ -311,7 +310,7 @@ export class Pages {
     mainLogger.sub('Pages.goToGroup').info('groupId: %s', groupId);
 
     if (params?.openInNewTab) {
-      window.open(multiModePath(`/groups/${groupId}`), '_blank');
+      globalThis.open(multiModePath(`/groups/${groupId}`), '_blank');
     } else {
       if (params?.fromParent) {
         this.parentPageId = this.react.pageId;

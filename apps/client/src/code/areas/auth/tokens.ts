@@ -8,11 +8,11 @@ import { shouldRememberSession } from '../../utils/misc';
 export function getClientTokenExpirationDate(
   token: 'access' | 'refresh',
 ): Date | null {
-  const tokenExpiration = parseInt(
+  const tokenExpiration = Number.parseInt(
     internals.storage.getItem(`${token}TokenExpiration`) ?? '',
   );
 
-  if (isNaN(tokenExpiration)) {
+  if (Number.isNaN(tokenExpiration)) {
     return null;
   }
 

@@ -1,26 +1,22 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
-import { once } from 'lodash';
+import type { PageSnapshotRow } from '@deeplib/db';
 
 import { infos } from './infos';
 
-const PageSnapshotModel = once(
-  async () =>
-    (process.env.CLIENT
-      ? null
-      : (await import('@deeplib/db')).PageSnapshotModel)!,
-);
-
 export const pageSnapshots = validateDataHash({
-  model: PageSnapshotModel,
+  table: 'page_snapshots',
+  idColumns: ['id'],
 
-  get: async ({ suffix: pageId, trx }) =>
-    await (await PageSnapshotModel())
-      .query(trx)
-      .where('page_id', pageId)
-      .select('id', 'creation_date', 'author_id', 'type')
-      .orderBy('creation_date', 'DESC'),
+  get: async ({ suffix: pageId, executor }) =>
+    (executor as any)
+      .selectFrom('page_snapshots')
+      .where('page_id', '=', pageId)
+      .select(['id', 'creation_date', 'author_id', 'type'])
+      .orderBy('creation_date', 'desc')
+      .execute(),
 
   fields: {
     infos: infos,
   },
-});
+}) as DataHash<PageSnapshotRow[], any>;

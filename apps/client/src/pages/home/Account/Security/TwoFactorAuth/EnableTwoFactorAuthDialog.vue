@@ -138,8 +138,7 @@
 </template>
 
 <script setup lang="ts">
-import { sleep } from '@stdlib/misc';
-import { BREAKPOINT_MD_MIN } from '@stdlib/misc';
+import { BREAKPOINT_MD_MIN, sleep } from '@stdlib/misc';
 import QRCode from 'qrcode';
 import { handleError } from 'src/code/utils/misc';
 import DeepBtn from 'src/components/DeepBtn.vue';

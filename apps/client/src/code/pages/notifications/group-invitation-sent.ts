@@ -28,7 +28,9 @@ export async function getGroupInvitationSentNotificationInfo({
 
           color: 'primary',
 
-          handler: () => internals.pages.goToGroup(groupId),
+          handler: () => {
+            internals.pages.goToGroup(groupId).catch(handleError);
+          },
         },
 
         {
@@ -36,22 +38,24 @@ export async function getGroupInvitationSentNotificationInfo({
 
           color: 'red',
 
-          handler: async () => {
-            try {
-              await asyncDialog({
-                title: 'Reject join invitation',
-                message: 'Are you sure you want to reject the join invitation?',
+          handler: () => {
+            (async () => {
+              try {
+                await asyncDialog({
+                  title: 'Reject join invitation',
+                  message: 'Are you sure you want to reject the join invitation?',
 
-                focus: 'cancel',
+                  focus: 'cancel',
 
-                cancel: { label: 'No', flat: true, color: 'primary' },
-                ok: { label: 'Yes', flat: true, color: 'negative' },
-              });
+                  cancel: { label: 'No', flat: true, color: 'primary' },
+                  ok: { label: 'Yes', flat: true, color: 'negative' },
+                });
 
-              await rejectJoinInvitation({ groupId });
-            } catch (error) {
-              handleError(error);
-            }
+                await rejectJoinInvitation({ groupId });
+              } catch (error) {
+                handleError(error);
+              }
+            })();
           },
         },
 

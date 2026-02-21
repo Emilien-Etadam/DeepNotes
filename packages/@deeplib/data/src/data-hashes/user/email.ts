@@ -11,5 +11,8 @@ export const email: DataField<UserModel> = {
   columns: ['encrypted_email'],
 
   get: ({ model }) => decryptUserEmail(model?.encrypted_email!),
-  set: ({ model, value }) => (model.encrypted_email = encryptUserEmail(value)),
+  set: ({ model, value }) =>
+    (model.encrypted_email = Buffer.from(
+      encryptUserEmail(value),
+    ) as UserModel['encrypted_email']),
 };

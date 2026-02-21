@@ -1,13 +1,13 @@
-import { PageUpdateModel } from '@deeplib/db';
+import type { Kysely } from 'kysely';
 import { base64ToBytes, bytesToBase64 } from '@stdlib/base64';
 import { DEFAULT_REMOTE_TTL } from '@stdlib/data';
-import type Redis from 'ioredis';
-import type { Cluster } from 'ioredis';
+import type { Cluster, default as Redis } from 'ioredis';
 import { pack, unpack } from 'msgpackr';
 
 export async function getAllPageUpdates(
   pageId: string,
   redis: Redis | Cluster,
+  db: Kysely<any>,
 ): Promise<[number, Uint8Array][]> {
   const [updateCacheItems, updateBufferItems] = await Promise.all([
     redis.lrangeBuffer(`page-update-cache:{${pageId}}`, 0, -1),
@@ -37,12 +37,14 @@ export async function getAllPageUpdates(
   }
 
   const dbPageUpdates = (
-    await PageUpdateModel.query()
-      .where('page_id', pageId)
+    await db
+      .selectFrom('page_updates')
+      .where('page_id', '=', pageId)
       .orderBy('index')
-      .select('index', 'encrypted_data')
+      .select(['index', 'encrypted_data'])
+      .execute()
   ).map<[number, Uint8Array]>((pageUpdate) => [
-    parseInt(pageUpdate.index as any),
+    Number.parseInt(pageUpdate.index as any),
     pageUpdate.encrypted_data,
   ]);
 

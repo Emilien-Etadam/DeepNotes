@@ -6,7 +6,7 @@ export default boot(async () => {
   const originalRemoveItem = internals.sessionStorage.removeItem;
   const originalClear = internals.sessionStorage.clear;
 
-  window.addEventListener('storage', function (event) {
+  globalThis.addEventListener('storage', function (event) {
     if (event.oldValue != null) {
       return;
     }

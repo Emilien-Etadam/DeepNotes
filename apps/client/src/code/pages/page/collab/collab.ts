@@ -1,5 +1,4 @@
-import type { Y } from '@syncedstore/core';
-import { getYjsDoc } from '@syncedstore/core';
+import { type Y, getYjsDoc } from '@syncedstore/core';
 import type { Factories } from 'src/code/factories';
 import type { PageWebsocket } from 'src/code/pages/page/collab/websocket';
 
@@ -7,8 +6,7 @@ import type { Pages } from '../../pages';
 import { createPageStore } from '../../utils';
 import type { IArrowCollabOutput } from '../arrows/arrow';
 import type { INoteCollabComplete } from '../notes/note-collab';
-import type { IPageCollabOutput, Page } from '../page';
-import { IPageCollab } from '../page';
+import { IPageCollab, type IPageCollabOutput, type Page } from '../page';
 import type { PagePresence } from './presence';
 
 export interface IAppCollabStore {

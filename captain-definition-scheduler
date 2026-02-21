@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 2,
-  "caproverName": "captain-01",
-  "caproverApp": "deepnotes-scheduler",
-  "branch": "dev",
-  "dockerfilePath": "./apps/scheduler/Dockerfile"
-}

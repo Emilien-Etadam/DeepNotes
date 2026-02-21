@@ -102,54 +102,56 @@ export const pageRelativeTitles = once(() =>
         return { text: '[Failed to decrypt]', status: 'success' };
       }
     },
-    set: async (pageId, value: any) => {
-      if (pageId == null) {
-        _setLogger.info(`${pageId}: No valid page ID`);
+    set: (pageId, value: any) => {
+      (async () => {
+        if (pageId == null) {
+          _setLogger.info(`${pageId}: No valid page ID`);
 
-        return;
-      }
+          return;
+        }
 
-      const groupId = await internals.realtime.globalCtx.hgetAsync(
-        'page',
-        pageId,
-        'group-id',
-      );
+        const groupId = await internals.realtime.globalCtx.hgetAsync(
+          'page',
+          pageId,
+          'group-id',
+        );
 
-      if (groupId == null) {
-        _setLogger.info(`${pageId}: No group ID found`);
+        if (groupId == null) {
+          _setLogger.info(`${pageId}: No group ID found`);
 
-        return;
-      }
+          return;
+        }
 
-      const pageKeyring = await pageKeyrings()(
-        `${groupId}:${pageId}`,
-      ).getAsync();
+        const pageKeyring = await pageKeyrings()(
+          `${groupId}:${pageId}`,
+        ).getAsync();
 
-      if (pageKeyring == null) {
-        _setLogger.info(`${pageId}: No valid page keyring found`);
+        if (pageKeyring == null) {
+          _setLogger.info(`${pageId}: No valid page keyring found`);
 
-        return;
-      }
+          return;
+        }
 
-      const pageEncryptedRelativeTitle = pageKeyring.encrypt(
-        textToBytes(value),
-        {
-          padding: true,
-          associatedData: {
-            context: 'PageRelativeTitle',
-            pageId,
+        const pageEncryptedRelativeTitle = pageKeyring.encrypt(
+          textToBytes(value),
+          {
+            padding: true,
+            associatedData: {
+              context: 'PageRelativeTitle',
+              pageId,
+            },
           },
-        },
-      );
+        );
 
-      internals.realtime.hset(
-        'page',
-        pageId,
-        'encrypted-relative-title',
-        pageEncryptedRelativeTitle,
-      );
+        internals.realtime.hset(
+          'page',
+          pageId,
+          'encrypted-relative-title',
+          pageEncryptedRelativeTitle,
+        );
 
-      _setLogger.info(`${pageId}: ${value}`);
+        _setLogger.info(`${pageId}: ${value}`);
+      })().catch((err) => _setLogger.error(err));
     },
 
     initialValue: { text: '[Unknown page]', status: 'unknown' },

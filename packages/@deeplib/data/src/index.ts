@@ -1,5 +1,3 @@
-import 'objection'; // Necessary for type inference
-
 export * from './data-hashes';
 export * from './emails';
 export * from './page-updates';

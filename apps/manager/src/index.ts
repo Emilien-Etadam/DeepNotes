@@ -1,30 +1,17 @@
 import './env';
-import './stripe';
 
 import { decryptUserEmail, hashUserEmail } from '@deeplib/data';
-import {
-  GroupJoinInvitationModel,
-  GroupJoinRequestModel,
-  GroupMemberModel,
-  PageModel,
-  SessionModel,
-  UserModel,
-  UserPageModel,
-} from '@deeplib/db';
 import {
   sendBrevoMail,
   sendMailjetMail,
   sendSendGridMail,
 } from '@deeplib/mail';
 import { mainLogger } from '@stdlib/misc';
-import { raw } from 'objection';
-import readline from 'readline';
+import { sql } from 'kysely';
+import readline from 'node:readline';
 
 import { dataAbstraction } from './data/data-abstraction';
-import { initKnex } from './data/knex';
-import { stripe } from './stripe';
-
-initKnex();
+import './data/knex';
 
 const readlineInterface = readline.createInterface({
   input: process.stdin,
@@ -60,11 +47,21 @@ async function handleCommand(command: string) {
           )}`,
         );
         break;
-      case 'hset':
+      case 'hset': {
+        let value: unknown;
+        try {
+          value = JSON.parse(args[3]);
+        } catch {
+          mainLogger.error(
+            'Value must be valid JSON (e.g. "string", number, true, false, null).',
+          );
+          return;
+        }
         await dataAbstraction().hmset(args[0] as any, args[1], {
-          [args[2]]: eval(args[3]),
+          [args[2]]: value,
         });
         break;
+      }
 
       case 'delete-user':
         await deleteUser(args[0]);
@@ -72,7 +69,7 @@ async function handleCommand(command: string) {
 
       case 'hash-email':
         mainLogger.info(
-          `Result: '\\x${Buffer.from(hashUserEmail(args[0])).toString('hex')}'`,
+          String.raw`Result: '\x${Buffer.from(hashUserEmail(args[0])).toString('hex')}'`,
         );
         break;
 
@@ -116,50 +113,37 @@ async function handleCommand(command: string) {
 
 async function deleteUser(userId: string) {
   await dataAbstraction().transaction(async (dtrx) => {
+    const trx = dtrx.trx!;
+
     // Check if any group has more than one member
 
-    const memberships = await GroupMemberModel.query(dtrx.trx)
-      .where('group_members.user_id', userId)
-      .leftJoin(
-        GroupMemberModel.query(dtrx.trx)
-          .groupBy('group_id')
-          .select('group_id')
-          .count('* as member_count')
-          .as('member_counts'),
-        'group_members.group_id',
-        'member_counts.group_id',
-      )
-      .leftJoin(
-        GroupMemberModel.query(dtrx.trx)
-          .where('role', 'owner')
-          .groupBy('group_id')
-          .select('group_id')
-          .count('* as owner_count')
-          .as('owner_counts'),
-        'group_members.group_id',
-        'owner_counts.group_id',
-      )
-      .select(
-        'group_members.group_id',
-        raw('COALESCE(member_counts.member_count, 0) as member_count'),
-        raw('COALESCE(owner_counts.owner_count, 0) as owner_count'),
-      );
+    const memberships = await trx
+      .selectFrom('group_members')
+      .where('user_id', '=', userId)
+      .select([
+        'group_id',
+        sql<number>`(SELECT count(*)::int FROM group_members gm2 WHERE gm2.group_id = group_members.group_id)`.as(
+          'member_count',
+        ),
+        sql<number>`(SELECT count(*)::int FROM group_members gm3 WHERE gm3.group_id = group_members.group_id AND gm3.role = 'owner')`.as(
+          'owner_count',
+        ),
+      ])
+      .execute();
 
     if (
       memberships.some(
         (count) =>
-          (count as any).member_count > 1 && (count as any).owner_count <= 1,
+          count.member_count > 1 && count.owner_count <= 1,
       )
     ) {
-      throw {
-        message:
-          'Some groups would be left without an owner. Transfer ownership before deleting your account.',
-        code: 'BAD_REQUEST',
-      };
+      throw new Error(
+        'Some groups would be left without an owner. Transfer ownership before deleting your account.',
+      );
     }
 
     const idsOfGroupsToDelete = memberships
-      .filter((membership) => (membership as any).member_count <= 1)
+      .filter((membership) => membership.member_count <= 1)
       .map((membership) => membership.group_id);
 
     // Get all user data
@@ -172,34 +156,45 @@ async function deleteUser(userId: string) {
       sessions,
       user,
     ] = await Promise.all([
-      PageModel.query(dtrx.trx)
-        .whereIn('group_id', idsOfGroupsToDelete)
-        .select('pages.id'),
+      trx
+        .selectFrom('pages')
+        .where('group_id', 'in', idsOfGroupsToDelete)
+        .select('id')
+        .execute(),
 
-      GroupJoinInvitationModel.query(dtrx.trx)
-        .where('user_id', userId)
-        .select('group_id'),
-      GroupJoinRequestModel.query(dtrx.trx)
-        .where('user_id', userId)
-        .select('group_id'),
+      trx
+        .selectFrom('group_join_invitations')
+        .where('user_id', '=', userId)
+        .select('group_id')
+        .execute(),
+      trx
+        .selectFrom('group_join_requests')
+        .where('user_id', '=', userId)
+        .select('group_id')
+        .execute(),
 
-      UserPageModel.query(dtrx.trx).where('user_id', userId).select('page_id'),
+      trx
+        .selectFrom('users_pages')
+        .where('user_id', '=', userId)
+        .select('page_id')
+        .execute(),
 
-      SessionModel.query(dtrx.trx)
-        .where('user_id', userId)
-        .whereNot('invalidated', true)
-        .select('id'),
+      trx
+        .selectFrom('sessions')
+        .where('user_id', '=', userId)
+        .where('invalidated', '=', false)
+        .select('id')
+        .execute(),
 
-      UserModel.query(dtrx.trx)
-        .findById(userId)
-        .select('encrypted_email', 'personal_group_id', 'customer_id'),
+      trx
+        .selectFrom('users')
+        .where('id', '=', userId)
+        .select(['encrypted_email', 'personal_group_id', 'customer_id'])
+        .executeTakeFirst(),
     ]);
 
     if (user == null) {
-      throw {
-        message: 'User not found',
-        code: 'NOT_FOUND',
-      };
+      throw new Error('User not found');
     }
 
     // Delete all user data
@@ -259,14 +254,14 @@ async function deleteUser(userId: string) {
         ),
       ),
 
-      ...(user.customer_id != null
-        ? [
+      ...(user.customer_id == null
+        ? []
+        : [
             dataAbstraction().delete('customer', user.customer_id, {
               dtrx,
               cacheOnly: true,
             }),
-          ]
-        : []),
+          ]),
 
       dataAbstraction().delete(
         'email',
@@ -279,12 +274,6 @@ async function deleteUser(userId: string) {
 
       dataAbstraction().delete('user', userId, { dtrx }),
     ]);
-
-    // Delete Stripe customer
-
-    if (user?.customer_id != null) {
-      await stripe.customers.del(user.customer_id);
-    }
   });
 }
 

@@ -1,6 +1,4 @@
 import { userHasPermission } from '@deeplib/data';
-import type { UserModel } from '@deeplib/db';
-import { GroupMemberModel, GroupModel } from '@deeplib/db';
 import type { GroupRolePermission } from '@deeplib/misc';
 import type { DataTransaction } from '@stdlib/data';
 import { TRPCError } from '@trpc/server';
@@ -9,6 +7,7 @@ import { once } from 'lodash';
 import { z } from 'zod';
 
 import { dataAbstraction } from '../data/data-abstraction';
+import { db } from '../data/knex';
 import {
   computePasswordHash,
   decryptGroupRehashedPasswordHash,
@@ -108,9 +107,11 @@ export async function assertCorrectGroupPassword(input: {
   groupId: string;
   groupPasswordHash: Uint8Array;
 }) {
-  const group = await GroupModel.query()
-    .findById(input.groupId)
-    .select('encrypted_rehashed_password_hash');
+  const group = await db
+    .selectFrom('groups')
+    .where('id', '=', input.groupId)
+    .select('encrypted_rehashed_password_hash')
+    .executeTakeFirst();
 
   if (group == null) {
     throw new TRPCError({
@@ -143,33 +144,47 @@ export async function getGroupManagers(
   groupId: string,
   extraUserIds?: string[],
 ): Promise<{ userId: string; publicKeyring: Uint8Array }[]> {
-  return (
-    (await GroupMemberModel.query()
-      .leftJoin('users', 'users.id', 'group_members.user_id')
-      .where('group_id', groupId)
-      .whereIn('group_members.role', ['owner', 'admin', 'moderator'])
-      .orWhereIn('users.id', extraUserIds ?? [])
-      .select('users.id', 'users.public_keyring')) as unknown as UserModel[]
-  ).map((groupMember) => ({
-    userId: groupMember.id,
-    publicKeyring: groupMember.public_keyring,
-  }));
+  let query = db
+    .selectFrom('group_members')
+    .leftJoin('users', 'users.id', 'group_members.user_id')
+    .where('group_id', '=', groupId)
+    .where((eb) =>
+      (extraUserIds?.length ?? 0) > 0
+        ? eb.or([
+            eb('group_members.role', 'in', ['owner', 'admin', 'moderator']),
+            eb('users.id', 'in', extraUserIds!),
+          ])
+        : eb('group_members.role', 'in', ['owner', 'admin', 'moderator']),
+    );
+  const rows = await query
+    .select(['users.id as id', 'users.public_keyring as public_keyring'])
+    .execute();
+  return rows
+    .filter((r) => r.id != null && r.public_keyring != null)
+    .map((r) => ({ userId: r.id!, publicKeyring: r.public_keyring! }));
 }
 
 export async function getGroupMembers(
   groupId: string,
   extraUserIds?: string[],
 ): Promise<{ userId: string; publicKeyring: Uint8Array }[]> {
-  return (
-    (await GroupMemberModel.query()
-      .leftJoin('users', 'users.id', 'group_members.user_id')
-      .where('group_id', groupId)
-      .orWhereIn('users.id', extraUserIds ?? [])
-      .select('users.id', 'users.public_keyring')) as unknown as UserModel[]
-  ).map((groupMember) => ({
-    userId: groupMember.id,
-    publicKeyring: groupMember.public_keyring,
-  }));
+  const query = db
+    .selectFrom('group_members')
+    .leftJoin('users', 'users.id', 'group_members.user_id')
+    .where((eb) =>
+      (extraUserIds?.length ?? 0) > 0
+        ? eb.or([
+            eb('group_members.group_id', '=', groupId),
+            eb('users.id', 'in', extraUserIds!),
+          ])
+        : eb('group_members.group_id', '=', groupId),
+    );
+  const rows = await query
+    .select(['users.id as id', 'users.public_keyring as public_keyring'])
+    .execute();
+  return rows
+    .filter((r) => r.id != null && r.public_keyring != null)
+    .map((r) => ({ userId: r.id!, publicKeyring: r.public_keyring! }));
 }
 
 export async function assertSufficientGroupPermissions(input: {

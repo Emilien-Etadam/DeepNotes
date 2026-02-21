@@ -1,1 +1,0 @@
-DeepNotes è uno strumento per prendere appunti visivi crittografati end-to-end open source con una profonda navigazione bidirezionale delle pagine e collaborazione dal vivo.

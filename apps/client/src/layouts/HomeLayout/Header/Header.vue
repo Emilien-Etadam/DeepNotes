@@ -17,8 +17,7 @@
         <template
           v-if="
             uiStore().width < BREAKPOINT_LG_MIN &&
-            ($route.name === 'privacy-policy' ||
-              $route.name === 'terms-of-service' ||
+            ($route.name === 'terms-of-service' ||
               $route.path.startsWith('/account/'))
           "
         >
@@ -33,7 +32,6 @@
               auto-close
             >
               <q-list>
-                <PrivacyPolicyItems v-if="$route.name === 'privacy-policy'" />
                 <TermsOfServiceItems
                   v-if="$route.name === 'terms-of-service'"
                 />
@@ -102,7 +100,6 @@
 import { BREAKPOINT_LG_MIN } from '@stdlib/misc';
 import { useResizeObserver } from 'src/code/utils/misc';
 import AccountItems from 'src/pages/home/Account/AccountItems.vue';
-import PrivacyPolicyItems from 'src/pages/home/PrivacyPolicy/PrivacyPolicyItems.vue';
 import TermsOfServiceItems from 'src/pages/home/TermsOfService/TermsOfServiceItems.vue';
 import type { ComponentPublicInstance } from 'vue';
 

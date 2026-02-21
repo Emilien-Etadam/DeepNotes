@@ -50,7 +50,7 @@
         <Gap style="width: 8px" />
 
         <div style="display: flex; align-items: center">
-          <template v-if="isIncluded(quasarMode, ['ssr', 'spa'])">
+          <template v-if="true">
             <ToolbarBtn
               tooltip="Home"
               icon="mdi-home"

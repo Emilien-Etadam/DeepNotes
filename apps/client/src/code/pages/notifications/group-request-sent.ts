@@ -31,17 +31,19 @@ export async function getGroupRequestSentNotificationInfo({
 
           color: 'primary',
 
-          handler: async () => {
-            await internals.pages.goToGroup(groupId);
+          handler: () => {
+            (async () => {
+              await internals.pages.goToGroup(groupId);
 
-            $quasar().dialog({
-              component: GroupSettingsDialog,
+              $quasar().dialog({
+                component: GroupSettingsDialog,
 
-              componentProps: {
-                groupId,
-                initialTab: 'Join requests',
-              },
-            });
+                componentProps: {
+                  groupId,
+                  initialTab: 'Join requests',
+                },
+              });
+            })().catch(handleError);
           },
         },
 
@@ -50,25 +52,27 @@ export async function getGroupRequestSentNotificationInfo({
 
           color: 'red',
 
-          handler: async () => {
-            try {
-              await asyncDialog({
-                title: 'Reject join request',
-                message: 'Are you sure you want to reject the join request?',
+          handler: () => {
+            (async () => {
+              try {
+                await asyncDialog({
+                  title: 'Reject join request',
+                  message: 'Are you sure you want to reject the join request?',
 
-                focus: 'cancel',
+                  focus: 'cancel',
 
-                cancel: { label: 'No', flat: true, color: 'primary' },
-                ok: { label: 'Yes', flat: true, color: 'negative' },
-              });
+                  cancel: { label: 'No', flat: true, color: 'primary' },
+                  ok: { label: 'Yes', flat: true, color: 'negative' },
+                });
 
-              await rejectJoinRequest({
-                groupId,
-                patientId: agentId,
-              });
-            } catch (error) {
-              handleError(error);
-            }
+                await rejectJoinRequest({
+                  groupId,
+                  patientId: agentId,
+                });
+              } catch (error) {
+                handleError(error);
+              }
+            })();
           },
         },
 

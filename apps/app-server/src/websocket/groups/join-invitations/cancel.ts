@@ -3,12 +3,9 @@ import { canManageRole } from '@deeplib/misc';
 import { isNanoID, objFromEntries } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
-import type { InferProcedureInput, InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { getGroupManagers } from 'src/utils/groups';
-import type { NotificationsResponse } from 'src/utils/notifications';
-import { notifyUsers } from 'src/utils/notifications';
-import { notificationsRequestSchema } from 'src/utils/notifications';
+import { type NotificationsResponse, notificationsRequestSchema, notifyUsers } from 'src/utils/notifications';
 import { createWebsocketEndpoint } from 'src/utils/websocket-endpoints';
 import { z } from 'zod';
 

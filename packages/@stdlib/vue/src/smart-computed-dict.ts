@@ -1,5 +1,4 @@
-import type { SmartComputed } from './smart-computed';
-import { createSmartComputed } from './smart-computed';
+import { type SmartComputed, createSmartComputed } from './smart-computed';
 
 export function createSmartComputedDict<K = string, V = any>(params: {
   get: (key: K) => V | Promise<V>;

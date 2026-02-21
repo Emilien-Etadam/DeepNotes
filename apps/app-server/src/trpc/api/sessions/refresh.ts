@@ -1,9 +1,8 @@
-import { SessionModel } from '@deeplib/db';
 import type { RefreshTokenPayload } from '@deeplib/misc';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { publicProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, publicProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 import { decodeRefreshJWT, verifyRefreshJWT } from 'src/utils/jwt';
 import { generateSessionValues } from 'src/utils/sessions';
 
@@ -57,9 +56,11 @@ export async function refresh({
 
   // Get session data
 
-  const session = await SessionModel.query()
-    .where('refresh_code', jwtPayload.rfc)
-    .first();
+  const session = await db
+    .selectFrom('sessions')
+    .where('refresh_code', '=', jwtPayload.rfc)
+    .selectAll()
+    .executeTakeFirst();
 
   // Check if session is valid
 

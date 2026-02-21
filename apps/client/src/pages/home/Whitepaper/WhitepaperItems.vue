@@ -121,11 +121,11 @@
 <script setup lang="ts">
 function scrollToAnchor(anchor: string) {
   const targetTop =
-    window.scrollY +
+    globalThis.scrollY +
     document.getElementById(anchor)!.getBoundingClientRect().top -
     80;
 
-  window.scrollTo({ top: targetTop, behavior: 'smooth' });
+  globalThis.scrollTo({ top: targetTop, behavior: 'smooth' });
 }
 </script>
 

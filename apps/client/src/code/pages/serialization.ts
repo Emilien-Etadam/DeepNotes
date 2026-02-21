@@ -6,19 +6,11 @@ import {
 } from 'y-prosemirror';
 import { z } from 'zod';
 
-import type { IArrowCollabInput, PageArrow } from './page/arrows/arrow';
-import { IArrowCollabDefault } from './page/arrows/arrow';
-import { IArrowCollab } from './page/arrows/arrow';
+import { IArrowCollab, IArrowCollabDefault, type IArrowCollabInput, type PageArrow } from './page/arrows/arrow';
 import { roundTimeToMinutes } from './page/notes/date';
 import type { PageNote } from './page/notes/note';
-import type { INoteCollabPartial } from './page/notes/note-collab';
-import { INoteCollab, INoteCollabDefault } from './page/notes/note-collab';
-import type {
-  IRegionCollabOutput,
-  IRegionElemsOutput,
-  PageRegion,
-} from './page/regions/region';
-import { IRegionCollab } from './page/regions/region';
+import { INoteCollab, INoteCollabDefault, type INoteCollabPartial } from './page/notes/note-collab';
+import { IRegionCollab, type IRegionCollabOutput, type IRegionElemsOutput, type PageRegion } from './page/regions/region';
 import type { Pages } from './pages';
 import { makeSlim } from './slim';
 import { IVec2 } from './utils';

@@ -1,5 +1,4 @@
-import { listenPointerEvents } from '@stdlib/misc';
-import { Vec2 } from '@stdlib/misc';
+import { Vec2, listenPointerEvents } from '@stdlib/misc';
 
 import type { Page } from '../page';
 

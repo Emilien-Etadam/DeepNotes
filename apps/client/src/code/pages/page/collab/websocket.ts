@@ -4,8 +4,7 @@ import {
   CollabServerDocMessageType,
 } from '@deeplib/misc';
 import { wrapSymmetricKey } from '@stdlib/crypto';
-import { ClientSocket } from '@stdlib/misc';
-import { Resolvable } from '@stdlib/misc';
+import { ClientSocket, Resolvable } from '@stdlib/misc';
 import { Y } from '@syncedstore/core';
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
@@ -104,8 +103,8 @@ export const PageWebsocket = once(
 
         // Setup unload listener
 
-        if (typeof window !== 'undefined') {
-          window.addEventListener('beforeunload', this.disableLocalAwareness);
+        if (globalThis.window !== undefined) {
+          globalThis.addEventListener('beforeunload', this.disableLocalAwareness);
         } else if (typeof process !== 'undefined') {
           process.on('exit', this.disableLocalAwareness);
         }
@@ -121,8 +120,8 @@ export const PageWebsocket = once(
 
         // Clear unload listener
 
-        if (typeof window !== 'undefined') {
-          window.removeEventListener(
+        if (globalThis.window !== undefined) {
+          globalThis.removeEventListener(
             'beforeunload',
             this.disableLocalAwareness,
           );

@@ -5,18 +5,18 @@ export default boot(({ store }) => {
     uiStore(store).leftSidebarExpanded =
       internals.localStorage.getItem('leftSidebarExpanded') === 'true';
   } else {
-    uiStore(store).leftSidebarExpanded = window.innerWidth > 1000;
+    uiStore(store).leftSidebarExpanded = globalThis.innerWidth > 1000;
   }
 
   if (internals.localStorage.getItem('rightSidebarExpanded') != null) {
     uiStore(store).rightSidebarExpanded =
       internals.localStorage.getItem('rightSidebarExpanded') === 'true';
   } else {
-    uiStore(store).rightSidebarExpanded = window.innerWidth > 1000;
+    uiStore(store).rightSidebarExpanded = globalThis.innerWidth > 1000;
   }
 
   if (internals.localStorage.getItem('leftSidebarWidth') != null) {
-    uiStore(store).leftSidebarWidth = parseInt(
+    uiStore(store).leftSidebarWidth = Number.parseInt(
       internals.localStorage.getItem('leftSidebarWidth') as string,
     );
   }
@@ -31,11 +31,11 @@ export default boot(({ store }) => {
     internals.localStorage.getItem('selectedPagesExpanded') === 'true';
 
   uiStore(store).currentPathWeight =
-    parseFloat(internals.localStorage.getItem('currentPathWeight')!) || 1;
+    Number.parseFloat(internals.localStorage.getItem('currentPathWeight')) || 1;
   uiStore(store).recentPagesWeight =
-    parseFloat(internals.localStorage.getItem('recentPagesWeight')!) || 1;
+    Number.parseFloat(internals.localStorage.getItem('recentPagesWeight')) || 1;
   uiStore(store).favoritePagesWeight =
-    parseFloat(internals.localStorage.getItem('favoritePagesWeight')!) || 1;
+    Number.parseFloat(internals.localStorage.getItem('favoritePagesWeight')) || 1;
   uiStore(store).selectedPagesWeight =
-    parseFloat(internals.localStorage.getItem('selectedPagesWeight')!) || 1;
+    Number.parseFloat(internals.localStorage.getItem('selectedPagesWeight')) || 1;
 });

@@ -218,10 +218,10 @@ async function downloadAsMarkdown(params: { includeDescendants: boolean }) {
       },
     );
 
-    if ((window as any).showSaveFilePicker == null) {
+    if ((globalThis as Window & { showSaveFilePicker?: unknown }).showSaveFilePicker == null) {
       saveAs(blob, 'DeepNotes-note.md');
     } else {
-      const fileHandle = await (window as any).showSaveFilePicker({
+      const fileHandle = await (globalThis as Window & { showSaveFilePicker: (options?: object) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
         types: [
           {
             description: 'Markdown file',

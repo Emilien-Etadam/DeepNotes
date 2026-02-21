@@ -174,14 +174,6 @@
 
       <Gap style="height: 170px" />
 
-      <div style="display: flex; justify-content: center">
-        <BillingFrequencyToggle v-model="billingFrequency" />
-      </div>
-
-      <Gap style="height: 48px" />
-
-      <PricingSection :billing-frequency="billingFrequency" />
-
       <div>
         <Gap style="height: 150px" />
 
@@ -263,7 +255,6 @@
 </template>
 
 <script setup lang="ts">
-import PricingSection from './PricingSection.vue';
 import Thumbnail from './Thumbnail.vue';
 
 const loading = ref(true);
@@ -286,8 +277,6 @@ onMounted(async () => {
 
   loading.value = false;
 });
-
-const billingFrequency = ref<'monthly' | 'yearly'>('monthly');
 </script>
 
 <style lang="scss">

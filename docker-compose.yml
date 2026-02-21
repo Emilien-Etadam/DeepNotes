@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16
@@ -90,22 +88,6 @@ services:
       REALTIME_SERVER_PORT: '48924'
     ports:
       - '48924:48924'
-
-  scheduler:
-    build:
-      context: .
-      dockerfile: apps/scheduler/Dockerfile
-    container_name: scheduler
-    restart: always
-    depends_on:
-      postgres:
-        condition: service_healthy
-      keydb:
-        condition: service_healthy
-    env_file: .env
-    environment:
-      POSTGRES_HOST: postgres
-      KEYDB_HOSTS: keydb:6379
 
   client:
     build:

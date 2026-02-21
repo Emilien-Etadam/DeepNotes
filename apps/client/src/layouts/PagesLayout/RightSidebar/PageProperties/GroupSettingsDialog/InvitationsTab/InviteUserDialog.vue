@@ -80,9 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GroupRoleID } from '@deeplib/misc';
-import { canManageRole } from '@deeplib/misc';
-import { maxNameLength, roles, rolesMap } from '@deeplib/misc';
+import { type GroupRoleID, canManageRole, maxNameLength, roles, rolesMap } from '@deeplib/misc';
 import { isNanoID, maxEmailLength, w3cEmailRegex } from '@stdlib/misc';
 import { sendJoinInvitation } from 'src/code/areas/api-interface/groups/join-invitations/send';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';

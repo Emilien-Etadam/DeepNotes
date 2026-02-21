@@ -1,40 +1,29 @@
-import { Model } from 'objection';
+import type { Kysely } from 'kysely';
+import { sql } from 'kysely';
 
 export async function patchMultiple(
+  executor: Kysely<any>,
   table: string,
   columns: string[],
   types: string[],
   values: any[][],
   where: string,
   set: string,
-  params?: { trx: any },
 ) {
   if (values.length === 0) {
     return;
   }
 
-  let query = Model.knex().raw(
-    `
-      UPDATE
-        ${table}
-      SET
-        ${set}
-      FROM (
-        VALUES
-          ${values
-            .map((row) => `(${row.map((_, i) => `?::${types[i]}`).join(', ')})`)
-            .join(', ')}
-      ) AS values (${columns.join(', ')})
-      WHERE
-        ${where}
-    `,
+  const built =
+    sql`UPDATE ${sql.raw(table)} SET ${sql.raw(set)} FROM (VALUES ${sql.join(
+      values.map((row) =>
+        sql`(${sql.join(
+          row.map((v, i) => sql`${v}::${sql.raw(types[i])}`),
+          sql`, `,
+        )})`,
+      ),
+      sql`, `,
+    )}) AS values (${sql.raw(columns.join(', '))}) WHERE ${sql.raw(where)}`;
 
-    [...values.flat()],
-  );
-
-  if (params?.trx) {
-    query = query.transacting(params.trx);
-  }
-
-  return await query;
+  await built.execute(executor);
 }

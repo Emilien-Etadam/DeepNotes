@@ -1,1 +1,0 @@
-DeepNotes is an open source, end-to-end encrypted infinite canvas tool with deep page nesting and realtime collaboration.

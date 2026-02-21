@@ -79,7 +79,11 @@ function selectItem(itemId: string, event: MouseEvent) {
 
       const add = !props.selectedItemIds.has(itemId);
 
-      for (let i = sourceItemIndex; i !== targetItemIndex + sign; i += sign) {
+      for (
+        let i = sourceItemIndex;
+        sign > 0 ? i < targetItemIndex + sign : i > targetItemIndex + sign;
+        i += sign
+      ) {
         if (add) {
           props.selectedItemIds.add(props.itemIds[i]);
           emit('select', props.itemIds[i]);
@@ -89,14 +93,12 @@ function selectItem(itemId: string, event: MouseEvent) {
         }
       }
     }
+  } else if (props.selectedItemIds.has(itemId)) {
+    props.selectedItemIds.delete(itemId);
+    emit('unselect', itemId);
   } else {
-    if (props.selectedItemIds.has(itemId)) {
-      props.selectedItemIds.delete(itemId);
-      emit('unselect', itemId);
-    } else {
-      props.selectedItemIds.add(itemId);
-      emit('select', itemId);
-    }
+    props.selectedItemIds.add(itemId);
+    emit('select', itemId);
   }
 
   lastSelectedItemId = itemId;

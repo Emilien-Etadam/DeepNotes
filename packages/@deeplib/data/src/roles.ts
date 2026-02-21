@@ -1,5 +1,4 @@
-import type { IGroupRole } from '@deeplib/misc';
-import { rolesMap } from '@deeplib/misc';
+import { type IGroupRole, rolesMap } from '@deeplib/misc';
 import type { DataAbstraction } from '@stdlib/data';
 
 export async function userHasPermission(

@@ -83,35 +83,37 @@ export const groupNames = once(() =>
         return { status: 'success', text: `[Group ${groupId}]` };
       }
     },
-    set: async (groupId, value: any) => {
-      if (groupId == null) {
-        _setLogger.info(`${groupId}: No valid group ID`);
-        return;
-      }
+    set: (groupId, value: any) => {
+      (async () => {
+        if (groupId == null) {
+          _setLogger.info(`${groupId}: No valid group ID`);
+          return;
+        }
 
-      const accessKeyring = await groupAccessKeyrings()(groupId!).getAsync();
+        const accessKeyring = await groupAccessKeyrings()(groupId).getAsync();
 
-      if (accessKeyring == null) {
-        _setLogger.info(`${groupId}: No valid keyring found`);
-        return;
-      }
+        if (accessKeyring == null) {
+          _setLogger.info(`${groupId}: No valid keyring found`);
+          return;
+        }
 
-      const groupEncryptedName = accessKeyring.encrypt(textToBytes(value), {
-        padding: true,
-        associatedData: {
-          context: 'GroupName',
+        const groupEncryptedName = accessKeyring.encrypt(textToBytes(value), {
+          padding: true,
+          associatedData: {
+            context: 'GroupName',
+            groupId,
+          },
+        });
+
+        internals.realtime.hset(
+          'group',
           groupId,
-        },
-      });
+          'encrypted-name',
+          groupEncryptedName,
+        );
 
-      internals.realtime.hset(
-        'group',
-        groupId,
-        'encrypted-name',
-        groupEncryptedName,
-      );
-
-      _setLogger.info(`${groupId}: ${value}`);
+        _setLogger.info(`${groupId}: ${value}`);
+      })().catch((err) => _setLogger.error(err));
     },
 
     initialValue: { status: 'unknown', text: '[Unknown group]' },

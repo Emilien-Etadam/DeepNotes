@@ -43,8 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DeepNotesNotification } from '@deeplib/misc';
-import { canManageRole } from '@deeplib/misc';
+import { type DeepNotesNotification, canManageRole } from '@deeplib/misc';
 import { wrapSymmetricKey } from '@stdlib/crypto';
 import { createSmartComputed } from '@stdlib/vue';
 import { unpack } from 'msgpackr';

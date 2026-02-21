@@ -10,5 +10,5 @@ export default defineConfig({
   splitting: false,
   dts: false,
   // Exclude libsodium* so they are not bundled (they use top-level await, incompatible with CJS)
-  noExternal: [/^(?!knex|ws|@getbrevo\/brevo|libsodium).+$/],
+  noExternal: [/^(?!ws|@getbrevo\/brevo|libsodium).+$/],
 });

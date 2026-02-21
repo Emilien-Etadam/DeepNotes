@@ -7,7 +7,7 @@ export function isUuid4(text: string) {
 
 export function uuidToBytes(uuid: string): Uint8Array {
   return new Uint8Array(
-    (uuid.replace(/-/g, '').match(/.{2}/g) || []).map((b) => parseInt(b, 16)),
+    (uuid.replaceAll('-', '').match(/.{2}/g) || []).map((b) => Number.parseInt(b, 16)),
   );
 }
 export function bytesToUUID(bytes: Uint8Array): string {

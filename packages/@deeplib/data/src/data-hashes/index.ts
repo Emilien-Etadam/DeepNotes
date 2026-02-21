@@ -1,3 +1,4 @@
+import type { DataHashes } from '@stdlib/data';
 import { validateDataHashes } from '@stdlib/data/src/universal';
 
 import { customer } from './customer';
@@ -13,7 +14,7 @@ import { session } from './session';
 import { user } from './user';
 import { userPage } from './user-page';
 
-export const dataHashes = validateDataHashes({
+export const dataHashes: DataHashes = validateDataHashes({
   customer: customer,
   email: email,
   group: group,

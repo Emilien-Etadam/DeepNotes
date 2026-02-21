@@ -1,20 +1,9 @@
 import { decryptUserEmail } from '@deeplib/data';
-import {
-  GroupJoinInvitationModel,
-  GroupJoinRequestModel,
-  GroupMemberModel,
-  PageModel,
-  SessionModel,
-  UserModel,
-  UserPageModel,
-} from '@deeplib/db';
-import { mainLogger } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import { raw } from 'objection';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { sql } from 'kysely';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { clearCookies } from 'src/utils/cookies';
 import { z } from 'zod';
 
@@ -43,38 +32,25 @@ export async function delete_({
 
         // Check if any group has more than one member
 
-        const memberships = await GroupMemberModel.query(dtrx.trx)
-          .where('group_members.user_id', ctx.userId)
-          .leftJoin(
-            GroupMemberModel.query(dtrx.trx)
-              .groupBy('group_id')
-              .select('group_id')
-              .count('* as member_count')
-              .as('member_counts'),
-            'group_members.group_id',
-            'member_counts.group_id',
-          )
-          .leftJoin(
-            GroupMemberModel.query(dtrx.trx)
-              .where('role', 'owner')
-              .groupBy('group_id')
-              .select('group_id')
-              .count('* as owner_count')
-              .as('owner_counts'),
-            'group_members.group_id',
-            'owner_counts.group_id',
-          )
-          .select(
-            'group_members.group_id',
-            raw('COALESCE(member_counts.member_count, 0) as member_count'),
-            raw('COALESCE(owner_counts.owner_count, 0) as owner_count'),
-          );
+        const trx = dtrx.trx!;
+        const memberships = await trx
+          .selectFrom('group_members')
+          .where('user_id', '=', ctx.userId)
+          .select([
+            'group_id',
+            sql<number>`(SELECT count(*)::int FROM group_members gm2 WHERE gm2.group_id = group_members.group_id)`.as(
+              'member_count',
+            ),
+            sql<number>`(SELECT count(*)::int FROM group_members gm3 WHERE gm3.group_id = group_members.group_id AND gm3.role = 'owner')`.as(
+              'owner_count',
+            ),
+          ])
+          .execute();
 
         if (
           memberships.some(
             (count) =>
-              (count as any).member_count > 1 &&
-              (count as any).owner_count <= 1,
+              count.member_count > 1 && count.owner_count <= 1,
           )
         ) {
           throw new TRPCError({
@@ -85,7 +61,7 @@ export async function delete_({
         }
 
         const idsOfGroupsToDelete = memberships
-          .filter((membership) => (membership as any).member_count <= 1)
+          .filter((membership) => membership.member_count <= 1)
           .map((membership) => membership.group_id);
 
         // Get all user data
@@ -98,29 +74,41 @@ export async function delete_({
           sessions,
           user,
         ] = await Promise.all([
-          PageModel.query(dtrx.trx)
-            .whereIn('group_id', idsOfGroupsToDelete)
-            .select('pages.id'),
+          trx
+            .selectFrom('pages')
+            .where('group_id', 'in', idsOfGroupsToDelete)
+            .select('id')
+            .execute(),
 
-          GroupJoinInvitationModel.query(dtrx.trx)
-            .where('user_id', ctx.userId)
-            .select('group_id'),
-          GroupJoinRequestModel.query(dtrx.trx)
-            .where('user_id', ctx.userId)
-            .select('group_id'),
+          trx
+            .selectFrom('group_join_invitations')
+            .where('user_id', '=', ctx.userId)
+            .select('group_id')
+            .execute(),
+          trx
+            .selectFrom('group_join_requests')
+            .where('user_id', '=', ctx.userId)
+            .select('group_id')
+            .execute(),
 
-          UserPageModel.query(dtrx.trx)
-            .where('user_id', ctx.userId)
-            .select('page_id'),
+          trx
+            .selectFrom('users_pages')
+            .where('user_id', '=', ctx.userId)
+            .select('page_id')
+            .execute(),
 
-          SessionModel.query(dtrx.trx)
-            .where('user_id', ctx.userId)
-            .whereNot('invalidated', true)
-            .select('id'),
+          trx
+            .selectFrom('sessions')
+            .where('user_id', '=', ctx.userId)
+            .where('invalidated', '=', false)
+            .select('id')
+            .execute(),
 
-          UserModel.query(dtrx.trx)
-            .findById(ctx.userId)
-            .select('encrypted_email', 'personal_group_id', 'customer_id'),
+          trx
+            .selectFrom('users')
+            .where('id', '=', ctx.userId)
+            .select(['encrypted_email', 'personal_group_id', 'customer_id'])
+            .executeTakeFirst(),
         ]);
 
         if (user == null) {
@@ -188,14 +176,14 @@ export async function delete_({
             ),
           ),
 
-          ...(user.customer_id != null
-            ? [
+          ...(user.customer_id == null
+            ? []
+            : [
                 ctx.dataAbstraction.delete('customer', user.customer_id, {
                   dtrx,
                   cacheOnly: true,
                 }),
-              ]
-            : []),
+              ]),
 
           ctx.dataAbstraction.delete(
             'email',
@@ -210,16 +198,6 @@ export async function delete_({
         ]);
 
         checkRedlockSignalAborted(signals);
-
-        // Delete Stripe customer
-
-        if (user?.customer_id != null) {
-          try {
-            await ctx.stripe.customers.del(user.customer_id);
-          } catch (error) {
-            mainLogger.error(error);
-          }
-        }
 
         // Clear cookies
 

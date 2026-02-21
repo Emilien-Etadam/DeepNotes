@@ -26,7 +26,8 @@
     "turbo": "^2.3.0",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.18.0",
-    "vitest": "^2.0.0"
+    "vitest": "^2.0.0",
+    "sonarqube-scanner": "^3.0.0"
   },
   "engines": {
     "npm": ">=7.0.0",
@@ -36,20 +37,11 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "android:build": "pnpm --filter @deepnotes/client run build:android",
-    "electron:build": "pnpm --filter @deepnotes/client run build:electron",
-    "electron:build:publish": "pnpm --filter @deepnotes/client run build:electron:publish",
-    "ios:build": "pnpm --filter @deepnotes/client run build:ios",
     "spa:build": "pnpm --filter @deepnotes/client run build:spa",
-    "ssr:build": "pnpm --filter @deepnotes/client run build:ssr",
     "build:watch": "turbo run build:watch",
     "clean": "turbo run clean",
     "dev": "turbo run dev --parallel",
-    "android:dev": "pnpm --filter @deepnotes/client run dev:android",
-    "electron:dev": "pnpm --filter @deepnotes/client run dev:electron",
-    "ios:dev": "pnpm --filter @deepnotes/client run dev:ios",
     "spa:dev": "pnpm --filter @deepnotes/client run dev:spa",
-    "ssr:dev": "pnpm --filter @deepnotes/client run dev:ssr",
     "fix": "turbo run fix --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
@@ -59,7 +51,8 @@
     "release": "standard-version",
     "repo:build": "tsc --build tsconfig.packages.json; turbo run repo:build --parallel",
     "repo:build:watch": "concurrently \"tsc --build tsconfig.packages.json --watch\" \"turbo run repo:build:watch --parallel\"",
-    "test": "vitest"
+    "test": "vitest",
+    "sonar": "sonar-scanner"
   },
   "standard-version": {
     "skip": {

@@ -1,5 +1,4 @@
-import type { GroupRoleID } from '@deeplib/misc';
-import { rolesMap } from '@deeplib/misc';
+import { type GroupRoleID, rolesMap } from '@deeplib/misc';
 import type {
   changeUserRoleProcedureStep1,
   changeUserRoleProcedureStep2,

@@ -1,8 +1,7 @@
-import { UserNotificationModel } from '@deeplib/db';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 
 const baseProcedure = authProcedure;
 
@@ -16,16 +15,15 @@ export async function markAsRead({
   return await ctx.usingLocks(
     [[`user-lock:${ctx.userId}`]],
     async (signals) => {
-      // Get last notification ID
-
-      const lastNotificationId = parseInt(
-        (
-          await UserNotificationModel.query()
-            .where('user_id', ctx.userId)
-            .select('notification_id')
-            .orderBy('notification_id', 'DESC')
-            .first()
-        )?.notification_id as any,
+      const row = await db
+        .selectFrom('users_notifications')
+        .where('user_id', '=', ctx.userId)
+        .select('notification_id')
+        .orderBy('notification_id', 'desc')
+        .executeTakeFirst();
+      const lastNotificationId = Number.parseInt(
+        String(row?.notification_id ?? 0),
+        10,
       );
 
       checkRedlockSignalAborted(signals);

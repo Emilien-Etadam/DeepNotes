@@ -14,7 +14,7 @@ export class Resolvable<T = void> implements Promise<T> {
     return this._rejected;
   }
 
-  private _settleListeners: (() => void)[] = [];
+  private readonly _settleListeners: (() => void)[] = [];
   settle(callback: () => void) {
     this._settleListeners.push(callback);
   }

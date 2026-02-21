@@ -65,7 +65,7 @@ export async function bufferizePageUpdate(
 
   updateBufferPageIdsSet.add(pageId);
 
-  void flushPageUpdatesThrottled();
+  flushPageUpdatesThrottled();
 
   return pageUpdateIndex;
 }

@@ -1,11 +1,10 @@
-import { UserModel } from '@deeplib/db';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import sodium from 'libsodium-wrappers-sumo';
 import { once } from 'lodash';
 import { authenticator } from 'otplib';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
+import { db } from 'src/data/knex';
 import {
   decryptUserAuthenticatorSecret,
   encryptRecoveryCodes,
@@ -39,9 +38,11 @@ export async function finish({
 
         // Get authenticator secret from the database.
 
-        const user = await UserModel.query()
-          .findById(ctx.userId)
-          .select('encrypted_authenticator_secret');
+        const user = await (dtrx.trx! as any)
+          .selectFrom('users')
+          .where('id', '=', ctx.userId)
+          .select('encrypted_authenticator_secret')
+          .executeTakeFirst();
 
         if (user == null) {
           throw new TRPCError({

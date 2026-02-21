@@ -1,10 +1,8 @@
-import { GroupJoinInvitationModel, GroupMemberModel } from '@deeplib/db';
 import { isNanoID } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
 
 const baseProcedure = authProcedure.input(
@@ -63,9 +61,11 @@ export async function makePublic({
           // Clear group member access keyrings
 
           ...(
-            await GroupMemberModel.query()
-              .where('group_id', input.groupId)
+            await dtrx.trx!
+              .selectFrom('group_members')
+              .where('group_id', '=', input.groupId)
               .select('user_id')
+              .execute()
           ).map((groupMember) =>
             ctx.dataAbstraction.patch(
               'group-member',
@@ -78,9 +78,11 @@ export async function makePublic({
           // Clear group join invitation access keyrings
 
           ...(
-            await GroupJoinInvitationModel.query()
-              .where('group_id', input.groupId)
+            await dtrx.trx!
+              .selectFrom('group_join_invitations')
+              .where('group_id', '=', input.groupId)
               .select('user_id')
+              .execute()
           ).map((groupJoinInvitation) =>
             ctx.dataAbstraction.patch(
               'group-join-invitation',

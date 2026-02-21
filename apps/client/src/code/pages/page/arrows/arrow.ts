@@ -1,9 +1,5 @@
 import { lightenByRatio } from '@stdlib/color';
-import type { Rect } from '@stdlib/misc';
-import { getClosestPathPointPercent, listenPointerEvents } from '@stdlib/misc';
-import { Line } from '@stdlib/misc';
-import { Vec2 } from '@stdlib/misc';
-import { getLineRectIntersection } from '@stdlib/misc';
+import { Line, type Rect, Vec2, getClosestPathPointPercent, getLineRectIntersection, listenPointerEvents } from '@stdlib/misc';
 import { Y } from '@syncedstore/core';
 import type { Editor } from '@tiptap/vue-3';
 import Color from 'color';
@@ -12,8 +8,7 @@ import type { ComputedRef, ShallowRef, UnwrapNestedRefs } from 'vue';
 import { z } from 'zod';
 
 import { colorNameToColorHex } from '../../colors';
-import type { IElemReact } from '../elems/elem';
-import { IElemCollab, PageElem } from '../elems/elem';
+import { IElemCollab, type IElemReact, PageElem } from '../elems/elem';
 import type { PageNote } from '../notes/note';
 import type { Page } from '../page';
 import type { PageRegion } from '../regions/region';

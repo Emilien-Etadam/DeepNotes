@@ -1,7 +1,7 @@
-import { PageLinkModel } from '@deeplib/db';
 import { once, pull } from 'lodash';
 import type { dataAbstraction } from 'src/data/data-abstraction';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 export const pageCreationSchema = once(() =>
   z.object({
@@ -30,15 +30,19 @@ export async function addPageBacklink(input: {
 }) {
   // Insert page link
 
-  await PageLinkModel.query()
-    .insert({
+  await db
+    .insertInto('page_links')
+    .values({
       target_page_id: input.targetPageId,
       source_page_id: input.sourcePageId,
-
       last_activity_date: new Date(),
     })
-    .onConflict(['source_page_id', 'target_page_id'])
-    .merge();
+    .onConflict((oc) =>
+      oc.columns(['source_page_id', 'target_page_id']).doUpdateSet({
+        last_activity_date: new Date(),
+      }),
+    )
+    .execute();
 
   // Update backlinks on cache
 

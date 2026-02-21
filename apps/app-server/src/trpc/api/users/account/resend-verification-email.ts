@@ -1,11 +1,10 @@
 import { hashUserEmail } from '@deeplib/data';
-import { UserModel } from '@deeplib/db';
 import { w3cEmailRegex } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { publicProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, publicProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 import { sendRegistrationEmail } from './register';
 
@@ -27,10 +26,11 @@ export async function resendVerificationEmail({
 }: InferProcedureOpts<typeof baseProcedure>) {
   // Get user
 
-  const user = await UserModel.query()
-    .where('email_hash', Buffer.from(hashUserEmail(input.email)))
-    .select('email_verified', 'email_verification_code')
-    .first();
+  const user = await db
+    .selectFrom('users')
+    .where('email_hash', '=', Buffer.from(hashUserEmail(input.email)))
+    .select(['email_verified', 'email_verification_code'])
+    .executeTakeFirst();
 
   // Check if user already exists
 

@@ -20,8 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import type { Range } from '@tiptap/core';
-import { Extension } from '@tiptap/core';
+import { Extension, type Range } from '@tiptap/core';
 import type { Node as ProsemirrorNode } from 'prosemirror-model';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';

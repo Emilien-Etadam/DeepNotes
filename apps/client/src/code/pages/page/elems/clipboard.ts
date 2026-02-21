@@ -99,11 +99,7 @@ export class PageClipboard {
       let destCenter: Vec2;
 
       if (selectionWorldRect != null) {
-        if (this.page.activeRegion.react.value.type === 'page') {
-          destCenter = selectionWorldRect.center.addScalar(8);
-        } else {
-          destCenter = selectionWorldRect.center.addScalar(8);
-        }
+        destCenter = selectionWorldRect.center.addScalar(8);
       } else {
         if (this.page.activeRegion.react.value.type === 'page') {
           destCenter = this.page.camera.react.pos;

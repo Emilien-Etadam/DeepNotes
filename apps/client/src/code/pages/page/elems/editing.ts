@@ -3,8 +3,7 @@ import type { Editor } from '@tiptap/vue-3';
 import type { ComputedRef, UnwrapNestedRefs } from 'vue';
 
 import type { PageArrow } from '../arrows/arrow';
-import type { NoteTextSection } from '../notes/note';
-import type { PageNote } from '../notes/note';
+import type { NoteTextSection, PageNote } from '../notes/note';
 import type { Page } from '../page';
 
 export interface IEditingReact {

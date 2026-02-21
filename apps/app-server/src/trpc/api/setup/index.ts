@@ -1,5 +1,4 @@
 import { hashUserEmail } from '@deeplib/data';
-import { UserModel } from '@deeplib/db';
 import { w3cEmailRegex } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
@@ -9,6 +8,7 @@ import { derivePasswordValues } from 'src/utils/crypto';
 import { setAdminUserId } from 'src/utils/invites';
 import { hasAnyUser, registerUser, userRegistrationSchema } from 'src/utils/users';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 const setupCreateFirstUserInput = z
   .object({
@@ -46,9 +46,10 @@ const setupCreateFirstUserProcedure = once(() =>
         });
       }
 
-      const existing = await UserModel.query()
-        .where('email_hash', Buffer.from(hashUserEmail(input.email)))
-        .first();
+      const existing = await db
+        .selectFrom('users')
+        .where('email_hash', '=', Buffer.from(hashUserEmail(input.email)))
+        .executeTakeFirst();
 
       if (existing != null) {
         throw new TRPCError({

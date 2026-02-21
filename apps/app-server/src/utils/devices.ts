@@ -1,5 +1,7 @@
-import { DeviceModel } from '@deeplib/db';
+import type { DeviceRow } from '@deeplib/db';
 import type { DataTransaction } from '@stdlib/data';
+import { nanoid } from 'nanoid';
+import { db } from 'src/data/knex';
 import { getDeviceHash } from 'src/utils/crypto';
 
 export async function getUserDevice(input: {
@@ -15,17 +17,29 @@ export async function getUserDevice(input: {
     userId: input.userId,
   });
 
-  let device = await DeviceModel.query()
-    .where('user_id', input.userId)
-    .where('hash', deviceHash)
-    .first();
+  const executor = (input.dtrx?.trx ?? db) as any;
+
+  let device = await executor
+    .selectFrom('devices')
+    .where('user_id', '=', input.userId)
+    .where('hash', '=', deviceHash)
+    .selectAll()
+    .executeTakeFirst();
 
   if (device == null) {
-    device = await DeviceModel.query(input.dtrx?.trx).insert({
-      user_id: input.userId,
-      hash: deviceHash,
-    });
+    const inserted = await executor
+      .insertInto('devices')
+      .values({
+        id: nanoid(),
+        user_id: input.userId,
+        hash: deviceHash,
+        trusted: false,
+      } as any)
+      .returningAll()
+      .executeTakeFirst();
+    if (inserted == null) throw new Error('Insert device failed');
+    device = inserted;
   }
 
-  return device;
+  return device as DeviceRow;
 }

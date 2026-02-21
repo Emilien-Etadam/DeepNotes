@@ -10,9 +10,7 @@ const EditorContent = internals.tiptap().EditorContent;
 
 type _EditorContent = typeof EditorContent;
 
-type Props = /* @vue-ignore */ _EditorContent;
-
-defineProps<Props>();
+defineProps</* @vue-ignore */ _EditorContent>();
 </script>
 
 <style scoped lang="scss">

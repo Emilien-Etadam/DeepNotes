@@ -1,10 +1,10 @@
-import { PageUpdateModel } from '@deeplib/db';
+import type { PageUpdateRow } from '@deeplib/db';
 import { base64ToBytes } from '@stdlib/base64';
-import { namedPromises } from '@stdlib/misc';
-import { mainLogger } from '@stdlib/misc';
+import { mainLogger, namedPromises } from '@stdlib/misc';
 import { throttle } from 'lodash';
 import { unpack } from 'msgpackr';
 
+import { db } from './data/knex';
 import { getRedis } from './data/redis';
 import { flushPageUpdateBuffer } from './data/redis/flush-page-update-buffer';
 
@@ -29,7 +29,7 @@ export const flushPageUpdatesThrottled = throttle(
 
       // Prepare page updates
 
-      const pageUpdateModels: Partial<PageUpdateModel>[] = [];
+      const pageUpdateModels: Partial<PageUpdateRow>[] = [];
       const pageUpdateIndexes: Record<string, number> = {};
 
       for (const [pageId, msgpackPageUpdates] of Object.entries(
@@ -43,7 +43,7 @@ export const flushPageUpdatesThrottled = throttle(
           pageUpdateModels.push({
             page_id: pageId,
             index: updateIndex,
-            encrypted_data: base64ToBytes(encryptedDataBase64),
+            encrypted_data: Buffer.from(base64ToBytes(encryptedDataBase64)),
           });
 
           pageUpdateIndexes[pageId] = updateIndex;
@@ -56,10 +56,13 @@ export const flushPageUpdatesThrottled = throttle(
 
       // Insert page updates into database
 
-      await PageUpdateModel.query()
-        .insert(pageUpdateModels)
-        .onConflict(['page_id', 'index'])
-        .ignore();
+      for (const row of pageUpdateModels) {
+        await db
+          .insertInto('page_updates')
+          .values(row as any)
+          .onConflict((oc) => oc.columns(['page_id', 'index']).doNothing())
+          .execute();
+      }
 
       // Trim page update buffers
 

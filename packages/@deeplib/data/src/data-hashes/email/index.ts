@@ -1,27 +1,25 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
-import { once } from 'lodash';
+import type { UserRow } from '@deeplib/db';
 
 import { hashUserEmail } from '../../emails';
 import { userId } from './user-id';
 
-const UserModel = once(
-  async () =>
-    (process.env.CLIENT ? null : (await import('@deeplib/db')).UserModel)!,
-);
-
 export const email = validateDataHash({
-  model: UserModel,
+  table: 'users',
+  idColumns: ['id'],
 
-  get: async ({ suffix: email, columns, trx }) =>
-    await (
-      await UserModel()
-    )
-      .query(trx)
-      .where('email_hash', Buffer.from(hashUserEmail(email)))
-      .select(columns)
-      .first(),
+  get: async ({ suffix: emailStr, columns, executor }) => {
+    const q = (executor as any)
+      .selectFrom('users')
+      .where('email_hash', '=', Buffer.from(hashUserEmail(emailStr)));
+    return (columns?.length
+      ? q.select(columns as any)
+      : q.selectAll()
+    ).executeTakeFirst();
+  },
 
   fields: {
     'user-id': userId,
   },
-});
+}) as DataHash<UserRow, any>;

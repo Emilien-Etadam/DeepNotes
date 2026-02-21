@@ -2,8 +2,7 @@ import { isNanoID } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { createGroup, groupCreationSchema } from 'src/utils/groups';
 import { z } from 'zod';
 
@@ -41,45 +40,14 @@ export async function create({
           });
         }
 
-        // Get some necessary user data
-
-        const [userPlan, personalGroupId] = await ctx.dataAbstraction.hmget(
+        const personalGroupId = await ctx.dataAbstraction.hget(
           'user',
           ctx.userId,
-          ['plan', 'personal-group-id'],
+          'personal-group-id',
         );
-
-        // Assert agent is subscribed
 
         if (input.groupId !== personalGroupId || input.groupCreation != null) {
           await ctx.assertUserSubscribed({ userId: ctx.userId });
-        }
-
-        // Check if can create page
-
-        let numFreePages;
-
-        if (userPlan !== 'pro') {
-          numFreePages =
-            (await ctx.dataAbstraction.hget(
-              'user',
-              ctx.userId,
-              'num-free-pages',
-            )) + 1;
-
-          if (numFreePages > 50) {
-            throw new TRPCError({
-              code: 'FORBIDDEN',
-              message: 'You have reached your limit of 50 free pages.',
-            });
-          }
-
-          await ctx.dataAbstraction.patch(
-            'user',
-            ctx.userId,
-            { num_free_pages: numFreePages },
-            { dtrx },
-          );
         }
 
         // Create group if requested
@@ -111,7 +79,7 @@ export async function create({
 
               encrypted_absolute_title: input.pageEncryptedAbsoluteTitle,
               group_id: input.groupId,
-              free: userPlan !== 'pro',
+              free: false,
             },
             { dtrx },
           ),
@@ -132,8 +100,7 @@ export async function create({
 
         return {
           pageId: input.pageId,
-
-          numFreePages: numFreePages,
+          numFreePages: 0,
         };
       });
     },

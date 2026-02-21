@@ -1,6 +1,4 @@
-import type { Keyring, SymmetricKeyring } from '@stdlib/crypto';
-import { createSymmetricKeyring } from '@stdlib/crypto';
-import { DataLayer } from '@stdlib/crypto';
+import { DataLayer, type Keyring, type SymmetricKeyring, createSymmetricKeyring } from '@stdlib/crypto';
 import { textToBytes } from '@stdlib/misc';
 import { nanoid } from 'nanoid';
 import {

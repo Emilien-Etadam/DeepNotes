@@ -1,7 +1,7 @@
-import { PageSnapshotModel } from '@deeplib/db';
 import type { PageSnapshotInfo, PageSnapshotType } from '@deeplib/misc';
 import type { DataAbstraction, DataTransaction } from '@stdlib/data';
 import { addDays } from '@stdlib/misc';
+import { nanoid } from 'nanoid';
 
 import type { dataHashes } from './data-hashes';
 
@@ -21,15 +21,20 @@ export async function insertPageSnapshot(input: {
   const pageSnapshotInfos: PageSnapshotInfo[] =
     await input.dataAbstraction.hget('page-snapshots', input.pageId, 'infos');
 
-  const pageSnapshot = await PageSnapshotModel.query(input.dtrx.trx)
-    .insert({
+  const executor = input.dtrx.trx!;
+
+  const pageSnapshot = await executor
+    .insertInto('page_snapshots')
+    .values({
+      id: nanoid(),
       page_id: input.pageId,
       encrypted_symmetric_key: input.encryptedSymmetricKey,
       encrypted_data: input.encryptedData,
       author_id: input.authorId,
       type: input.type,
-    })
-    .returning(['id', 'creation_date']);
+    } as any)
+    .returning(['id', 'creation_date', 'author_id', 'type'])
+    .executeTakeFirstOrThrow();
 
   // Add new snapshot
 
@@ -51,9 +56,12 @@ export async function insertPageSnapshot(input: {
     deletedSnapshotIds.push(pageSnapshotInfos.pop()!.id);
   }
 
-  await PageSnapshotModel.query(input.dtrx.trx)
-    .whereIn('id', deletedSnapshotIds)
-    .delete();
+  if (deletedSnapshotIds.length > 0) {
+    await executor
+      .deleteFrom('page_snapshots')
+      .where('id', 'in', deletedSnapshotIds)
+      .execute();
+  }
 
   // Update page snapshot infos
 

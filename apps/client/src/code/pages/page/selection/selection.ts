@@ -1,5 +1,4 @@
-import type { MarkName, NodeName } from '@stdlib/misc';
-import { Vec2 } from '@stdlib/misc';
+import { type MarkName, type NodeName, Vec2 } from '@stdlib/misc';
 import type { ChainedCommands, Editor } from '@tiptap/vue-3';
 import { every } from 'lodash';
 import { unsetNode } from 'src/code/areas/tiptap/utils';

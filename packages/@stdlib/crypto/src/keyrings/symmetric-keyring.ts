@@ -1,10 +1,7 @@
 import sodium from 'libsodium-wrappers-sumo';
 
-import type { KeyPair, PrivateKey, PublicKey, SymmetricKey } from '..';
-import type { DataLayer } from '..';
-import { wrapSymmetricKey } from '..';
-import type { IKeyring, KeyMetadata } from './keyring';
-import { createKeyring } from './keyring';
+import { type DataLayer, type KeyPair, type PrivateKey, type PublicKey, type SymmetricKey, wrapSymmetricKey } from '..';
+import { type IKeyring, type KeyMetadata, createKeyring } from './keyring';
 
 export function createSymmetricKeyring(
   value = sodium.crypto_aead_xchacha20poly1305_ietf_keygen(),

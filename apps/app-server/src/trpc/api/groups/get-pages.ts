@@ -1,9 +1,8 @@
-import { PageModel } from '@deeplib/db';
 import { isNanoID } from '@stdlib/misc';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { optionalAuthProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, optionalAuthProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 const baseProcedure = optionalAuthProcedure.input(
   z.object({
@@ -19,41 +18,39 @@ export async function getPages({
   ctx,
   input,
 }: InferProcedureOpts<typeof baseProcedure>) {
-  // Assert that user has sufficient permissions
-
   await ctx.assertSufficientGroupPermissions({
     userId: ctx.userId,
     groupId: input.groupId,
     permission: 'viewGroupPages',
   });
 
-  // Get pages
-
-  let pagesQuery = PageModel.query().where('group_id', input.groupId);
-
-  if (input.lastPageId != null) {
-    pagesQuery = pagesQuery.where(
-      'last_activity_date',
-      '<',
-      PageModel.query().findById(input.lastPageId).select('last_activity_date'),
-    );
-  }
-
-  pagesQuery = pagesQuery
-    .orderBy('last_activity_date', 'DESC')
-    .limit(21)
+  let query = db
+    .selectFrom('pages')
+    .where('group_id', '=', input.groupId)
     .select('id');
 
-  const pages = await pagesQuery;
-
-  const hasMore = pages.length > 20;
-
-  if (hasMore) {
-    pages.pop();
+  if (input.lastPageId != null) {
+    const lastDate = await db
+      .selectFrom('pages')
+      .where('id', '=', input.lastPageId)
+      .select('last_activity_date')
+      .executeTakeFirst();
+    if (lastDate?.last_activity_date != null) {
+      query = query.where(
+        'last_activity_date',
+        '<',
+        lastDate.last_activity_date,
+      );
+    }
   }
 
-  return {
-    pageIds: pages.map((page) => page.id),
-    hasMore,
-  };
+  const pages = await query
+    .orderBy('last_activity_date', 'desc')
+    .limit(21)
+    .execute();
+
+  const hasMore = pages.length > 20;
+  const pageIds = hasMore ? pages.slice(0, 20).map((p) => p.id) : pages.map((p) => p.id);
+
+  return { pageIds, hasMore };
 }

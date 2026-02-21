@@ -1,7 +1,6 @@
 import { iif } from '@stdlib/misc';
 import { once } from 'lodash';
-import type { SendEmailV3_1 } from 'node-mailjet';
-import Mailjet from 'node-mailjet';
+import Mailjet, { type SendEmailV3_1 } from 'node-mailjet';
 
 import type { MailOptions } from '.';
 

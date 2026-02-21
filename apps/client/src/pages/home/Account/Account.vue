@@ -32,17 +32,6 @@
             <q-item
               style="height: 60px"
               clickable
-              :to="{ name: 'account/billing' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-cash-multiple" />
-              </q-item-section>
-              <q-item-section>Billing</q-item-section>
-            </q-item>
-
-            <q-item
-              style="height: 60px"
-              clickable
               :to="{ name: 'account/security' }"
             >
               <q-item-section avatar>

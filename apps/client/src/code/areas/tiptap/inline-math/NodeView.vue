@@ -36,8 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import type { NodeViewProps } from '@tiptap/vue-3';
-import { NodeViewWrapper } from '@tiptap/vue-3';
+import { type NodeViewProps, NodeViewWrapper } from '@tiptap/vue-3';
 import katex from 'katex';
 
 type Props = NodeViewProps;

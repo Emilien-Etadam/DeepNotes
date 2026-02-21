@@ -185,7 +185,9 @@ watchEffect(() => {
   componentLogger.info('Checking if can finish setup');
 
   if (pageKeyring?.topLayer === DataLayer.Raw) {
-    void props.page.finishSetup();
+    props.page
+      .finishSetup()
+      .catch((err) => componentLogger.error('finishSetup failed:', err));
     return;
   }
 

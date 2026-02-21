@@ -1,9 +1,8 @@
-import { PageLinkModel } from '@deeplib/db';
 import { isNanoID } from '@stdlib/misc';
 import { once, pull } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 const baseProcedure = authProcedure.input(
   z.object({
@@ -34,10 +33,11 @@ export async function delete_({
 
   // Delete page link
 
-  await PageLinkModel.query()
-    .where('source_page_id', input.sourcePageId)
-    .where('target_page_id', input.targetPageId)
-    .delete();
+  await db
+    .deleteFrom('page_links')
+    .where('source_page_id', '=', input.sourcePageId)
+    .where('target_page_id', '=', input.targetPageId)
+    .execute();
 
   // Update cache
 

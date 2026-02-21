@@ -113,11 +113,7 @@
           />
 
           <div style="flex: 1">
-            I have read and agree to the<br />
-            <router-link :to="{ name: 'privacy-policy' }">
-              Privacy Policy
-            </router-link>
-            and
+            I have read and agree to the
             <router-link :to="{ name: 'terms-of-service' }">
               Terms of Service</router-link
             >.

@@ -1,4 +1,3 @@
-import { NotificationModel, UserNotificationModel } from '@deeplib/db';
 import type {
   DeepNotesNotification,
   DeepNotesNotificationType,
@@ -38,34 +37,34 @@ export async function notifyUsers(
     encryptedContent: Uint8Array;
   }[],
 ) {
-  await dataAbstraction().transaction(async ({ trx }) => {
+  await dataAbstraction().transaction(async (dtrx) => {
+    const trx = dtrx.trx!;
     const dateTime = new Date();
 
     await Promise.all(
       notifications.map(async ({ recipients, type, encryptedContent }) => {
-        const notificationId = parseInt(
-          (
-            await NotificationModel.query(trx)
-              .insert({
-                type,
-
-                encrypted_content: encryptedContent,
-
-                datetime: dateTime,
-              })
-              .returning('id')
-          ).id as any,
-        );
+        const row = await trx
+          .insertInto('notifications')
+          .values({
+            type,
+            encrypted_content: encryptedContent,
+            datetime: dateTime,
+          } as any)
+          .returning('id')
+          .executeTakeFirstOrThrow();
+        const notificationId = Number(row.id);
 
         await Promise.all(
           objEntries(recipients).map(
             async ([userId, { encryptedSymmetricKey }]) => {
-              await UserNotificationModel.query(trx).insert({
-                user_id: userId,
-                notification_id: notificationId,
-
-                encrypted_symmetric_key: encryptedSymmetricKey,
-              });
+              await trx
+                .insertInto('users_notifications')
+                .values({
+                  user_id: userId,
+                  notification_id: notificationId,
+                  encrypted_symmetric_key: encryptedSymmetricKey,
+                } as any)
+                .execute();
 
               await getRedis().publish(
                 `user-notification:${userId}`,

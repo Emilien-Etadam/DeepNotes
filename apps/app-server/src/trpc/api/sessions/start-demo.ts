@@ -6,8 +6,7 @@ import {
 import sodium from 'libsodium-wrappers-sumo';
 import { once } from 'lodash';
 import { nanoid } from 'nanoid';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { publicProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, publicProcedure } from 'src/trpc/helpers';
 import { getUserDevice } from 'src/utils/devices';
 import { generateSessionValues } from 'src/utils/sessions';
 import { registerUser, userRegistrationSchema } from 'src/utils/users';

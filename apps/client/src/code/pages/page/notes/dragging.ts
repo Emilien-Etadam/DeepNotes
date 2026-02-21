@@ -1,5 +1,4 @@
-import { listenPointerEvents } from '@stdlib/misc';
-import { Vec2 } from '@stdlib/misc';
+import { Vec2, listenPointerEvents } from '@stdlib/misc';
 import { refProp, watchUntilTrue } from '@stdlib/vue';
 import { isCtrlDown } from 'src/code/utils/misc';
 import type { UnwrapRef } from 'vue';
@@ -61,13 +60,17 @@ export class NoteDragging {
     this._cancelPointerEvents = listenPointerEvents(params.event, {
       dragStartDistance: 5,
 
-      dragStart: () => this._dragStart(params),
+      dragStart: () => {
+        this._dragStart(params).catch((err) =>
+          mainLogger.sub('NoteDragging._dragStart').error(err),
+        );
+      },
       dragUpdate: this._dragUpdate,
       dragEnd: this._dragFinish,
     });
   }
 
-  private _dragStart = async (params: {
+  private readonly _dragStart = async (params: {
     note: PageNote;
     event: PointerEvent;
   }) => {
@@ -109,7 +112,7 @@ export class NoteDragging {
     this.react.active = true;
   };
 
-  private _dragUpdate = (event: PointerEvent) => {
+  private readonly _dragUpdate = (event: PointerEvent) => {
     if (!this.react.active) {
       return;
     }
@@ -237,7 +240,7 @@ export class NoteDragging {
     }
   }
 
-  private _dragFinish = () => {
+  private readonly _dragFinish = () => {
     if (this.react.active && this.finalRegionId !== this.initialRegionId) {
       const date = roundTimeToMinutes(Date.now());
 

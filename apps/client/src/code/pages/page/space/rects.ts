@@ -1,5 +1,4 @@
-import { Rect } from '@stdlib/misc';
-import { Vec2 } from '@stdlib/misc';
+import { Rect, Vec2 } from '@stdlib/misc';
 
 import type { Page } from '../page';
 

@@ -1,23 +1,22 @@
-import type { Model, TransactionOrKnex } from 'objection';
+import type { Kysely } from 'kysely';
 
 import type { DataField } from './data-field';
 
-export interface DataHash<T extends Model = any> {
-  model: () => Promise<typeof Model>;
+export interface DataHash<T = any, DB = any> {
+  table: string;
+
+  /** Primary key column(s) for patch/delete (e.g. ['id'] or ['group_id', 'user_id']) */
+  idColumns: string[];
 
   get: (params: {
     suffix: string;
-
     columns?: string[];
-
-    trx?: TransactionOrKnex;
+    executor: Kysely<DB>;
   }) => Promise<T | undefined>;
   set?: (params: {
     suffix: string;
-
     model: T;
-
-    trx?: TransactionOrKnex;
+    executor: Kysely<DB>;
   }) => Promise<any>;
 
   fields: Record<string, DataField<T>>;

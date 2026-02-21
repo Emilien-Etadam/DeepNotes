@@ -1,11 +1,10 @@
-import { PageSnapshotModel } from '@deeplib/db';
 import { isNanoID } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 const baseProcedure = authProcedure.input(
   z.object({
@@ -47,9 +46,11 @@ export async function load({
 
           // Load page snapshot infos
 
-          const snapshot = await PageSnapshotModel.query()
-            .findById(input.snapshotId)
-            .select('encrypted_symmetric_key', 'encrypted_data');
+          const snapshot = await db
+            .selectFrom('page_snapshots')
+            .where('id', '=', input.snapshotId)
+            .select(['encrypted_symmetric_key', 'encrypted_data'])
+            .executeTakeFirst();
 
           if (snapshot == null) {
             throw new TRPCError({

@@ -1,6 +1,5 @@
 import { hashUserEmail } from '@deeplib/data';
-import type { DeviceModel } from '@deeplib/db';
-import { UserModel } from '@deeplib/db';
+import type { DeviceRow, UserRow } from '@deeplib/db';
 import {
   createPrivateKeyring,
   createSymmetricKeyring,
@@ -9,14 +8,12 @@ import {
 import type { DataTransaction } from '@stdlib/data';
 import { allAsyncProps, w3cEmailRegex } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
-import type { Cluster } from 'ioredis';
-import type { Redis } from 'ioredis';
+import type { Cluster, Redis } from 'ioredis';
 import sodium from 'libsodium-wrappers-sumo';
 import { once } from 'lodash';
 import { nanoid } from 'nanoid';
 import { authenticator } from 'otplib';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { publicProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, publicProcedure } from 'src/trpc/helpers';
 import {
   decryptRecoveryCodes,
   decryptUserAuthenticatorSecret,
@@ -29,6 +26,7 @@ import { getUserDevice } from 'src/utils/devices';
 import { generateSessionValues } from 'src/utils/sessions';
 import { z } from 'zod';
 
+import { db } from '../../../data/knex';
 import { sendRegistrationEmail } from '../users/account/register';
 
 const baseProcedure = publicProcedure.input(
@@ -82,32 +80,29 @@ export async function login({
 
     // Get user data
 
-    const user = await UserModel.query()
-      .where('email_hash', Buffer.from(hashUserEmail(input.email)))
-      .where((builder) =>
-        builder
-          .where('email_verified', true)
-          .orWhere('email_verification_expiration_date', '>', new Date()),
+    const user = await db
+      .selectFrom('users')
+      .where('email_hash', '=', Buffer.from(hashUserEmail(input.email)))
+      .where((eb) =>
+        eb.or([
+          eb('email_verified', '=', true),
+          eb('email_verification_expiration_date', '>', new Date()),
+        ] as any),
       )
-      .select(
-        'users.id',
-
-        'users.email_verified',
-        'users.email_verification_code',
-
-        'users.encrypted_rehashed_login_hash',
-
-        'users.public_keyring',
-        'users.encrypted_private_keyring',
-        'users.encrypted_symmetric_keyring',
-
-        'users.two_factor_auth_enabled',
-        'users.encrypted_authenticator_secret',
-        'users.encrypted_recovery_codes',
-
-        'users.personal_group_id',
-      )
-      .first();
+      .select([
+        'id',
+        'email_verified',
+        'email_verification_code',
+        'encrypted_rehashed_login_hash',
+        'public_keyring',
+        'encrypted_private_keyring',
+        'encrypted_symmetric_keyring',
+        'two_factor_auth_enabled',
+        'encrypted_authenticator_secret',
+        'encrypted_recovery_codes',
+        'personal_group_id',
+      ])
+      .executeTakeFirst();
 
     if (user == null) {
       await _incrementFailedLoginAttempts({
@@ -179,7 +174,7 @@ export async function login({
 
     // Check two-factor authentication
 
-    if (user.two_factor_auth_enabled) {
+    if (user!.two_factor_auth_enabled) {
       await _checkTwoFactorAuth({
         device,
 
@@ -188,7 +183,7 @@ export async function login({
 
         redis: ctx.redis,
 
-        user,
+        user: user as UserRow,
 
         authenticatorToken: input.authenticatorToken!,
         recoveryCode: input.recoveryCode!,
@@ -214,30 +209,30 @@ export async function login({
     // Return session values
 
     return {
-      userId: user.id,
+      userId: user!.id,
       sessionId,
 
       sessionKey,
 
-      personalGroupId: user.personal_group_id,
+      personalGroupId: user!.personal_group_id,
 
-      publicKeyring: new Uint8Array(user.public_keyring),
+      publicKeyring: new Uint8Array(user!.public_keyring),
       encryptedPrivateKeyring: new Uint8Array(
-        createPrivateKeyring(user.encrypted_private_keyring)
+        createPrivateKeyring(user!.encrypted_private_keyring)
           .unwrapSymmetric(passwordValues.key, {
             associatedData: {
               context: 'UserEncryptedPrivateKeyring',
-              userId: user.id,
+              userId: user!.id,
             },
           })
           .wrappedValue,
       ),
       encryptedSymmetricKeyring: new Uint8Array(
-        createSymmetricKeyring(user.encrypted_symmetric_keyring)
+        createSymmetricKeyring(user!.encrypted_symmetric_keyring)
           .unwrapSymmetric(passwordValues.key, {
             associatedData: {
               context: 'UserEncryptedSymmetricKeyring',
-              userId: user.id,
+              userId: user!.id,
             },
           })
           .wrappedValue,
@@ -276,8 +271,8 @@ async function _checkFailedLoginAttempts(input: {
   });
 
   const numFailedEmailLoginAttempts =
-    parseInt(emailFailedLoginAttemptsStr!) || 0;
-  const numFailedIPLoginAttempts = parseInt(ipFailedLoginAttemptsStr!) || 0;
+    Number.parseInt(emailFailedLoginAttemptsStr!) || 0;
+  const numFailedIPLoginAttempts = Number.parseInt(ipFailedLoginAttemptsStr!) || 0;
 
   const excessive =
     Math.max(numFailedEmailLoginAttempts, numFailedIPLoginAttempts) >= 4;
@@ -310,14 +305,14 @@ async function _incrementFailedLoginAttempts(input: {
 
 async function _checkTwoFactorAuth(
   input: {
-    device: DeviceModel;
+    device: DeviceRow;
 
     authenticatorToken: string;
     recoveryCode: string;
 
     rememberDevice: boolean;
 
-    user: UserModel;
+    user: UserRow;
 
     dtrx: DataTransaction;
   } & Parameters<typeof _incrementFailedLoginAttempts>[0],
@@ -340,7 +335,11 @@ async function _checkTwoFactorAuth(
       if (input.rememberDevice) {
         // Mark device as trusted
 
-        await input.device.$query(input.dtrx.trx).patch({ trusted: true });
+        await input.dtrx.trx!
+          .updateTable('devices')
+          .set({ trusted: true })
+          .where('id', '=', input.device.id)
+          .execute();
       }
 
       return;
@@ -369,9 +368,13 @@ async function _checkTwoFactorAuth(
         if (verifyRecoveryCode(input.recoveryCode, recoveryCodes[i])) {
           recoveryCodes.splice(i, 1);
 
-          await input.user.$query(input.dtrx.trx).patch({
-            encrypted_recovery_codes: encryptRecoveryCodes(recoveryCodes),
-          });
+          await input.dtrx.trx!
+            .updateTable('users')
+            .set({
+              encrypted_recovery_codes: encryptRecoveryCodes(recoveryCodes),
+            } as any)
+            .where('id', '=', input.user.id)
+            .execute();
 
           return;
         }

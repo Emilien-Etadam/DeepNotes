@@ -30,8 +30,6 @@ export async function logout() {
 
   clearCookie('loggedIn');
 
-  await (globalThis as any).electronBridge?.clearLoggedInCookie();
-
   internals.storage.removeItem('loggedIn');
 
   try {

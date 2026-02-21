@@ -61,8 +61,7 @@
 
 <script setup lang="ts">
 import { QMenu } from 'quasar';
-import type { CSSPosition } from 'src/code/utils/position';
-import { flipPos, posToBasis } from 'src/code/utils/position';
+import { type CSSPosition, flipPos, posToBasis } from 'src/code/utils/position';
 
 const props = defineProps<{
   pos: CSSPosition;

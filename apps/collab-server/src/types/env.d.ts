@@ -48,13 +48,5 @@ declare namespace NodeJS {
     BREVO_API_KEY: string;
 
     SENDGRID_API_KEY: string;
-
-    STRIPE_SECRET_KEY: string;
-    STRIPE_WEBHOOK_SECRET: string;
-    STRIPE_MONTHLY_PRICE_ID: string;
-    STRIPE_YEARLY_PRICE_ID: string;
-
-    REVENUECAT_PUBLIC_APPLE_API_KEY: string;
-    REVENUECAT_WEBHOOK_SECRET: string;
   }
 }

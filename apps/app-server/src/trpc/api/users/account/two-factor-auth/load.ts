@@ -1,13 +1,12 @@
 import { decryptUserEmail } from '@deeplib/data';
-import { UserModel } from '@deeplib/db';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
 import { authenticator } from 'otplib';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { decryptUserAuthenticatorSecret } from 'src/utils/crypto';
 import { z } from 'zod';
+import { db } from 'src/data/knex';
 
 const baseProcedure = authProcedure.input(
   z.object({
@@ -33,12 +32,15 @@ export async function load({
 
       // Get user data
 
-      const user = await UserModel.query().findById(ctx.userId).select(
-        'two_factor_auth_enabled',
-        'encrypted_authenticator_secret',
-
-        'encrypted_email',
-      );
+      const user = await db
+        .selectFrom('users')
+        .where('id', '=', ctx.userId)
+        .select([
+          'two_factor_auth_enabled',
+          'encrypted_authenticator_secret',
+          'encrypted_email',
+        ])
+        .executeTakeFirst();
 
       checkRedlockSignalAborted(signals);
 

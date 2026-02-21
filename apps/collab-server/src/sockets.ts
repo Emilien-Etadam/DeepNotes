@@ -1,5 +1,4 @@
 import { getAllPageUpdates, insertPageSnapshot } from '@deeplib/data';
-import { PageSnapshotModel, PageUpdateModel } from '@deeplib/db';
 import {
   CollabClientDocMessageType,
   CollabMessageType,
@@ -9,22 +8,21 @@ import {
 import { bytesToBase64 } from '@stdlib/base64';
 import { getSelfPublisherIdBytes } from '@stdlib/data';
 import { patchMultiple } from '@stdlib/db';
-import { addDays, addMinutes, splitStr } from '@stdlib/misc';
-import { mainLogger } from '@stdlib/misc';
+import { addDays, addMinutes, mainLogger, splitStr } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
-import { randomBytes } from 'crypto';
-import type { IncomingMessage } from 'http';
+import { randomBytes } from 'node:crypto';
+import type { IncomingMessage } from 'node:http';
 import { decoding, encoding } from 'lib0';
 import type { WebSocket } from 'ws';
 
 import { dataAbstraction } from './data/data-abstraction';
+import { db } from './data/knex';
 import { getRedis } from './data/redis';
 import { bufferizePageUpdate } from './data/redis/bufferize-page-update';
 import { flushPageUpdateBuffer } from './data/redis/flush-page-update-buffer';
 import { squashPageUpdates } from './data/redis/squash-page-updates';
 import { usingLocks } from './data/redlock';
-import type { Room } from './rooms';
-import { getRoom } from './rooms';
+import { type Room, getRoom } from './rooms';
 
 const moduleLogger = mainLogger.sub('sockets.ts');
 
@@ -111,7 +109,7 @@ export class SocketAuxObject {
 
       const groupIsPublic = await dataAbstraction().hget(
         'group',
-        groupId!,
+        groupId,
         'is-public',
       );
 
@@ -140,14 +138,12 @@ export class SocketAuxObject {
             throw new Error('User is not a member of the group.');
           }
         }
-      } else {
-        if (!groupIsPublic) {
-          this.destroySocket();
+      } else if (!groupIsPublic) {
+        this.destroySocket();
 
-          throw new Error(
-            'Unauthenticated users can only access public groups.',
-          );
-        }
+        throw new Error(
+          'Unauthenticated users can only access public groups.',
+        );
       }
 
       // Setup room
@@ -168,13 +164,9 @@ export class SocketAuxObject {
     const [
       pageUpdates,
 
-      userPlan,
-
       [nextSnapshotDate, nextSnapshotUpdateIndex, nextKeyRotationDate],
     ] = await Promise.all([
-      getAllPageUpdates(this.room.pageId, getRedis()),
-
-      dataAbstraction().hget('user', this.userId!, 'plan'),
+      getAllPageUpdates(this.room.pageId, getRedis(), db),
 
       dataAbstraction().hmget('page', this.room.pageId, [
         'next-snapshot-date',
@@ -199,7 +191,6 @@ export class SocketAuxObject {
     const pageUpdateIndex = pageUpdates.at(-1)?.[0] ?? 0;
 
     const createSnapshot =
-      userPlan === 'pro' &&
       new Date() >= nextSnapshotDate &&
       pageUpdateIndex >= nextSnapshotUpdateIndex;
 
@@ -222,9 +213,7 @@ export class SocketAuxObject {
 
     const rotatePageKey = new Date() >= nextKeyRotationDate;
 
-    if (!rotatePageKey) {
-      encoding.writeUint8(encoder, 0);
-    } else {
+    if (rotatePageKey) {
       try {
         await usingLocks(
           [[`page-lock:${this.room.pageId}`]],
@@ -277,9 +266,11 @@ export class SocketAuxObject {
                     'encrypted-absolute-title',
                   ),
 
-                  PageSnapshotModel.query()
-                    .where('page_id', this.room.pageId)
-                    .select('id', 'encrypted_symmetric_key'),
+                  db
+                    .selectFrom('page_snapshots')
+                    .where('page_id', '=', this.room.pageId)
+                    .select(['id', 'encrypted_symmetric_key'])
+                    .execute(),
                 ]);
 
                 encoding.writeVarUint8Array(
@@ -307,8 +298,11 @@ export class SocketAuxObject {
           },
         );
       } catch (error) {
+        moduleLogger.error('Key rotation failed: %o', error);
         encoding.writeUint8(encoder, 0);
       }
+    } else {
+      encoding.writeUint8(encoder, 0);
     }
 
     encoding.writeUint8(encoder, createSnapshot ? 1 : 0);
@@ -387,13 +381,10 @@ export class SocketAuxObject {
   }
 
   private async _handleMessage(messageBuffer: ArrayBuffer) {
-    const [sessionInvalidated, userPlan, pageGroupId, pageIsFree] =
-      await Promise.all([
-        dataAbstraction().hget('session', this.sessionId!, 'invalidated'),
-        dataAbstraction().hget('user', this.userId!, 'plan'),
-        dataAbstraction().hget('page', this.room.pageId, 'group-id'),
-        dataAbstraction().hget('page', this.room.pageId, 'free'),
-      ]);
+    const [sessionInvalidated, pageGroupId] = await Promise.all([
+      dataAbstraction().hget('session', this.sessionId!, 'invalidated'),
+      dataAbstraction().hget('page', this.room.pageId, 'group-id'),
+    ]);
 
     // Check if session is invalidated
 
@@ -411,10 +402,7 @@ export class SocketAuxObject {
       'role',
     );
 
-    if (
-      !rolesMap()[role]?.permissions.editGroupPages ||
-      (userPlan !== 'pro' && !pageIsFree)
-    ) {
+    if (!rolesMap()[role]?.permissions.editGroupPages) {
       moduleLogger.info('Ignored message from unauthorized user');
       return;
     }
@@ -467,15 +455,12 @@ export class SocketAuxObject {
       ),
     );
 
-    // Reset expiration for awareness buffer
+    // Reset expiration for awareness buffer, and publish awareness message
 
     promises.push(
       getRedis().expire(`page-awareness-buffer:{${this.room.pageId}}`, 30),
+      this._publish(message),
     );
-
-    // Publish awareness message
-
-    promises.push(this._publish(message));
 
     await Promise.all(promises);
 
@@ -566,6 +551,7 @@ export class SocketAuxObject {
               );
 
               await patchMultiple(
+                dtrx.trx!,
                 'page_snapshots',
 
                 ['id', 'encrypted_symmetric_key'],
@@ -574,8 +560,6 @@ export class SocketAuxObject {
 
                 'id = values.id',
                 'encrypted_symmetric_key = values.encrypted_symmetric_key',
-
-                { trx: dtrx.trx },
               );
             }
 
@@ -606,21 +590,25 @@ export class SocketAuxObject {
 
             // Delete old unmerged updates
 
-            await PageUpdateModel.query(dtrx.trx)
-              .delete()
-              .where('page_id', this.room.pageId)
-              .andWhere('index', '<=', updateIndex);
+            await dtrx.trx!
+              .deleteFrom('page_updates')
+              .where('page_id', '=', this.room.pageId)
+              .where('index', '<=', updateIndex)
+              .execute();
 
             // Insert encrypted update in the database
 
-            await PageUpdateModel.query(dtrx.trx)
-              .insert({
+            await dtrx.trx!
+              .insertInto('page_updates')
+              .values({
                 page_id: this.room.pageId,
                 index: updateIndex,
                 encrypted_data: encryptedUpdate,
-              })
-              .onConflict(['page_id', 'index'])
-              .ignore();
+              } as any)
+              .onConflict((oc) =>
+                oc.columns(['page_id', 'index']).doNothing(),
+              )
+              .execute();
 
             checkRedlockSignalAborted(signals);
 
@@ -657,14 +645,14 @@ export class SocketAuxObject {
     );
 
     if (updateIndex == null) {
-      const lastUpdateIndex = parseInt(
-        (
-          (await PageUpdateModel.query()
-            .where('page_id', this.room.pageId)
-            .max('index')
-            .first()) as any
-        )?.max ?? 0,
-      );
+      const maxRow = await db
+        .selectFrom('page_updates')
+        .where('page_id', '=', this.room.pageId)
+        .orderBy('index', 'desc')
+        .select('index')
+        .limit(1)
+        .executeTakeFirst();
+      const lastUpdateIndex = maxRow?.index ?? 0;
 
       updateIndex = await bufferizePageUpdate(
         this.room.pageId,

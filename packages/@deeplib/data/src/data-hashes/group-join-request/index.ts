@@ -1,36 +1,37 @@
+import type { DataHash } from '@stdlib/data';
 import { validateDataHash } from '@stdlib/data/src/universal';
 import { splitStr } from '@stdlib/misc';
-import { once } from 'lodash';
+import type { GroupJoinRequestRow } from '@deeplib/db';
 
 import { encryptedName } from './encrypted-name';
 import { encryptedNameForUser } from './encrypted-name-for-user';
 import { exists } from './exists';
 import { rejected } from './rejected';
 
-const GroupJoinRequestModel = once(
-  async () =>
-    (process.env.CLIENT
-      ? null
-      : (await import('@deeplib/db')).GroupJoinRequestModel)!,
-);
-
 export const groupJoinRequest = validateDataHash({
-  model: GroupJoinRequestModel,
+  table: 'group_join_requests',
+  idColumns: ['group_id', 'user_id'],
 
-  get: async ({ suffix, columns, trx }) =>
-    await (
-      await GroupJoinRequestModel()
-    )
-      .query(trx)
-      .findById(splitStr(suffix, ':', 2))
-      .select(columns),
-  set: async ({ suffix, model, trx }) =>
-    await (
-      await GroupJoinRequestModel()
-    )
-      .query(trx)
-      .findById(splitStr(suffix, ':', 2))
-      .patch(model),
+  get: async ({ suffix, columns, executor }) => {
+    const [group_id, user_id] = splitStr(suffix, ':', 2);
+    const q = (executor as any)
+      .selectFrom('group_join_requests')
+      .where('group_id', '=', group_id)
+      .where('user_id', '=', user_id);
+    return (columns?.length
+      ? q.select(columns as any)
+      : q.selectAll()
+    ).executeTakeFirst();
+  },
+  set: async ({ suffix, model, executor }) => {
+    const [group_id, user_id] = splitStr(suffix, ':', 2);
+    return (executor as any)
+      .updateTable('group_join_requests')
+      .set(model)
+      .where('group_id', '=', group_id)
+      .where('user_id', '=', user_id)
+      .executeTakeFirst();
+  },
 
   fields: {
     'encrypted-name-for-user': encryptedNameForUser,
@@ -38,4 +39,4 @@ export const groupJoinRequest = validateDataHash({
     exists: exists,
     rejected: rejected,
   },
-});
+}) as DataHash<GroupJoinRequestRow, any>;

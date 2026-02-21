@@ -2,8 +2,7 @@ import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { TRPCError } from '@trpc/server';
 import sodium from 'libsodium-wrappers-sumo';
 import { once } from 'lodash';
-import type { InferProcedureOpts } from 'src/trpc/helpers';
-import { authProcedure } from 'src/trpc/helpers';
+import { type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { encryptRecoveryCodes, hashRecoveryCode } from 'src/utils/crypto';
 import { z } from 'zod';
 

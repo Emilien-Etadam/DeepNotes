@@ -1,5 +1,4 @@
-import type { Vec2 } from '@stdlib/misc';
-import { listenPointerEvents } from '@stdlib/misc';
+import { type Vec2, listenPointerEvents } from '@stdlib/misc';
 import type { ComputedRef, UnwrapNestedRefs, WatchStopHandle } from 'vue';
 
 import type { Page } from '../page';

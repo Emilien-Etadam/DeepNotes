@@ -23,7 +23,7 @@
           label-color="grey-5"
           v-model="email"
           :maxlength="maxEmailLength"
-          autocomplete="username"
+          autocomplete="email"
         />
 
         <Gap style="height: 12px" />
@@ -33,6 +33,7 @@
           label-color="grey-5"
           v-model="userName"
           :maxlength="maxNameLength"
+          autocomplete="name"
         />
 
         <Gap style="height: 12px" />

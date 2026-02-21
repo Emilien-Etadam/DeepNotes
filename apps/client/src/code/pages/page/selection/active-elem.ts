@@ -1,8 +1,7 @@
 import type { ComputedRef, UnwrapNestedRefs } from 'vue';
 
 import type { PageArrow } from '../arrows/arrow';
-import type { PageElem } from '../elems/elem';
-import type { ElemType } from '../elems/elem';
+import type { ElemType, PageElem } from '../elems/elem';
 import type { PageNote } from '../notes/note';
 import type { Page } from '../page';
 
