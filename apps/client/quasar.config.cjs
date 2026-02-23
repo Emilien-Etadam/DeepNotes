@@ -132,7 +132,11 @@ module.exports = configure(function (ctx) {
           ...viteConf.css,
           preprocessorOptions: {
             ...viteConf.css?.preprocessorOptions,
-            scss: { silenceDeprecations: ['legacy-js-api', 'import'] },
+            scss: {
+              silenceDeprecations: ['legacy-js-api', 'import'],
+              includePaths: [path.resolve(__dirname, 'src/css')],
+              additionalData: `@use 'src/css/tokens' as *;\n`,
+            },
           },
         };
         // Packages Node → navigateur : alias CJS ou stub

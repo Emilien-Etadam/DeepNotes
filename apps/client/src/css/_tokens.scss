@@ -1,0 +1,64 @@
+// ========================================
+// Design Tokens — DeepNotes
+// ========================================
+
+// --- Couleurs de fond ---
+$bg-page: #181818;
+$bg-sidebar: #212121;
+$bg-sidebar-sub: #141414;
+$bg-card: #383838;
+$bg-overlay: #404040;
+$bg-input-idle: rgba(255, 255, 255, 0.12);
+$bg-input-hover: rgba(255, 255, 255, 0.2);
+$bg-input-focus: rgba(255, 255, 255, 0.25);
+
+// --- Couleurs de texte ---
+$text-primary: rgba(255, 255, 255, 0.92);
+$text-secondary: rgba(255, 255, 255, 0.85);
+$text-muted: rgba(255, 255, 255, 0.7);
+$text-disabled: rgba(255, 255, 255, 0.5);
+$text-placeholder: rgba(255, 255, 255, 0.5);
+$text-readonly: #d8d8d8;
+
+// --- Couleurs d'accent ---
+$color-link: #60b2ff;
+$color-error: #ff4040;
+
+// --- Bordures ---
+$border-subtle: rgba(255, 255, 255, 0.16);
+$border-checkbox: rgba(255, 255, 255, 0.5);
+
+// --- Typographie ---
+$font-base: 'Inter', sans-serif;
+$font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Ubuntu Mono', 'Roboto Mono', Menlo, Monaco, Consolas, monospace;
+
+$fs-xs: 12px;
+$fs-sm: 13px;
+$fs-base: 16px;
+$fs-md: 18px;
+$fs-lg: 20px;
+$fs-xl: 24px;
+$fs-2xl: 28px;
+$fs-3xl: 32px;
+$fs-4xl: 40px;
+
+// --- Espacements ---
+$sp-1: 4px;
+$sp-2: 8px;
+$sp-3: 12px;
+$sp-4: 16px;
+$sp-5: 20px;
+$sp-6: 24px;
+$sp-7: 32px;
+$sp-8: 48px;
+$sp-9: 64px;
+
+// --- Rayons de bordure ---
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 8px;
+
+// --- Boutons ---
+$btn-padding-sm: 4px 8px;
+$btn-padding-md: 10px 20px;
+$btn-padding-lg: 14px 24px;

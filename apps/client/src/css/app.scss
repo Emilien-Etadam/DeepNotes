@@ -1,4 +1,5 @@
 // app global css in SCSS form
+// Les tokens sont injectés globalement via quasar.config.cjs (additionalData) — pas d'import ici pour éviter double chargement.
 
 .container {
   width: 100%;
