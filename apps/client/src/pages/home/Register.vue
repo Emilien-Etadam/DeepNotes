@@ -266,7 +266,7 @@ async function register() {
 <style scoped lang="scss">
 .q-page :deep() {
   .q-field__label {
-    font-size: 18px;
+    font-size: $fs-md;
   }
 }
 </style>

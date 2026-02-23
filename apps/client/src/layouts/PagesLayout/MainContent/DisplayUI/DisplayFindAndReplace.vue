@@ -4,10 +4,8 @@
     style="position: absolute; right: 64px; top: 16px"
   >
     <div
+      class="find-replace-panel"
       style="
-        border-radius: 4px;
-        padding: 8px;
-        background-color: #404040;
         pointer-events: auto;
 
         display: flex;
@@ -150,13 +148,19 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+.find-replace-panel {
+  background-color: $bg-overlay;
+  padding: $sp-2;
+  border-radius: $radius-sm;
+}
+
 .q-input :deep() {
   .q-field__control {
-    height: 34px;
+    height: 34px; // TODO: token
   }
 }
 .q-input :deep() .q-field__native,
 .q-input :deep() .q-field__input {
-  color: rgba(255, 255, 255, 0.92);
+  color: $text-primary;
 }
 </style>

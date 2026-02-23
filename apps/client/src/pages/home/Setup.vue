@@ -135,11 +135,11 @@ async function createAdmin() {
 
 <style scoped lang="scss">
 .login-page {
-  color: rgba(255, 255, 255, 0.92);
+  color: $text-primary;
 
   .login-form,
   .login-form > div {
-    color: rgba(255, 255, 255, 0.92);
+    color: $text-primary;
   }
 
   /* Labels et champs Quasar */
@@ -148,26 +148,26 @@ async function createAdmin() {
   :deep(.q-field__input),
   :deep(.q-field__control),
   :deep(.q-field .q-field__label) {
-    color: rgba(255, 255, 255, 0.92) !important;
+    color: $text-primary !important;
   }
   :deep(input),
   :deep(.q-field__native) {
-    color: rgba(255, 255, 255, 0.92) !important;
+    color: $text-primary !important;
   }
   :deep(input::placeholder) {
-    color: rgba(255, 255, 255, 0.5);
+    color: $text-placeholder;
   }
 
   :deep(.q-field--filled .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.12);
+    background: $bg-input-idle;
   }
 
   :deep(.q-field--filled:hover .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.2);
+    background: $bg-input-hover;
   }
 
   :deep(.q-field--filled.q-field--focused .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.25);
+    background: $bg-input-focus;
   }
 
   /* Bouton et son texte visibles */
@@ -181,7 +181,7 @@ async function createAdmin() {
   }
 
   .setup-title {
-    color: rgba(255, 255, 255, 0.92) !important;
+    color: $text-primary !important;
   }
 }
 </style>

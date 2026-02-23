@@ -8,7 +8,8 @@
     no-swipe-backdrop
     behavior="desktop"
     :width="uiStore().leftSidebarWidth"
-    style="display: flex; flex-direction: column; background-color: #212121"
+    style="display: flex; flex-direction: column"
+    class="left-sidebar-drawer"
   >
     <div
       class="resize-handle"
@@ -44,9 +45,13 @@ function resizeLeftSidebar(event: PointerEvent) {
 </script>
 
 <style scoped lang="scss">
+.left-sidebar-drawer {
+  background-color: $bg-sidebar;
+}
+
 .q-drawer-container :deep() {
   .q-drawer {
-    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-right: 1px solid $border-subtle !important;
   }
 }
 

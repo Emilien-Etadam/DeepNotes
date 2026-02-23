@@ -88,6 +88,11 @@
 
 // --- Dark mode global fixes ---
 
+// Labels des champs de formulaire
+.q-field__label {
+  color: $text-muted !important;
+}
+
 // Placeholders
 .q-field__native::placeholder,
 .q-field__input::placeholder {

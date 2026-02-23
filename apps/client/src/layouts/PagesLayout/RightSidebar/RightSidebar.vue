@@ -11,16 +11,16 @@
     style="
       display: flex;
       flex-direction: column;
-      background-color: rgb(33, 33, 33);
       min-width: 299px;
       max-width: 299px;
     "
+    class="right-sidebar-drawer"
   >
     <q-toolbar
+      class="right-sidebar-toolbar"
       style="
         padding: 0;
         flex: none;
-        background-color: #141414;
         height: 32px;
         min-height: 0;
         overflow: hidden;
@@ -35,11 +35,10 @@
 
       <q-toolbar-title
         v-if="uiStore().rightSidebarExpanded"
+        class="right-sidebar-title"
         style="
           margin-left: -2px;
           text-align: left;
-          color: rgba(255, 255, 255, 0.85);
-          font-size: 13.5px;
         "
       >
         <template v-if="page.activeElem.react.value?.type === 'note'">
@@ -73,9 +72,22 @@ provide('page', page);
 </script>
 
 <style scoped lang="scss">
+.right-sidebar-drawer {
+  background-color: $bg-sidebar;
+}
+
+.right-sidebar-toolbar {
+  background-color: $bg-sidebar-sub;
+}
+
+.right-sidebar-title {
+  color: $text-secondary;
+  font-size: $fs-sm;
+}
+
 .q-drawer-container :deep() {
   .q-drawer {
-    border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-left: 1px solid $border-subtle !important;
   }
 }
 </style>

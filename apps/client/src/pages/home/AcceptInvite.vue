@@ -191,24 +191,24 @@ async function completeRegistration() {
 
 <style scoped lang="scss">
 .login-page {
-  color: rgba(255, 255, 255, 0.92);
+  color: $text-primary;
 
   :deep(.q-field__label),
   :deep(.q-field__native),
   :deep(.q-field__input) {
-    color: rgba(255, 255, 255, 0.92);
+    color: $text-primary;
   }
 
   :deep(.q-field--filled .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.12);
+    background: $bg-input-idle;
   }
 
   :deep(.q-field--filled:hover .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.2);
+    background: $bg-input-hover;
   }
 
   :deep(.q-field--filled.q-field--focused .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.25);
+    background: $bg-input-focus;
   }
 }
 </style>

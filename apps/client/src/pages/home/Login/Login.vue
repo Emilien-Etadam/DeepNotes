@@ -63,32 +63,32 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .login-page {
-  color: rgba(255, 255, 255, 0.92);
+  color: $text-primary;
 
   :deep(.q-field__label),
   :deep(.q-field__native),
   :deep(.q-field__input),
   :deep(.q-checkbox__label) {
-    color: rgba(255, 255, 255, 0.92);
+    color: $text-primary;
   }
 
   :deep(.q-field--filled .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.12);
+    background: $bg-input-idle;
   }
 
   :deep(.q-field--filled:hover .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.2);
+    background: $bg-input-hover;
   }
 
   :deep(.q-field--filled.q-field--focused .q-field__control::before) {
-    background: rgba(255, 255, 255, 0.25);
+    background: $bg-input-focus;
   }
 
   :deep(a) {
-    color: #47a7ff;
+    color: $color-link;
   }
   :deep(a:hover) {
-    color: #4fc3f7;
+    color: #4fc3f7; // TODO: token
   }
 
   :deep(.q-btn) {
