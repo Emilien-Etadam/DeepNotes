@@ -1,5 +1,6 @@
 <template>
   <DeepBtn
+    v-bind="$attrs"
     :style="{
       'min-width': `${btnSize}px`,
       'min-height': `${btnSize + 2}px`,
@@ -26,13 +27,16 @@
   </DeepBtn>
 </template>
 
-<script setup lang="ts">
-import type { DeepBtnProps } from './DeepBtn.vue';
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+};
+</script>
 
-interface Props extends DeepBtnProps {
+<script setup lang="ts">
+interface Props {
   icon: string;
   tooltip?: string;
-
   btnSize?: number;
 }
 

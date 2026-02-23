@@ -289,3 +289,32 @@ Commit: chore: update remaining dependencies, cleanup dead code
 | Tiptap table beta→stable | Pin 2.11, tests édition tables |
 | knex 2→3 | Tester migrations et requêtes |
 | ESLint v6→v8 | typescript-eslint v8, ban-types→no-restricted-types |
+---
+
+## Phase 8 — SonarQube, bugs, refactoring — **DONE**
+
+- **Fix isNumeric** : `Number.isFinite(n)` rejetait les strings Yjs → corrigé avec `Number(n)` + `Number.isNaN` + `Number.isFinite`. Bug resize résolu.
+- **SonarQube** : 408 → ~305 issues. 3 bugs HIGH/RELIABILITY corrigés :
+  - `data-abstraction.ts` : opération async extraite du constructeur vers `init()` + factory async
+  - `promises.ts` : objet littéral thenable → classe `LazyPromiseLike implements PromiseLike`
+  - `resolvable.ts` : commentaire documentaire ajouté (thenable intentionnel)
+- **Refactoring keyboard-shortcuts** : complexité cognitive 182 → 5. Extraction en `keyboard-shortcut-map.ts` avec dispatcher.
+- **ESLint autofix** : imports inutilisés, catch vides documentés, CSS commenté supprimé, `??`/`??=`, `globalThis`, `for-of`, `push` regroupés.
+- **Suppression Husky** (inutilisé, `--no-verify` systématique).
+- **Lazy-load zxcvbn** (~1.7 MB retiré du bundle initial).
+- **slim.ts** : paramètre par défaut mutable corrigé.
+
+## Phase 9 — Mise à jour dépendances majeures — **DONE**
+
+- **9a** : Vue 3.5.13→3.5.28, Quasar 2.17→2.18.6, vue-i18n 9→11, y-prosemirror 1.0→1.3.7, @intlify/unplugin 5→11, @quasar/app-vite 2.1→2.4.1
+- **9b** : Fastify 4→5.7.4, @fastify/helmet→13, @fastify/cookie→11, @fastify/cors→11, @fastify/websocket→11 (SocketStream→WebSocket), @fastify/rate-limit→10, fastify-raw-body→5
+- **9c** : tRPC 10→11 (createTRPCClient, transformer dans links, inferAsyncReturnType→Awaited, getParseFn, FastifyInstance)
+- **9d** : vitest 2→4 (config include src/**/*.spec.ts)
+- **Turborepo** : déjà 2.8.10 (rien à faire)
+
+## Optionnel (non planifié)
+
+- ~120 issues cosmétiques SonarQube (S4325, S7735)
+- Couverture de tests (0%)
+- Lazy-load libsodium (~1 MB)
+- Activation cache Turborepo

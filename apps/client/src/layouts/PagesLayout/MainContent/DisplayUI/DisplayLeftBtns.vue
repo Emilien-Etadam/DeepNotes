@@ -92,6 +92,7 @@ const page = computed(() => internals.pages.react.page);
 
 <style lang="scss" scoped>
 .display-navigation-btns {
+  pointer-events: auto;
   position: absolute;
 
   left: 12px;

@@ -6,10 +6,10 @@
       @click="page.camera.resetZoom()"
     >
       <q-tooltip
-        anchor="center left"
-        self="center right"
-        transition-show="jump-left"
-        transition-hide="jump-right"
+        anchor="center right"
+        self="center left"
+        transition-show="jump-right"
+        transition-hide="jump-left"
       >
         Reset zoom
       </q-tooltip>
@@ -23,10 +23,10 @@
       @click="page.camera.fitToScreen()"
     >
       <q-tooltip
-        anchor="center left"
-        self="center right"
-        transition-show="jump-left"
-        transition-hide="jump-right"
+        anchor="center right"
+        self="center left"
+        transition-show="jump-right"
+        transition-hide="jump-left"
       >
         Fit to screen
       </q-tooltip>
@@ -48,10 +48,10 @@
       @click="page.undoRedo.undo()"
     >
       <q-tooltip
-        anchor="center left"
-        self="center right"
-        transition-show="jump-left"
-        transition-hide="jump-right"
+        anchor="center right"
+        self="center left"
+        transition-show="jump-right"
+        transition-hide="jump-left"
       >
         Undo
       </q-tooltip>
@@ -67,10 +67,10 @@
       @click="page.undoRedo.redo()"
     >
       <q-tooltip
-        anchor="center left"
-        self="center right"
-        transition-show="jump-left"
-        transition-hide="jump-right"
+        anchor="center right"
+        self="center left"
+        transition-show="jump-right"
+        transition-hide="jump-left"
       >
         Redo
       </q-tooltip>
@@ -86,11 +86,11 @@ const page = computed(() => internals.pages.react.page);
 .display-camera-btns {
   position: absolute;
 
-  right: 12px;
-  top: 55px;
+  left: 12px;
+  top: 260px;
 
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 </style>

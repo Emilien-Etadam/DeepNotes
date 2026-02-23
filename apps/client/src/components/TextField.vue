@@ -2,7 +2,7 @@
   <q-input
     v-bind="props"
     filled
-    :input-style="{ color: readonly ? '#d8d8d8' : undefined }"
+    :input-style="{ color: readonly ? '#d8d8d8' : 'rgba(255,255,255,0.92)' }"
     :readonly="readonly"
     :model-value="modelValue"
     @update:model-value="$emit('update:model-value', $event)"

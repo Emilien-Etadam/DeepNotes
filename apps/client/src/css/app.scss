@@ -84,3 +84,38 @@
   src: url('./fonts/Inter/Inter-Bold.ttf') format('truetype');
   font-weight: 700;
 }
+
+// --- Dark mode global fixes ---
+
+// Placeholders
+.q-field__native::placeholder,
+.q-field__input::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+// Checkbox case non cochée
+.q-checkbox__inner--falsy .q-checkbox__bg {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+// Checkbox case cochée (icône)
+.q-checkbox__inner--truthy .q-checkbox__bg {
+  background: var(--q-primary) !important;
+  border-color: var(--q-primary) !important;
+}
+
+// Radio non sélectionné
+.q-radio__inner--falsy .q-radio__bg {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+// Labels des checkboxes et radios
+.q-checkbox__label,
+.q-radio__label {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+// Select dropdown arrow
+.q-select .q-field__append .q-icon {
+  color: rgba(255, 255, 255, 0.7) !important;
+}

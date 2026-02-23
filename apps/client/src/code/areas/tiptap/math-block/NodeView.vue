@@ -82,6 +82,11 @@ const renderedFormula = computed(() => {
 .math-block :deep(*) {
   user-select: none !important;
 }
+
+:deep(.q-field__native),
+:deep(.q-field__input) {
+  color: rgba(255, 255, 255, 0.92);
+}
 </style>
 
 <style>
