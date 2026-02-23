@@ -1,19 +1,33 @@
-import { type ProcedureBuilder, TRPCError } from '@trpc/server';
+import {
+  type inferProcedureBuilderResolverOptions,
+  type inferProcedureOutput,
+  type TRPCProcedureBuilder,
+  TRPCError,
+} from '@trpc/server';
 import { verifyAccessJWT } from 'src/utils/jwt';
 
 import { trpc } from './server';
 
-export type InferProcedureResolver<TBuilder extends ProcedureBuilder<any>> =
-  Parameters<TBuilder['query']>[0];
-export type InferProcedureOpts<TBuilder extends ProcedureBuilder<any>> =
-  Parameters<InferProcedureResolver<TBuilder>>[0];
+type AnyProcedureBuilder = TRPCProcedureBuilder<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>;
 
-export type InferProcedureContext<TBuilder extends ProcedureBuilder<any>> =
+export type InferProcedureOpts<TBuilder extends AnyProcedureBuilder> =
+  inferProcedureBuilderResolverOptions<TBuilder>;
+
+export type InferProcedureContext<TBuilder extends AnyProcedureBuilder> =
   InferProcedureOpts<TBuilder>['ctx'];
-export type InferProcedureInput<TBuilder extends ProcedureBuilder<any>> =
+export type InferProcedureInput<TBuilder extends AnyProcedureBuilder> =
   InferProcedureOpts<TBuilder>['input'];
-export type InferProcedureOutput<TBuilder extends ProcedureBuilder<any>> =
-  Awaited<ReturnType<InferProcedureResolver<TBuilder>>>;
+export type InferProcedureOutput<TBuilder extends AnyProcedureBuilder> =
+  inferProcedureOutput<TBuilder>;
 
 function createAuthHelper(input: { optional: boolean }) {
   return async ({

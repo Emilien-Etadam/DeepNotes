@@ -1,4 +1,3 @@
-import type { inferAsyncReturnType } from '@trpc/server';
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 import { dataAbstraction } from 'src/data/data-abstraction';
 import { getRedis } from 'src/data/redis';
@@ -32,4 +31,4 @@ export async function createContext({ req, res }: CreateFastifyContextOptions) {
   };
 }
 
-export type Context = inferAsyncReturnType<typeof createContext>;
+export type Context = Awaited<ReturnType<typeof createContext>>;

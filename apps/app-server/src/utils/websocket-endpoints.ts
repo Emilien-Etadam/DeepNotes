@@ -1,6 +1,7 @@
 import { mainLogger, Resolvable } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import type { AnyProcedure } from '@trpc/server';
+import { getParseFn } from '@trpc/server/unstable-core-do-not-import';
 import type { FastifyInstance } from 'fastify';
 import { pack, unpack } from 'msgpackr';
 import { WebSocket } from 'ws';
@@ -64,9 +65,8 @@ function createWebsocketMessageHandler(input: {
       try {
         moduleLogger.info('Received message %d', step);
 
-        const input_ = (
-          input.procedures[step - 1][0]._def.inputs[0]
-        ).parse(unpack(message));
+        const inputParser = input.procedures[step - 1][0]._def.inputs[0];
+        const input_ = await getParseFn(inputParser)(unpack(message));
 
         if (step === 1) {
           await input.acquireLocks(input_);
@@ -131,7 +131,20 @@ export function createWebsocketEndpoint<Input>(input: {
         }
       });
 
-      const originalCtx = createContext({ req, res: null as any });
+      const abortController = new AbortController();
+      const originalCtx = createContext({
+        req,
+        res: null as any,
+        info: {
+          accept: null,
+          type: 'unknown',
+          isBatchCall: false,
+          calls: [],
+          connectionParams: null,
+          signal: abortController.signal,
+          url: null,
+        },
+      });
 
       const ctx = await authHelper({ ctx: originalCtx } as any);
 

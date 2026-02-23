@@ -5,7 +5,9 @@ import { z } from 'zod';
 const baseProcedure = authProcedure.input(z.instanceof(Uint8Array));
 
 export const setEncryptedDefaultNoteProcedure = once(() =>
-  baseProcedure.mutation(setEncryptedDefaultNote),
+  baseProcedure.mutation(setEncryptedDefaultNote as Parameters<
+    typeof baseProcedure.mutation
+  >[0]),
 );
 
 export async function setEncryptedDefaultNote({
