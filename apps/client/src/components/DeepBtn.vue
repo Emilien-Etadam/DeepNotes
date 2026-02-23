@@ -52,15 +52,15 @@ async function onClick(args: any[], attrs: any) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .q-btn:not(.q-btn--round) {
-  border-radius: 6px;
+  border-radius: $radius-md;
 }
 
 .q-btn.bg-secondary {
   background-color: transparent !important;
 
-  border: 1px solid rgb(255, 255, 255, 0.25);
+  border: 1px solid $border-subtle;
 }
 
 .q-btn.bg-negative {
@@ -68,7 +68,7 @@ async function onClick(args: any[], attrs: any) {
 
   border: 1px solid rgb(110, 54, 48);
 
-  color: rgb(235, 87, 87) !important;
+  color: $color-error !important;
 }
 </style>
 

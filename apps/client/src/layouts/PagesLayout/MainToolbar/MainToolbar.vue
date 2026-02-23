@@ -1,11 +1,10 @@
 <template>
   <q-header
     elevated
-    class="d-none d-md-block"
+    class="d-none d-md-block main-toolbar-header"
     v-show="uiStore().width >= 840"
     style="
       background-color: transparent;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
       z-index: 100;
       pointer-events: auto;
     "
@@ -127,6 +126,10 @@ const quasarMode = process.env.MODE;
 </script>
 
 <style scoped lang="scss">
+.main-toolbar-header {
+  border-bottom: 1px solid $border-subtle;
+}
+
 .q-header :deep() {
   transition:
     left 0.2s ease,

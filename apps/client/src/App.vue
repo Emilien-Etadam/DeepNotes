@@ -68,9 +68,9 @@ onMounted(onWindowResize);
 useEventListener(globalThis.window, 'resize', onWindowResize);
 </script>
 
-<style>
+<style lang="scss">
 * {
-  font-family: Inter, sans-serif;
+  font-family: $font-base;
 
   box-sizing: border-box;
 
@@ -107,7 +107,7 @@ body,
 }
 
 body {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: $text-primary !important;
 }
 
 code *,
@@ -191,7 +191,7 @@ h3 {
 
 .q-list--dark,
 .q-item--dark {
-  color: rgba(255, 255, 255, 0.9);
+  color: $text-primary;
 }
 
 .q-item__section--side {
@@ -204,13 +204,13 @@ h3 {
   width: 15px;
 }
 ::-webkit-scrollbar-track {
-  background: #202020;
+  background: #202020; // TODO: token
 }
 ::-webkit-scrollbar-thumb {
-  background: #303030;
-  border: solid 1px #404040;
+  background: $bg-card;
+  border: solid 1px $bg-overlay;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #404040;
+  background: $bg-overlay;
 }
 </style>

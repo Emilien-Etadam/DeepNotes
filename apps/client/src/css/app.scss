@@ -91,12 +91,12 @@
 // Placeholders
 .q-field__native::placeholder,
 .q-field__input::placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: $text-placeholder !important;
 }
 
 // Checkbox case non cochée
 .q-checkbox__inner--falsy .q-checkbox__bg {
-  border-color: rgba(255, 255, 255, 0.5) !important;
+  border-color: $border-checkbox !important;
 }
 
 // Checkbox case cochée (icône)
@@ -107,16 +107,16 @@
 
 // Radio non sélectionné
 .q-radio__inner--falsy .q-radio__bg {
-  border-color: rgba(255, 255, 255, 0.5) !important;
+  border-color: $border-checkbox !important;
 }
 
 // Labels des checkboxes et radios
 .q-checkbox__label,
 .q-radio__label {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: $text-secondary !important;
 }
 
 // Select dropdown arrow
 .q-select .q-field__append .q-icon {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: $text-muted !important;
 }
