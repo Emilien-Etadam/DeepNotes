@@ -8,4 +8,12 @@ export class Line {
     this.start = start;
     this.end = end;
   }
+
+  length(): number {
+    return this.start.dist(this.end);
+  }
+
+  lerp(t: number): Vec2 {
+    return this.start.lerp(this.end, t);
+  }
 }
