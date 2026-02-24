@@ -56,99 +56,87 @@ export const getEmbedUrlFromYoutubeUrl = (options: GetEmbedUrlOptions) => {
     startAt,
   } = options;
 
-  // if is already an embed url, return it
+  const baseEmbedUrl = parseYoutubeUrlToEmbedBase(url, nocookie);
+  if (baseEmbedUrl == null) return null;
+  if (baseEmbedUrl === url) return url;
+
+  const params = buildEmbedParams({
+    allowFullscreen,
+    autoplay,
+    ccLanguage,
+    ccLoadPolicy,
+    controls,
+    disableKBcontrols,
+    enableIFrameApi,
+    endTime,
+    interfaceLanguage,
+    ivLoadPolicy,
+    loop,
+    modestBranding,
+    origin,
+    playlist,
+    progressBarColor,
+    startAt,
+  });
+
+  if (params.length) {
+    return `${baseEmbedUrl}?${params.join('&')}`;
+  }
+  return baseEmbedUrl;
+};
+
+function parseYoutubeUrlToEmbedBase(
+  url: string,
+  nocookie?: boolean,
+): string | null {
   if (url.includes('/embed/')) {
     return url;
   }
-
-  // if is a youtu.be url, get the id after the /
   if (url.includes('youtu.be')) {
     const id = url.split('/').pop();
-
-    if (!id) {
-      return null;
-    }
+    if (!id) return null;
     return `${getYoutubeEmbedUrl(nocookie)}${id}`;
   }
-
   const videoIdRegex = /v=([-\w]+)/gm;
   const matches = videoIdRegex.exec(url);
+  if (!matches || !matches[1]) return null;
+  return `${getYoutubeEmbedUrl(nocookie)}${matches[1]}`;
+}
 
-  if (!matches || !matches[1]) {
-    return null;
-  }
-
-  let outputUrl = `${getYoutubeEmbedUrl(nocookie)}${matches[1]}`;
-
+function buildEmbedParams(options: {
+  allowFullscreen?: boolean;
+  autoplay?: boolean;
+  ccLanguage?: string;
+  ccLoadPolicy?: boolean;
+  controls?: boolean;
+  disableKBcontrols?: boolean;
+  enableIFrameApi?: boolean;
+  endTime?: number;
+  interfaceLanguage?: string;
+  ivLoadPolicy?: number;
+  loop?: boolean;
+  modestBranding?: boolean;
+  origin?: string;
+  playlist?: string;
+  progressBarColor?: string;
+  startAt?: number;
+}): string[] {
   const params = [];
-
-  if (allowFullscreen === false) {
-    params.push('fs=0');
-  }
-
-  if (autoplay) {
-    params.push('autoplay=1');
-  }
-
-  if (ccLanguage) {
-    params.push(`cc_lang_pref=${ccLanguage}`);
-  }
-
-  if (ccLoadPolicy) {
-    params.push('cc_load_policy=1');
-  }
-
-  if (!controls) {
-    params.push('controls=0');
-  }
-
-  if (disableKBcontrols) {
-    params.push('disablekb=1');
-  }
-
-  if (enableIFrameApi) {
-    params.push('enablejsapi=1');
-  }
-
-  if (endTime) {
-    params.push(`end=${endTime}`);
-  }
-
-  if (interfaceLanguage) {
-    params.push(`hl=${interfaceLanguage}`);
-  }
-
-  if (ivLoadPolicy) {
-    params.push(`iv_load_policy=${ivLoadPolicy}`);
-  }
-
-  if (loop) {
-    params.push('loop=1');
-  }
-
-  if (modestBranding) {
-    params.push('modestbranding=1');
-  }
-
-  if (origin) {
-    params.push(`origin=${origin}`);
-  }
-
-  if (playlist) {
-    params.push(`playlist=${playlist}`);
-  }
-
-  if (startAt) {
-    params.push(`start=${startAt}`);
-  }
-
-  if (progressBarColor) {
-    params.push(`color=${progressBarColor}`);
-  }
-
-  if (params.length) {
-    outputUrl += `?${params.join('&')}`;
-  }
-
-  return outputUrl;
-};
+  if (options.allowFullscreen === false) params.push('fs=0');
+  if (options.autoplay) params.push('autoplay=1');
+  if (options.ccLanguage) params.push(`cc_lang_pref=${options.ccLanguage}`);
+  if (options.ccLoadPolicy) params.push('cc_load_policy=1');
+  if (!options.controls) params.push('controls=0');
+  if (options.disableKBcontrols) params.push('disablekb=1');
+  if (options.enableIFrameApi) params.push('enablejsapi=1');
+  if (options.endTime) params.push(`end=${options.endTime}`);
+  if (options.interfaceLanguage) params.push(`hl=${options.interfaceLanguage}`);
+  if (options.ivLoadPolicy) params.push(`iv_load_policy=${options.ivLoadPolicy}`);
+  if (options.loop) params.push('loop=1');
+  if (options.modestBranding) params.push('modestbranding=1');
+  if (options.origin) params.push(`origin=${options.origin}`);
+  if (options.playlist) params.push(`playlist=${options.playlist}`);
+  if (options.startAt) params.push(`start=${options.startAt}`);
+  if (options.progressBarColor) params.push(`color=${options.progressBarColor}`);
+  return params;
+}

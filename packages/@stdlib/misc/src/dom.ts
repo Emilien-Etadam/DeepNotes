@@ -114,6 +114,26 @@ export function listenPointerEvents(
 
   const downClientPos = new Vec2(downEvent.clientX, downEvent.clientY);
 
+  function handleDragThresholdCheck(moveEvent: PointerEvent) {
+    if (!dragging) {
+      const moveClientPos = new Vec2(moveEvent.clientX, moveEvent.clientY);
+      const distance = downClientPos.dist(moveClientPos);
+
+      if (options.dragStartDelay != null) {
+        if (distance > options.dragStartDistance!) {
+          cancel(false);
+        }
+      } else {
+        if (distance > options.dragStartDistance!) {
+          dragging = true;
+          options.dragStart?.(moveEvent, downEvent);
+        }
+      }
+    } else {
+      options.dragUpdate?.(moveEvent, downEvent);
+    }
+  }
+
   function onPointerMove(moveEvent: PointerEvent) {
     if (moveEvent.pointerId !== downEvent.pointerId) {
       return;
@@ -122,25 +142,7 @@ export function listenPointerEvents(
     options.move?.(moveEvent, downEvent);
 
     if (options.dragStartDistance != null) {
-      if (!dragging) {
-        const moveClientPos = new Vec2(moveEvent.clientX, moveEvent.clientY);
-
-        const distance = downClientPos.dist(moveClientPos);
-
-        if (options.dragStartDelay != null) {
-          if (distance > options.dragStartDistance) {
-            cancel(false);
-          }
-        } else {
-          if (distance > options.dragStartDistance) {
-            dragging = true;
-
-            options.dragStart?.(moveEvent, downEvent);
-          }
-        }
-      } else {
-        options.dragUpdate?.(moveEvent, downEvent);
-      }
+      handleDragThresholdCheck(moveEvent);
     }
   }
 

@@ -437,11 +437,16 @@ export const PageArrow = once(
 
         Object.assign(this.react, react);
 
+        this._scheduleLoadedTrue(`Arrow loaded (${this.id})`);
+      }
+
+      _scheduleLoadedTrue(logMessage?: string) {
         setTimeout(() => {
           setTimeout(() => {
             this.react.loaded = true;
-
-            mainLogger.info(`Arrow loaded (${this.id})`);
+            if (logMessage != null) {
+              mainLogger.info(logMessage);
+            }
           });
         });
       }
@@ -465,11 +470,7 @@ export const PageArrow = once(
 
           this.react.loaded = false;
 
-          setTimeout(() => {
-            setTimeout(() => {
-              this.react.loaded = true;
-            });
-          });
+          this._scheduleLoadedTrue();
         });
       }
 

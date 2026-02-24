@@ -322,80 +322,94 @@ async function _checkTwoFactorAuth(
   }
 
   if (input.authenticatorToken != null) {
-    // Check authenticator token
+    await _verifyAuthenticatorToken(input);
+    return;
+  }
+  if (input.recoveryCode != null) {
+    await _verifyRecoveryCode(input);
+    return;
+  }
 
-    if (
-      authenticator.check(
-        input.authenticatorToken,
-        decryptUserAuthenticatorSecret(
-          input.user.encrypted_authenticator_secret!,
-        ),
-      )
-    ) {
-      if (input.rememberDevice) {
-        // Mark device as trusted
+  throw new TRPCError({
+    message: 'Requires two-factor authentication.',
+    code: 'UNAUTHORIZED',
+  });
+}
 
-        await input.dtrx.trx!
-          .updateTable('devices')
-          .set({ trusted: true })
-          .where('id', '=', input.device.id)
-          .execute();
-      }
-
-      return;
-    } else {
-      await _incrementFailedLoginAttempts({
-        redis: input.redis,
-
-        ip: input.ip,
-        email: input.email,
-      });
-
-      throw new TRPCError({
-        message: 'Invalid authenticator token.',
-        code: 'UNAUTHORIZED',
-      });
+async function _verifyAuthenticatorToken(
+  input: {
+    device: DeviceRow;
+    user: UserRow;
+    rememberDevice: boolean;
+    dtrx: DataTransaction;
+  } & Parameters<typeof _incrementFailedLoginAttempts>[0] & {
+      authenticatorToken: string;
+    },
+) {
+  const valid = authenticator.check(
+    input.authenticatorToken,
+    decryptUserAuthenticatorSecret(input.user.encrypted_authenticator_secret!),
+  );
+  if (valid) {
+    if (input.rememberDevice) {
+      await input.dtrx.trx!
+        .updateTable('devices')
+        .set({ trusted: true })
+        .where('id', '=', input.device.id)
+        .execute();
     }
-  } else if (input.recoveryCode != null) {
-    // Check recovery code
+    return;
+  }
+  await _incrementFailedLoginAttempts({
+    redis: input.redis,
+    ip: input.ip,
+    email: input.email,
+  });
+  throw new TRPCError({
+    message: 'Invalid authenticator token.',
+    code: 'UNAUTHORIZED',
+  });
+}
 
-    if (input.user.encrypted_recovery_codes != null) {
-      const recoveryCodes = decryptRecoveryCodes(
-        input.user.encrypted_recovery_codes,
-      );
-
-      for (let i = 0; i < recoveryCodes.length; i++) {
-        if (verifyRecoveryCode(input.recoveryCode, recoveryCodes[i])) {
-          recoveryCodes.splice(i, 1);
-
-          await input.dtrx.trx!
-            .updateTable('users')
-            .set({
-              encrypted_recovery_codes: encryptRecoveryCodes(recoveryCodes),
-            } as any)
-            .where('id', '=', input.user.id)
-            .execute();
-
-          return;
-        }
-      }
-    }
-
+async function _verifyRecoveryCode(
+  input: {
+    user: UserRow;
+    recoveryCode: string;
+    dtrx: DataTransaction;
+  } & Parameters<typeof _incrementFailedLoginAttempts>[0],
+) {
+  if (input.user.encrypted_recovery_codes == null) {
     await _incrementFailedLoginAttempts({
       redis: input.redis,
-
       ip: input.ip,
       email: input.email,
     });
-
     throw new TRPCError({
       message: 'Invalid recovery code.',
       code: 'UNAUTHORIZED',
     });
   }
-
+  const recoveryCodes = decryptRecoveryCodes(input.user.encrypted_recovery_codes);
+  for (let i = 0; i < recoveryCodes.length; i++) {
+    if (verifyRecoveryCode(input.recoveryCode, recoveryCodes[i])) {
+      recoveryCodes.splice(i, 1);
+      await input.dtrx.trx!
+        .updateTable('users')
+        .set({
+          encrypted_recovery_codes: encryptRecoveryCodes(recoveryCodes),
+        } as any)
+        .where('id', '=', input.user.id)
+        .execute();
+      return;
+    }
+  }
+  await _incrementFailedLoginAttempts({
+    redis: input.redis,
+    ip: input.ip,
+    email: input.email,
+  });
   throw new TRPCError({
-    message: 'Requires two-factor authentication.',
+    message: 'Invalid recovery code.',
     code: 'UNAUTHORIZED',
   });
 }

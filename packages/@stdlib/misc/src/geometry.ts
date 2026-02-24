@@ -17,6 +17,54 @@ export function getLineRectIntersection(line: Line, rect: Rect): Vec2 | null {
   return result[0];
 }
 
+function getEdgeParams(
+  edge: number,
+  x0: number,
+  y0: number,
+  xmin: number,
+  xmax: number,
+  ymin: number,
+  ymax: number,
+  dx: number,
+  dy: number,
+): { p: number; q: number } {
+  if (edge === 0) {
+    return { p: -dx, q: -(xmin - x0) };
+  }
+  if (edge === 1) {
+    return { p: dx, q: xmax - x0 };
+  }
+  if (edge === 2) {
+    return { p: -dy, q: -(ymin - y0) };
+  }
+  return { p: dy, q: ymax - y0 };
+}
+
+function applyLiangBarskyEdge(
+  p: number,
+  q: number,
+  t0: number,
+  t1: number,
+): { t0: number; t1: number } | null {
+  if (p === 0) {
+    if (q < 0) return null;
+    return { t0, t1 };
+  }
+  const r = q / p;
+
+  if (p < 0) {
+    if (r > t1) return null;
+    if (r > t0) return { t0: r, t1 };
+    return { t0, t1 };
+  }
+  if (p > 0) {
+    if (r < t0) return null;
+    if (r < t1) return { t0, t1: r };
+    return { t0, t1 };
+  }
+  return { t0, t1 };
+}
+
 function liangBarsky(l0: Vec2, l1: Vec2, r0: Vec2, r1: Vec2): Vec2[] | null {
   const { x: x0, y: y0 } = l0;
   const { x: x1, y: y1 } = l1;
@@ -30,39 +78,23 @@ function liangBarsky(l0: Vec2, l1: Vec2, r0: Vec2, r1: Vec2): Vec2[] | null {
   const dx = x1 - x0;
   const dy = y1 - y0;
 
-  let p = 0;
-  let q = 0;
-  let r: number;
-
   for (let edge = 0; edge < 4; edge++) {
-    // Traverse through left, right, bottom, top edges.
-    if (edge === 0) {
-      p = -dx;
-      q = -(xmin - x0);
-    } else if (edge === 1) {
-      p = dx;
-      q = xmax - x0;
-    } else if (edge === 2) {
-      p = -dy;
-      q = -(ymin - y0);
-    } else if (edge === 3) {
-      p = dy;
-      q = ymax - y0;
-    }
+    const { p, q } = getEdgeParams(
+      edge,
+      x0,
+      y0,
+      xmin,
+      xmax,
+      ymin,
+      ymax,
+      dx,
+      dy,
+    );
 
-    r = q / p;
-
-    if (p === 0 && q < 0) return null; // Don't draw line at all. (parallel line outside)
-
-    if (p < 0) {
-      if (r > t1)
-        return null; // Don't draw line at all.
-      else if (r > t0) t0 = r; // Line is clipped!
-    } else if (p > 0) {
-      if (r < t0)
-        return null; // Don't draw line at all.
-      else if (r < t1) t1 = r; // Line is clipped!
-    }
+    const next = applyLiangBarskyEdge(p, q, t0, t1);
+    if (next == null) return null;
+    t0 = next.t0;
+    t1 = next.t1;
   }
 
   return [

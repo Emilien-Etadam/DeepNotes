@@ -38,29 +38,23 @@ const componentLogger = mainLogger.sub('DisplayPage').sub(props.page.id);
 
 const realtimeCtx = useRealtimeContext();
 
-watchEffect(() => {
-  // Subscribe to required values
-
-  componentLogger.info('Subscribing to required values');
-
+function getPageWatchDeps(
+  pageId: string,
+  groupId: string | null,
+) {
   const pageIsDeleted = !!realtimeCtx.hget(
     'page',
-    props.page.id,
+    pageId,
     'permanent-deletion-date',
   );
-
   const pageIsPermanentlyDeleted = !pageIsDeleted
     ? false
-    : new Date() >
-      realtimeCtx.hget('page', props.page.id, 'permanent-deletion-date');
-
-  const groupId = pageGroupIds()(props.page.id).get();
+    : new Date() > realtimeCtx.hget('page', pageId, 'permanent-deletion-date');
 
   const groupIsDeleted =
     groupId == null
       ? false
       : !!realtimeCtx.hget('group', groupId, 'permanent-deletion-date');
-
   const groupIsPermanentlyDeleted =
     groupId == null || !groupIsDeleted
       ? false
@@ -69,7 +63,6 @@ watchEffect(() => {
 
   const groupIsPublic =
     groupId == null ? false : realtimeCtx.hget('group', groupId, 'is-public');
-
   const groupJoinRequestRejected =
     groupId == null || authStore().userId == null
       ? false
@@ -78,7 +71,6 @@ watchEffect(() => {
           `${groupId}:${authStore().userId}`,
           'rejected',
         );
-
   const groupJoinInvitationExists =
     groupId == null || authStore().userId == null
       ? false
@@ -87,7 +79,6 @@ watchEffect(() => {
           `${groupId}:${authStore().userId}`,
           'exists',
         );
-
   const groupMemberRole =
     groupId == null || authStore().userId == null
       ? null
@@ -96,14 +87,76 @@ watchEffect(() => {
           `${groupId}:${authStore().userId}`,
           'role',
         );
-
   const groupContentKeyring =
     groupId == null ? null : groupContentKeyrings()(groupId).get();
-
   const pageKeyring =
     groupId == null
       ? null
-      : pageKeyrings()(`${groupId}:${props.page.id}`).get();
+      : pageKeyrings()(`${groupId}:${pageId}`).get();
+
+  return {
+    groupId,
+    pageIsDeleted,
+    pageIsPermanentlyDeleted,
+    groupIsDeleted,
+    groupIsPermanentlyDeleted,
+    groupIsPublic,
+    groupJoinRequestRejected,
+    groupJoinInvitationExists,
+    groupMemberRole,
+    groupContentKeyring,
+    pageKeyring,
+  };
+}
+
+function applyPageStatusFromDeps(page: Page, deps: ReturnType<typeof getPageWatchDeps>) {
+  if (
+    deps.groupId == null ||
+    deps.pageIsPermanentlyDeleted ||
+    deps.groupIsPermanentlyDeleted
+  ) {
+    page.setStatus('page-nonexistent');
+    return;
+  }
+  if (deps.groupIsDeleted) {
+    page.setStatus('group-deleted');
+    return;
+  }
+  if (deps.pageIsDeleted) {
+    page.setStatus('page-deleted');
+    return;
+  }
+  if (deps.groupJoinRequestRejected) {
+    page.setStatus('rejected');
+    return;
+  }
+  if (deps.groupJoinInvitationExists) {
+    page.setStatus('invited');
+    return;
+  }
+  if (!deps.groupIsPublic && deps.groupMemberRole == null) {
+    page.setStatus('unauthorized');
+    return;
+  }
+  if (deps.groupContentKeyring?.topLayer === DataLayer.Symmetric) {
+    page.setStatus('password');
+    return;
+  }
+  if (deps.pageKeyring?.topLayer === DataLayer.Raw) {
+    page
+      .finishSetup()
+      .catch((err) => componentLogger.error('finishSetup failed:', err));
+    return;
+  }
+}
+
+watchEffect(() => {
+  // Subscribe to required values
+
+  componentLogger.info('Subscribing to required values');
+
+  const groupId = pageGroupIds()(props.page.id).get();
+  const deps = getPageWatchDeps(props.page.id, groupId);
 
   // Skip on page keyring change
 
@@ -131,67 +184,7 @@ watchEffect(() => {
 
   componentLogger.info("Checking if page doesn't exist");
 
-  if (
-    groupId == null ||
-    pageIsPermanentlyDeleted ||
-    groupIsPermanentlyDeleted
-  ) {
-    props.page.setStatus('page-nonexistent');
-    return;
-  }
-
-  componentLogger.info('Checking if group is deleted');
-
-  if (groupIsDeleted) {
-    props.page.setStatus('group-deleted');
-    return;
-  }
-
-  componentLogger.info('Checking if page is deleted');
-
-  if (pageIsDeleted) {
-    props.page.setStatus('page-deleted');
-    return;
-  }
-
-  componentLogger.info('Checking if user was rejected from group');
-
-  if (groupJoinRequestRejected) {
-    props.page.setStatus('rejected');
-    return;
-  }
-
-  componentLogger.info('Checking if user was invited to group');
-
-  if (groupJoinInvitationExists) {
-    props.page.setStatus('invited');
-    return;
-  }
-
-  componentLogger.info('Checking if user is not authorized');
-
-  if (!groupIsPublic && groupMemberRole == null) {
-    props.page.setStatus('unauthorized');
-    return;
-  }
-
-  componentLogger.info('Checking if group is password protected');
-
-  if (groupContentKeyring?.topLayer === DataLayer.Symmetric) {
-    props.page.setStatus('password');
-    return;
-  }
-
-  componentLogger.info('Checking if can finish setup');
-
-  if (pageKeyring?.topLayer === DataLayer.Raw) {
-    props.page
-      .finishSetup()
-      .catch((err) => componentLogger.error('finishSetup failed:', err));
-    return;
-  }
-
-  componentLogger.info('Loading...');
+  applyPageStatusFromDeps(props.page, deps);
 });
 </script>
 

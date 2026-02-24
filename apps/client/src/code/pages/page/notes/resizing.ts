@@ -4,6 +4,86 @@ import { isCtrlDown } from 'src/code/utils/misc';
 import type { Page } from '../page';
 import type { NoteSection, NoteSide, PageNote } from './note';
 
+function applyResizeRectFromPointer(
+  activeNote: PageNote,
+  side: NoteSide,
+  worldPos: Vec2,
+) {
+  if (side.includes('w')) {
+    activeNote.react.resizing!.newResizeRect.topLeft.x = worldPos.x;
+  }
+  if (side.includes('n')) {
+    activeNote.react.resizing!.newResizeRect.topLeft.y = worldPos.y;
+  }
+  if (side.includes('e')) {
+    activeNote.react.resizing!.newResizeRect.bottomRight.x = worldPos.x;
+  }
+  if (side.includes('s')) {
+    activeNote.react.resizing!.newResizeRect.bottomRight.y = worldPos.y;
+  }
+}
+
+function applyCtrlResize(
+  activeNote: PageNote,
+  side: NoteSide,
+  worldPos: Vec2,
+) {
+  const resizing = activeNote.react.resizing!;
+  const old = resizing.oldResizeRect;
+  if (side.includes('w')) {
+    resizing.newResizeRect.bottomRight.x =
+      old.center.x + old.center.x - worldPos.x;
+  }
+  if (side.includes('n')) {
+    resizing.newResizeRect.bottomRight.y =
+      old.center.y + old.center.y - worldPos.y;
+  }
+  if (side.includes('e')) {
+    resizing.newResizeRect.topLeft.x = old.center.x + old.center.x - worldPos.x;
+  }
+  if (side.includes('s')) {
+    resizing.newResizeRect.topLeft.y = old.center.y + old.center.y - worldPos.y;
+  }
+}
+
+function applySizeAndWorldRectToSelection(
+  page: Page,
+  side: NoteSide,
+  posDiff: Vec2,
+  sizeDiff: Vec2,
+) {
+  const activeNote = page.activeElem.react.value;
+  if (activeNote?.type !== 'note' || activeNote.react.resizing == null) return;
+
+  for (const selectedNote of page.selection.react.notes) {
+    if (selectedNote.react.resizing == null) continue;
+
+    selectedNote.react.resizing.active = true;
+
+    if (side.includes('w') || side.includes('e')) {
+      selectedNote.react.resizing.newResizeRect.size = new Vec2(
+        activeNote.react.resizing.newResizeRect.size.x,
+        selectedNote.react.resizing.newResizeRect.size.y,
+      );
+    }
+    if (side.includes('n') || side.includes('s')) {
+      selectedNote.react.resizing.newResizeRect.size = new Vec2(
+        selectedNote.react.resizing.newResizeRect.size.x,
+        activeNote.react.resizing.newResizeRect.size.y,
+      );
+    }
+
+    const newWorldTopLeft =
+      selectedNote.react.resizing.oldWorldRect.topLeft.add(posDiff);
+    selectedNote.react.resizing.newWorldRect = new Rect(
+      newWorldTopLeft,
+      newWorldTopLeft.add(
+        selectedNote.react.resizing.oldWorldRect.size.add(sizeDiff),
+      ),
+    );
+  }
+}
+
 export class NoteResizing {
   readonly page: Page;
 
@@ -79,44 +159,9 @@ export class NoteResizing {
 
     const worldPos = this.page.pos.eventToWorld(event);
 
-    if (this.side.includes('w')) {
-      activeNote.react.resizing.newResizeRect.topLeft.x = worldPos.x;
-    }
-    if (this.side.includes('n')) {
-      activeNote.react.resizing.newResizeRect.topLeft.y = worldPos.y;
-    }
-    if (this.side.includes('e')) {
-      activeNote.react.resizing.newResizeRect.bottomRight.x = worldPos.x;
-    }
-    if (this.side.includes('s')) {
-      activeNote.react.resizing.newResizeRect.bottomRight.y = worldPos.y;
-    }
-
+    applyResizeRectFromPointer(activeNote, this.side, worldPos);
     if (isCtrlDown(event) || internals.mobileAltKey) {
-      if (this.side.includes('w')) {
-        activeNote.react.resizing.newResizeRect.bottomRight.x =
-          activeNote.react.resizing.oldResizeRect.center.x +
-          activeNote.react.resizing.oldResizeRect.center.x -
-          worldPos.x;
-      }
-      if (this.side.includes('n')) {
-        activeNote.react.resizing.newResizeRect.bottomRight.y =
-          activeNote.react.resizing.oldResizeRect.center.y +
-          activeNote.react.resizing.oldResizeRect.center.y -
-          worldPos.y;
-      }
-      if (this.side.includes('e')) {
-        activeNote.react.resizing.newResizeRect.topLeft.x =
-          activeNote.react.resizing.oldResizeRect.center.x +
-          activeNote.react.resizing.oldResizeRect.center.x -
-          worldPos.x;
-      }
-      if (this.side.includes('s')) {
-        activeNote.react.resizing.newResizeRect.topLeft.y =
-          activeNote.react.resizing.oldResizeRect.center.y +
-          activeNote.react.resizing.oldResizeRect.center.y -
-          worldPos.y;
-      }
+      applyCtrlResize(activeNote, this.side, worldPos);
     }
 
     const posDiff = activeNote.react.resizing.newResizeRect.topLeft.sub(
@@ -126,37 +171,7 @@ export class NoteResizing {
       activeNote.react.resizing.oldResizeRect.size,
     );
 
-    for (const selectedNote of this.page.selection.react.notes) {
-      if (selectedNote.react.resizing == null) {
-        continue;
-      }
-
-      selectedNote.react.resizing.active = true;
-
-      if (this.side.includes('w') || this.side.includes('e')) {
-        selectedNote.react.resizing.newResizeRect.size = new Vec2(
-          activeNote.react.resizing.newResizeRect.size.x,
-          selectedNote.react.resizing.newResizeRect.size.y,
-        );
-      }
-
-      if (this.side.includes('n') || this.side.includes('s')) {
-        selectedNote.react.resizing.newResizeRect.size = new Vec2(
-          selectedNote.react.resizing.newResizeRect.size.x,
-          activeNote.react.resizing.newResizeRect.size.y,
-        );
-      }
-
-      const newWorldTopLeft =
-        selectedNote.react.resizing.oldWorldRect.topLeft.add(posDiff);
-
-      selectedNote.react.resizing.newWorldRect = new Rect(
-        newWorldTopLeft,
-        newWorldTopLeft.add(
-          selectedNote.react.resizing.oldWorldRect.size.add(sizeDiff),
-        ),
-      );
-    }
+    applySizeAndWorldRectToSelection(this.page, this.side, posDiff, sizeDiff);
   };
 
   private _finish = () => {

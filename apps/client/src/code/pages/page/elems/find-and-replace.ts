@@ -83,40 +83,38 @@ export class PageFindAndReplace {
 
   async updateSearch(findTerm: string) {
     this.elemInfos = [];
-
     this.findTerm = findTerm;
-
     this.firstInteraction = true;
 
     if (this.react.active) {
-      for (const elem of this.elems) {
-        const editors: Editor[] = [];
-
-        for (const editor of elem.react.editors) {
-          editor.commands.setFindTerm(findTerm);
-
-          if ((editor.state as any).findAndReplace$.results.length > 0) {
-            editors.push(editor);
-          }
-        }
-
-        if (editors.length > 0) {
-          this.elemInfos.push({
-            elem,
-            editors,
-          });
-        }
-      }
-
+      this.applySearchToElems(findTerm);
       this.updateResultCount();
     } else {
-      for (const elem of this.elems) {
-        for (const editor of elem.react.editors) {
-          editor.commands.setFindTerm('');
+      this.clearSearchInElems();
+      this.react.resultCount = 0;
+    }
+  }
+
+  private applySearchToElems(findTerm: string) {
+    for (const elem of this.elems) {
+      const editors: Editor[] = [];
+      for (const editor of elem.react.editors) {
+        editor.commands.setFindTerm(findTerm);
+        if ((editor.state as any).findAndReplace$.results.length > 0) {
+          editors.push(editor);
         }
       }
+      if (editors.length > 0) {
+        this.elemInfos.push({ elem, editors });
+      }
+    }
+  }
 
-      this.react.resultCount = 0;
+  private clearSearchInElems() {
+    for (const elem of this.elems) {
+      for (const editor of elem.react.editors) {
+        editor.commands.setFindTerm('');
+      }
     }
   }
 

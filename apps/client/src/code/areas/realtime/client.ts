@@ -351,52 +351,7 @@ export const RealtimeClient = once(
             value !== this.values[fullKey]
           ) {
             const groupId = splitStr(suffix, ':', 2)[0];
-
-            this._resubscribe('group', groupId, 'encrypted-content-keyring');
-            this._resubscribe('group', groupId, 'encrypted-name');
-            this._resubscribe('group', groupId, 'encrypted-private-keyring');
-            this._resubscribe('group', groupId, 'permanent-deletion-date');
-
-            this._resubscribe(
-              'group-join-invitation',
-              suffix,
-              'encrypted-name',
-            );
-            this._resubscribe('group-join-invitation', suffix, 'exists');
-            this._resubscribe('group-join-invitation', suffix, 'role');
-
-            this._resubscribe('group-join-request', suffix, 'encrypted-name');
-            this._resubscribe('group-join-request', suffix, 'rejected');
-            this._resubscribe('group-join-request', suffix, 'exists');
-
-            this._resubscribe('group-member', suffix, 'encrypted-name');
-            this._resubscribe('group-member', suffix, 'exists');
-            this._resubscribe('group-member', suffix, 'role');
-
-            for (const [fullKey, value] of Object.entries(this.values)) {
-              if (
-                fullKey.endsWith('>group-id') &&
-                fullKey.startsWith('page:') &&
-                value === groupId
-              ) {
-                const key = splitStr(fullKey, '>', 2)[0];
-                const pageId = splitStr(key, ':', 2)[1];
-
-                this._resubscribe('page', pageId, 'encrypted-absolute-title');
-                this._resubscribe('page', pageId, 'encrypted-relative-title');
-                this._resubscribe(
-                  'page',
-                  pageId,
-                  'encrypted-symmetric-keyring',
-                );
-
-                this._resubscribe('page', pageId, 'permanent-deletion-date');
-
-                this._resubscribe('page-backlinks', pageId, 'list');
-
-                this._resubscribe('page-snapshots', pageId, 'infos');
-              }
-            }
+            this._resubscribeAfterGroupMemberRoleChange(groupId, suffix);
           }
 
           if (!(fullKey in this.subscriptions)) {
@@ -421,6 +376,53 @@ export const RealtimeClient = once(
           this._logger
             .sub('_handleDataNotification')
             .info(`${fullKey}: %o`, value);
+        }
+      }
+      private _resubscribeAfterGroupMemberRoleChange(groupId: string, suffix: string) {
+        this._resubscribe('group', groupId, 'encrypted-content-keyring');
+        this._resubscribe('group', groupId, 'encrypted-name');
+        this._resubscribe('group', groupId, 'encrypted-private-keyring');
+        this._resubscribe('group', groupId, 'permanent-deletion-date');
+
+        this._resubscribe(
+          'group-join-invitation',
+          suffix,
+          'encrypted-name',
+        );
+        this._resubscribe('group-join-invitation', suffix, 'exists');
+        this._resubscribe('group-join-invitation', suffix, 'role');
+
+        this._resubscribe('group-join-request', suffix, 'encrypted-name');
+        this._resubscribe('group-join-request', suffix, 'rejected');
+        this._resubscribe('group-join-request', suffix, 'exists');
+
+        this._resubscribe('group-member', suffix, 'encrypted-name');
+        this._resubscribe('group-member', suffix, 'exists');
+        this._resubscribe('group-member', suffix, 'role');
+
+        for (const [fullKey, value] of Object.entries(this.values)) {
+          if (
+            fullKey.endsWith('>group-id') &&
+            fullKey.startsWith('page:') &&
+            value === groupId
+          ) {
+            const key = splitStr(fullKey, '>', 2)[0];
+            const pageId = splitStr(key, ':', 2)[1];
+
+            this._resubscribe('page', pageId, 'encrypted-absolute-title');
+            this._resubscribe('page', pageId, 'encrypted-relative-title');
+            this._resubscribe(
+              'page',
+              pageId,
+              'encrypted-symmetric-keyring',
+            );
+
+            this._resubscribe('page', pageId, 'permanent-deletion-date');
+
+            this._resubscribe('page-backlinks', pageId, 'list');
+
+            this._resubscribe('page-snapshots', pageId, 'infos');
+          }
         }
       }
       private async _handleUserNotification(decoder: decoding.Decoder) {

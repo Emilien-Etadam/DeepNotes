@@ -505,124 +505,132 @@ export class SocketAuxObject {
         [[`group-lock:${groupId}`]],
         async (signals) => {
           await (await dataAbstraction()).transaction(async (dtrx) => {
-            // Rotate page key
-
-            const rotatePageKey = decoding.readUint8(decoder) === 1;
-
-            if (rotatePageKey) {
-              const encryptedPageKeyring = decoding.readVarUint8Array(decoder);
-
-              const encryptedPageRelativeTitle =
-                decoding.readVarUint8Array(decoder);
-              const encryptedPageAbsoluteTitle =
-                decoding.readVarUint8Array(decoder);
-
-              const encryptedSnapshotSymmetricKeys = new Map<
-                string,
-                Uint8Array
-              >();
-
-              for (let i = 0; i < decoding.readVarUint(decoder); ++i) {
-                const snapshotId = decoding.readVarString(decoder);
-                const encryptedSymmetricKey =
-                  decoding.readVarUint8Array(decoder);
-
-                encryptedSnapshotSymmetricKeys.set(
-                  snapshotId,
-                  encryptedSymmetricKey,
-                );
-              }
-
-              await (await dataAbstraction()).patch(
-                'page',
-                this.room.pageId,
-                {
-                  encrypted_symmetric_keyring: encryptedPageKeyring,
-
-                  encrypted_relative_title: encryptedPageRelativeTitle,
-                  encrypted_absolute_title: encryptedPageAbsoluteTitle,
-                },
-                { dtrx },
-              );
-
-              await patchMultiple(
-                dtrx.trx!,
-                'page_snapshots',
-
-                ['id', 'encrypted_symmetric_key'],
-                ['char(21)', 'bytea'],
-                Array.from(encryptedSnapshotSymmetricKeys.entries()),
-
-                'id = values.id',
-                'encrypted_symmetric_key = values.encrypted_symmetric_key',
-              );
-            }
-
-            // Read encrypted update
-
-            const updateIndex = decoding.readVarUint(decoder);
-            const encryptedUpdate = decoding.readVarUint8Array(decoder);
-
-            // Create snapshot
-
-            const createSnapshot = decoding.readUint8(decoder) === 1;
-
-            if (createSnapshot) {
-              const snapshotEncryptedSymmetricKey =
-                decoding.readVarUint8Array(decoder);
-              const snapshotEncryptedData = decoding.readVarUint8Array(decoder);
-
-              await insertPageSnapshot({
-                dataAbstraction: (await dataAbstraction()),
-                pageId: this.room.pageId,
-                authorId: this.userId!,
-                encryptedSymmetricKey: snapshotEncryptedSymmetricKey,
-                encryptedData: snapshotEncryptedData,
-                type: 'periodic',
-                dtrx,
-              });
-            }
-
-            // Delete old unmerged updates
-
-            await dtrx.trx!
-              .deleteFrom('page_updates')
-              .where('page_id', '=', this.room.pageId)
-              .where('index', '<=', updateIndex)
-              .execute();
-
-            // Insert encrypted update in the database
-
-            await dtrx.trx!
-              .insertInto('page_updates')
-              .values({
-                page_id: this.room.pageId,
-                index: updateIndex,
-                encrypted_data: encryptedUpdate,
-              } as any)
-              .onConflict((oc) =>
-                oc.columns(['page_id', 'index']).doNothing(),
-              )
-              .execute();
-
-            checkRedlockSignalAborted(signals);
-
-            // Update Redis data
-
-            await Promise.all([
-              flushPageUpdateBuffer(this.room.pageId, updateIndex),
-
-              squashPageUpdates(this.room.pageId, updateIndex, encryptedUpdate),
-            ]);
-
-            moduleLogger.info(
-              `[${this.room.name}] Doc all updates merged message handled`,
-            );
+            await this._applyDocAllUpdatesInTransaction(decoder, dtrx, signals);
           });
         },
         signals,
       );
     });
+  }
+
+  private async _applyDocAllUpdatesInTransaction(
+    decoder: decoding.Decoder,
+    dtrx: any,
+    signals: any,
+  ) {
+    // Rotate page key
+
+    const rotatePageKey = decoding.readUint8(decoder) === 1;
+
+    if (rotatePageKey) {
+      const encryptedPageKeyring = decoding.readVarUint8Array(decoder);
+
+      const encryptedPageRelativeTitle =
+        decoding.readVarUint8Array(decoder);
+      const encryptedPageAbsoluteTitle =
+        decoding.readVarUint8Array(decoder);
+
+      const encryptedSnapshotSymmetricKeys = new Map<
+        string,
+        Uint8Array
+      >();
+
+      for (let i = 0; i < decoding.readVarUint(decoder); ++i) {
+        const snapshotId = decoding.readVarString(decoder);
+        const encryptedSymmetricKey =
+          decoding.readVarUint8Array(decoder);
+
+        encryptedSnapshotSymmetricKeys.set(
+          snapshotId,
+          encryptedSymmetricKey,
+        );
+      }
+
+      await (await dataAbstraction()).patch(
+        'page',
+        this.room.pageId,
+        {
+          encrypted_symmetric_keyring: encryptedPageKeyring,
+
+          encrypted_relative_title: encryptedPageRelativeTitle,
+          encrypted_absolute_title: encryptedPageAbsoluteTitle,
+        },
+        { dtrx },
+      );
+
+      await patchMultiple(
+        dtrx.trx!,
+        'page_snapshots',
+
+        ['id', 'encrypted_symmetric_key'],
+        ['char(21)', 'bytea'],
+        Array.from(encryptedSnapshotSymmetricKeys.entries()),
+
+        'id = values.id',
+        'encrypted_symmetric_key = values.encrypted_symmetric_key',
+      );
+    }
+
+    // Read encrypted update
+
+    const updateIndex = decoding.readVarUint(decoder);
+    const encryptedUpdate = decoding.readVarUint8Array(decoder);
+
+    // Create snapshot
+
+    const createSnapshot = decoding.readUint8(decoder) === 1;
+
+    if (createSnapshot) {
+      const snapshotEncryptedSymmetricKey =
+        decoding.readVarUint8Array(decoder);
+      const snapshotEncryptedData = decoding.readVarUint8Array(decoder);
+
+      await insertPageSnapshot({
+        dataAbstraction: (await dataAbstraction()),
+        pageId: this.room.pageId,
+        authorId: this.userId!,
+        encryptedSymmetricKey: snapshotEncryptedSymmetricKey,
+        encryptedData: snapshotEncryptedData,
+        type: 'periodic',
+        dtrx,
+      });
+    }
+
+    // Delete old unmerged updates
+
+    await dtrx.trx!
+      .deleteFrom('page_updates')
+      .where('page_id', '=', this.room.pageId)
+      .where('index', '<=', updateIndex)
+      .execute();
+
+    // Insert encrypted update in the database
+
+    await dtrx.trx!
+      .insertInto('page_updates')
+      .values({
+        page_id: this.room.pageId,
+        index: updateIndex,
+        encrypted_data: encryptedUpdate,
+      } as any)
+      .onConflict((oc) =>
+        oc.columns(['page_id', 'index']).doNothing(),
+      )
+      .execute();
+
+    checkRedlockSignalAborted(signals);
+
+    // Update Redis data
+
+    await Promise.all([
+      flushPageUpdateBuffer(this.room.pageId, updateIndex),
+
+      squashPageUpdates(this.room.pageId, updateIndex, encryptedUpdate),
+    ]);
+
+    moduleLogger.info(
+      `[${this.room.name}] Doc all updates merged message handled`,
+    );
   }
 
   private async _handleDocSingleUpdateMessage(decoder: decoding.Decoder) {

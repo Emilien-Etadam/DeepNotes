@@ -28,83 +28,128 @@ export async function redirectIfNecessary(input: {
   }
 }
 
+function getSetupRedirectDest(input: {
+  route: RouteLocationNormalized;
+  needsSetup: boolean;
+}): { name: string } | undefined {
+  if (
+    input.needsSetup &&
+    (input.route.name === 'home' || input.route.name === 'login')
+  ) {
+    return { name: 'setup' };
+  }
+  if (input.needsSetup && input.route.name === 'register') {
+    return { name: 'setup' };
+  }
+  if (!input.needsSetup && input.route.name === 'setup') {
+    return { name: 'login' };
+  }
+  if (!input.needsSetup && input.route.name === 'register') {
+    return { name: 'login' };
+  }
+  return undefined;
+}
+
+async function getSetupRedirectIfClient(input: {
+  route: RouteLocationNormalized;
+}): Promise<{ name: string } | undefined> {
+  if (!process.env.CLIENT) return undefined;
+  try {
+    const { needsSetup } = await trpcClient.setup.getSetupStatus.query();
+    return getSetupRedirectDest({ route: input.route, needsSetup });
+  } catch {
+    return undefined;
+  }
+}
+
+function getAuthRequiredRedirect(input: {
+  route: RouteLocationNormalized;
+  loggedIn: boolean;
+}): { name: string; query?: { redirect: string } } | undefined {
+  if (
+    !input.loggedIn &&
+    input.route.matched.some((record) => record.meta.requiresAuth)
+  ) {
+    return { name: 'login', query: { redirect: input.route.fullPath } };
+  }
+  return undefined;
+}
+
+function getGuestRequiredRedirect(input: {
+  route: RouteLocationNormalized;
+  loggedIn: boolean;
+}): { name: string } | undefined {
+  if (
+    input.loggedIn &&
+    input.route.matched.some((record) => record.meta.requiresGuest)
+  ) {
+    return { name: 'pages' };
+  }
+  return undefined;
+}
+
+async function getStartingPageRedirect(input: {
+  route: RouteLocationNormalized;
+  loggedIn: boolean;
+  cookies?: typeof Cookies;
+}): Promise<{ name: string; params?: { pageId: string } } | undefined> {
+  if (!input.loggedIn || input.route.name !== 'pages') return undefined;
+  try {
+    const startingPageId =
+      await trpcClient.users.pages.getStartingPageId.query(undefined, {
+        context: getRequestConfig(input.cookies),
+      });
+    return { name: 'page', params: { pageId: startingPageId } };
+  } catch (error) {
+    moduleLogger.error('getRedirectDest error: %o', error);
+    return { name: 'home' };
+  }
+}
+
+async function getGroupMainPageRedirect(input: {
+  route: RouteLocationNormalized;
+}): Promise<{ name: string; params: { pageId: string } } | undefined> {
+  if (input.route.name !== 'group') return undefined;
+  await trpcClient.groups.getMainPageId.query({
+    groupId: input.route.params.groupId as string,
+  });
+  const mainPageId = await trpcClient.groups.getMainPageId.query({
+    groupId: input.route.params.groupId as string,
+  });
+  if (mainPageId != null) {
+    return { name: 'page', params: { pageId: mainPageId } };
+  }
+  return undefined;
+}
+
 export async function getRedirectDest(input: {
   route: RouteLocationNormalized;
   auth: AuthStore;
   cookies?: typeof Cookies;
 }) {
-  // Setup: first account must be created via /setup; no public register
-  if (process.env.CLIENT) {
-    try {
-      const { needsSetup } = await trpcClient.setup.getSetupStatus.query();
-      if (
-        needsSetup &&
-        (input.route.name === 'home' || input.route.name === 'login')
-      ) {
-        return { name: 'setup' };
-      }
-      if (needsSetup && input.route.name === 'register') {
-        return { name: 'setup' };
-      }
-      if (!needsSetup && input.route.name === 'setup') {
-        return { name: 'login' };
-      }
-      if (!needsSetup && input.route.name === 'register') {
-        return { name: 'login' };
-      }
-    } catch {
-      // Ignore (e.g. server unreachable)
-    }
-  }
+  const setupRedirect = await getSetupRedirectIfClient({
+    route: input.route,
+  });
+  if (setupRedirect != null) return setupRedirect;
 
-  // Page requires auth
+  const authRedirect = getAuthRequiredRedirect({
+    route: input.route,
+    loggedIn: input.auth.loggedIn,
+  });
+  if (authRedirect != null) return authRedirect;
 
-  if (
-    !input.auth.loggedIn &&
-    input.route.matched.some((record) => record.meta.requiresAuth)
-  ) {
-    return { name: 'login', query: { redirect: input.route.fullPath } };
-  }
+  const guestRedirect = getGuestRequiredRedirect({
+    route: input.route,
+    loggedIn: input.auth.loggedIn,
+  });
+  if (guestRedirect != null) return guestRedirect;
 
-  // Page requires guest
+  const startingRedirect = await getStartingPageRedirect({
+    route: input.route,
+    loggedIn: input.auth.loggedIn,
+    cookies: input.cookies,
+  });
+  if (startingRedirect != null) return startingRedirect;
 
-  if (
-    input.auth.loggedIn &&
-    input.route.matched.some((record) => record.meta.requiresGuest)
-  ) {
-    return { name: 'pages' };
-  }
-
-  // Starting page redirection
-
-  if (input.auth.loggedIn && input.route.name === 'pages') {
-    try {
-      const startingPageId =
-        await trpcClient.users.pages.getStartingPageId.query(undefined, {
-          context: getRequestConfig(input.cookies),
-        });
-
-      return { name: 'page', params: { pageId: startingPageId } };
-    } catch (error) {
-      moduleLogger.error('getRedirectDest error: %o', error);
-
-      return { name: 'home' };
-    }
-  }
-
-  // Group main page redirection
-
-  if (input.route.name === 'group') {
-    await trpcClient.groups.getMainPageId.query({
-      groupId: input.route.params.groupId as string,
-    });
-
-    const mainPageId = await trpcClient.groups.getMainPageId.query({
-      groupId: input.route.params.groupId as string,
-    });
-
-    if (mainPageId != null) {
-      return { name: 'page', params: { pageId: mainPageId } };
-    }
-  }
+  return getGroupMainPageRedirect({ route: input.route });
 }

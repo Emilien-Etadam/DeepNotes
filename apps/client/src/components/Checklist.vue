@@ -65,34 +65,37 @@ const props = defineProps<Props>();
 
 let lastSelectedItemId: string;
 
-function selectItem(itemId: string, event: MouseEvent) {
-  if (event.shiftKey || internals.mobileAltKey) {
-    const sourceItemIndex = props.itemIds.indexOf(lastSelectedItemId);
-    const targetItemIndex = props.itemIds.indexOf(itemId);
+function handleShiftClickRangeSelection(itemId: string) {
+  const sourceItemIndex = props.itemIds.indexOf(lastSelectedItemId);
+  const targetItemIndex = props.itemIds.indexOf(itemId);
 
-    if (
-      sourceItemIndex >= 0 &&
-      targetItemIndex >= 0 &&
-      sourceItemIndex !== targetItemIndex
+  if (
+    sourceItemIndex >= 0 &&
+    targetItemIndex >= 0 &&
+    sourceItemIndex !== targetItemIndex
+  ) {
+    const sign = Math.sign(targetItemIndex - sourceItemIndex);
+    const add = !props.selectedItemIds.has(itemId);
+
+    for (
+      let i = sourceItemIndex;
+      sign > 0 ? i < targetItemIndex + sign : i > targetItemIndex + sign;
+      i += sign
     ) {
-      const sign = Math.sign(targetItemIndex - sourceItemIndex);
-
-      const add = !props.selectedItemIds.has(itemId);
-
-      for (
-        let i = sourceItemIndex;
-        sign > 0 ? i < targetItemIndex + sign : i > targetItemIndex + sign;
-        i += sign
-      ) {
-        if (add) {
-          props.selectedItemIds.add(props.itemIds[i]);
-          emit('select', props.itemIds[i]);
-        } else {
-          props.selectedItemIds.delete(props.itemIds[i]);
-          emit('unselect', props.itemIds[i]);
-        }
+      if (add) {
+        props.selectedItemIds.add(props.itemIds[i]);
+        emit('select', props.itemIds[i]);
+      } else {
+        props.selectedItemIds.delete(props.itemIds[i]);
+        emit('unselect', props.itemIds[i]);
       }
     }
+  }
+}
+
+function selectItem(itemId: string, event: MouseEvent) {
+  if (event.shiftKey || internals.mobileAltKey) {
+    handleShiftClickRangeSelection(itemId);
   } else if (props.selectedItemIds.has(itemId)) {
     props.selectedItemIds.delete(itemId);
     emit('unselect', itemId);

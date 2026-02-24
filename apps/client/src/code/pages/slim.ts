@@ -42,6 +42,45 @@ function createDefaultWrapSlimAux<T extends object>(root: T): WrapSlimAux {
   return { value: root };
 }
 
+function handleSetDefaultValue(
+  aux: WrapSlimAux,
+  key: string,
+): boolean {
+  if (aux.value == null) return true;
+  if (!(key in aux.value)) return true;
+  delete aux.value[key];
+  let curr: WrapSlimAux = aux;
+  while (curr.prev != null && Object.keys(curr.value).length === 0) {
+    curr.value = null;
+    delete curr.prev.value[curr.key!];
+    curr = curr.prev;
+  }
+  return true;
+}
+
+function restoreAuxPath(aux: WrapSlimAux, key: string, value: any) {
+  const path = [aux];
+  let curr: WrapSlimAux = aux;
+  while (true) {
+    const prev = curr?.prev;
+    if (
+      prev == null ||
+      (prev.value != null && curr.key! in prev.value)
+    ) {
+      break;
+    }
+    path.push(prev);
+    curr = prev;
+  }
+  for (let i = path.length - 2; i >= 0; i--) {
+    const prev = path[i + 1];
+    const curr = path[i];
+    prev.value[curr.key!] = {};
+    curr.value = prev.value[curr.key!];
+  }
+  aux.value[key] = value;
+}
+
 export function wrapSlim<T extends object>(
   root: T,
   defaults: any,
@@ -63,59 +102,12 @@ export function wrapSlim<T extends object>(
     },
     set: (key: keyof T, value: any) => {
       if (value === defaults?.[key]) {
-        if (aux.value == null) {
-          return true;
-        }
-
-        if (!(key in aux.value)) {
-          return true;
-        }
-
-        delete aux.value[key];
-
-        let curr: WrapSlimAux = aux;
-
-        while (curr.prev != null && Object.keys(curr.value).length === 0) {
-          curr.value = null;
-
-          delete curr.prev.value[curr.key!];
-
-          curr = curr.prev;
-        }
+        handleSetDefaultValue(aux, key as string);
+        return;
+      }
+      if (aux.value == null) {
+        restoreAuxPath(aux, key as string, value);
       } else {
-        if (aux.value == null) {
-          // Backward loop
-
-          const path = [aux];
-
-          let curr: WrapSlimAux = aux!;
-
-          while (true) {
-            const prev = curr?.prev;
-
-            if (
-              prev == null ||
-              (prev.value != null && curr.key! in prev.value)
-            ) {
-              break;
-            }
-
-            path.push(prev);
-
-            curr = prev;
-          }
-
-          // Forward loop
-
-          for (let i = path.length - 2; i >= 0; i--) {
-            const prev = path[i + 1];
-            const curr = path[i];
-
-            prev.value[curr.key!] = {};
-            curr.value = prev.value[curr.key!];
-          }
-        }
-
         aux.value[key] = value;
       }
     },

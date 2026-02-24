@@ -4,6 +4,61 @@ import type { ComputedRef, UnwrapNestedRefs } from 'vue';
 import type { Page } from '../page';
 import type { PageRegion } from '../regions/region';
 
+function getBoxClientRect(clientStartPos: Vec2, clientEndPos: Vec2): Rect {
+  return new Rect(
+    new Vec2(
+      Math.min(clientStartPos.x, clientEndPos.x),
+      Math.min(clientStartPos.y, clientEndPos.y),
+    ),
+    new Vec2(
+      Math.max(clientStartPos.x, clientEndPos.x),
+      Math.max(clientStartPos.y, clientEndPos.y),
+    ),
+  );
+}
+
+function processNotesInBox(
+  page: Page,
+  region: ComputedRef<PageRegion>,
+  boxClientRect: Rect,
+  event: PointerEvent,
+) {
+  const regionValue = region.value;
+  for (const note of regionValue.react.notes) {
+    const noteClientRect = note.getClientRect('note-frame');
+    if (noteClientRect == null) continue;
+    if (!boxClientRect.intersectsRect(noteClientRect)) continue;
+    if (note.react.selected && !event.shiftKey && !internals.mobileAltKey) {
+      page.selection.remove(note);
+    } else {
+      page.selection.add(note);
+    }
+  }
+}
+
+function processArrowsInBox(
+  page: Page,
+  region: ComputedRef<PageRegion>,
+  boxClientRect: Rect,
+  event: PointerEvent,
+) {
+  const regionValue = region.value;
+  for (const arrow of regionValue.react.arrows) {
+    const arrowClientRect = arrow.getClientRect();
+    if (arrowClientRect == null) continue;
+    if (!boxClientRect.containsVec2(arrowClientRect.center)) continue;
+    if (
+      arrow.react.selected &&
+      !event.shiftKey &&
+      !internals.mobileAltKey
+    ) {
+      page.selection.remove(arrow);
+    } else {
+      page.selection.add(arrow);
+    }
+  }
+}
+
 export interface IBoxSelectionReact {
   active: boolean;
 
@@ -92,57 +147,14 @@ export class PageBoxSelection {
   private readonly _dragEnd = (event: PointerEvent) => {
     this.react.active = false;
 
-    const boxClientRect = new Rect(
-      new Vec2(
-        Math.min(this.react.clientStartPos.x, this.react.clientEndPos.x),
-        Math.min(this.react.clientStartPos.y, this.react.clientEndPos.y),
-      ),
-      new Vec2(
-        Math.max(this.react.clientStartPos.x, this.react.clientEndPos.x),
-        Math.max(this.react.clientStartPos.y, this.react.clientEndPos.y),
-      ),
+    const boxClientRect = getBoxClientRect(
+      this.react.clientStartPos,
+      this.react.clientEndPos,
     );
 
     this.page.collab.doc.transact(() => {
-      for (const note of this.react.region.react.notes) {
-        const noteClientRect = note.getClientRect('note-frame');
-
-        if (noteClientRect == null) {
-          continue;
-        }
-
-        if (!boxClientRect.intersectsRect(noteClientRect)) {
-          continue;
-        }
-
-        if (note.react.selected && !event.shiftKey && !internals.mobileAltKey) {
-          this.page.selection.remove(note);
-        } else {
-          this.page.selection.add(note);
-        }
-      }
-
-      for (const arrow of this.react.region.react.arrows) {
-        const arrowClientRect = arrow.getClientRect();
-
-        if (arrowClientRect == null) {
-          continue;
-        }
-
-        if (!boxClientRect.containsVec2(arrowClientRect.center)) {
-          continue;
-        }
-
-        if (
-          arrow.react.selected &&
-          !event.shiftKey &&
-          !internals.mobileAltKey
-        ) {
-          this.page.selection.remove(arrow);
-        } else {
-          this.page.selection.add(arrow);
-        }
-      }
+      processNotesInBox(this.page, this.react.region, boxClientRect, event);
+      processArrowsInBox(this.page, this.react.region, boxClientRect, event);
     });
   };
 
