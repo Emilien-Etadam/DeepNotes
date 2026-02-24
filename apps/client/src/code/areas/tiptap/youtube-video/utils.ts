@@ -103,7 +103,7 @@ function parseYoutubeUrlToEmbedBase(
   return `${getYoutubeEmbedUrl(nocookie)}${matches[1]}`;
 }
 
-function buildEmbedParams(options: {
+type EmbedParamsOptions = {
   allowFullscreen?: boolean;
   autoplay?: boolean;
   ccLanguage?: string;
@@ -120,23 +120,34 @@ function buildEmbedParams(options: {
   playlist?: string;
   progressBarColor?: string;
   startAt?: number;
-}): string[] {
-  const params = [];
+};
+
+function buildPlayerParams(options: EmbedParamsOptions): string[] {
+  const params: string[] = [];
   if (options.allowFullscreen === false) params.push('fs=0');
   if (options.autoplay) params.push('autoplay=1');
-  if (options.ccLanguage) params.push(`cc_lang_pref=${options.ccLanguage}`);
-  if (options.ccLoadPolicy) params.push('cc_load_policy=1');
   if (!options.controls) params.push('controls=0');
   if (options.disableKBcontrols) params.push('disablekb=1');
   if (options.enableIFrameApi) params.push('enablejsapi=1');
+  if (options.loop) params.push('loop=1');
+  if (options.modestBranding) params.push('modestbranding=1');
+  if (options.progressBarColor) params.push(`color=${options.progressBarColor}`);
+  return params;
+}
+
+function buildContentParams(options: EmbedParamsOptions): string[] {
+  const params: string[] = [];
+  if (options.ccLanguage) params.push(`cc_lang_pref=${options.ccLanguage}`);
+  if (options.ccLoadPolicy) params.push('cc_load_policy=1');
   if (options.endTime) params.push(`end=${options.endTime}`);
   if (options.interfaceLanguage) params.push(`hl=${options.interfaceLanguage}`);
   if (options.ivLoadPolicy) params.push(`iv_load_policy=${options.ivLoadPolicy}`);
-  if (options.loop) params.push('loop=1');
-  if (options.modestBranding) params.push('modestbranding=1');
   if (options.origin) params.push(`origin=${options.origin}`);
   if (options.playlist) params.push(`playlist=${options.playlist}`);
   if (options.startAt) params.push(`start=${options.startAt}`);
-  if (options.progressBarColor) params.push(`color=${options.progressBarColor}`);
   return params;
+}
+
+function buildEmbedParams(options: EmbedParamsOptions): string[] {
+  return [...buildPlayerParams(options), ...buildContentParams(options)];
 }
