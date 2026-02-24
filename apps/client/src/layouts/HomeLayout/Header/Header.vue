@@ -59,10 +59,7 @@
 
             <div
               class="header-app-name"
-              style="
-                font-weight: bold;
-                position: relative;
-              "
+              style="font-weight: bold; position: relative"
             >
               DeepNotes
             </div>
@@ -112,7 +109,7 @@ useResizeObserver(
   (entry) => {
     uiStore().headerHeight = entry.contentRect.height;
   },
-  );
+);
 </script>
 
 <style scoped lang="scss">

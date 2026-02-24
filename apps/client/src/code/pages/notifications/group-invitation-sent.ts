@@ -43,7 +43,8 @@ export async function getGroupInvitationSentNotificationInfo({
               try {
                 await asyncDialog({
                   title: 'Reject join invitation',
-                  message: 'Are you sure you want to reject the join invitation?',
+                  message:
+                    'Are you sure you want to reject the join invitation?',
 
                   focus: 'cancel',
 

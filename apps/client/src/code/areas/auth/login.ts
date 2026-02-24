@@ -1,5 +1,10 @@
 import { bytesToBase64 } from '@stdlib/base64';
-import { type SymmetricKey, createPrivateKeyring, createSymmetricKeyring, wrapSymmetricKey } from '@stdlib/crypto';
+import {
+  createPrivateKeyring,
+  createSymmetricKeyring,
+  type SymmetricKey,
+  wrapSymmetricKey,
+} from '@stdlib/crypto';
 
 import { multiModePath } from '../../utils/misc';
 import { storeClientTokenExpirations } from './tokens';

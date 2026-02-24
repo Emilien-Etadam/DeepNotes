@@ -1,5 +1,8 @@
 <template>
-  <div class="password-screen-title" style="font-weight: bold; max-width: 240px">
+  <div
+    class="password-screen-title"
+    style="font-weight: bold; max-width: 240px"
+  >
     {{ groupNames()(page.react.groupId).get().text }}
   </div>
 

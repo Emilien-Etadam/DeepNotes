@@ -1,6 +1,6 @@
 import type { dataHashes, DataPrefix } from '@deeplib/data';
 import { RealtimeCommandType } from '@deeplib/misc';
-import { Resolvable, getFullKey, splitStr } from '@stdlib/misc';
+import { getFullKey, Resolvable, splitStr } from '@stdlib/misc';
 import { once } from 'lodash';
 
 export const RealtimeContext = once(

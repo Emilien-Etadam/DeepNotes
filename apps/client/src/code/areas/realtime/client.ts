@@ -1,7 +1,12 @@
 import type { dataHashes, DataPrefix } from '@deeplib/data';
-import { type DeepNotesNotification, RealtimeClientMessageType, RealtimeCommandType, RealtimeServerMessageType } from '@deeplib/misc';
+import {
+  type DeepNotesNotification,
+  RealtimeClientMessageType,
+  RealtimeCommandType,
+  RealtimeServerMessageType,
+} from '@deeplib/misc';
 import { wrapSymmetricKey } from '@stdlib/crypto';
-import { ClientSocket, Resolvable, getFullKey, splitStr } from '@stdlib/misc';
+import { ClientSocket, getFullKey, Resolvable, splitStr } from '@stdlib/misc';
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import { once, throttle } from 'lodash';

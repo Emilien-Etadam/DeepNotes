@@ -64,7 +64,12 @@
 </template>
 
 <script setup lang="ts">
-import { type GroupRoleID, canManageRole, roles, rolesMap } from '@deeplib/misc';
+import {
+  canManageRole,
+  type GroupRoleID,
+  roles,
+  rolesMap,
+} from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
 import type { QNotifyUpdateOptions } from 'quasar';
 import { changeUserRole } from 'src/code/areas/api-interface/groups/change-user-role';

@@ -128,7 +128,11 @@ import { listenPointerEvents, map, negateProp } from '@stdlib/misc';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';
 import { asyncDialog, handleError } from 'src/code/utils/misc';
 import PagePopupOptions from 'src/components/PagePopupOptions.vue';
-import { type LeftSidebarSectionName, leftSidebarSectionIndexes, leftSidebarSectionNames } from 'src/stores/ui';
+import {
+  leftSidebarSectionIndexes,
+  type LeftSidebarSectionName,
+  leftSidebarSectionNames,
+} from 'src/stores/ui';
 
 const realtimeCtx = useRealtimeContext();
 

@@ -59,7 +59,7 @@ if (process.env.CLIENT) {
 
   internals.pages = factories().Pages({});
 
-    (globalThis as any).internals = internals;
+  (globalThis as any).internals = internals;
 }
 
 export default boot(async ({ store }) => {

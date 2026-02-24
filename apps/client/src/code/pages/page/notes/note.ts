@@ -1,4 +1,4 @@
-import { Rect, Vec2, hasVertScrollbar, isNumeric } from '@stdlib/misc';
+import { hasVertScrollbar, isNumeric, Rect, Vec2 } from '@stdlib/misc';
 import type { Editor } from '@tiptap/vue-3';
 import { sizeToCSS } from 'src/code/utils/misc';
 import type {
@@ -12,7 +12,13 @@ import { colorNameToColorHex } from '../../colors';
 import type { PageArrow } from '../arrows/arrow';
 import { type IElemReact, PageElem } from '../elems/elem';
 import type { Page } from '../page';
-import { type IPageRegion, type IRegionReact, type PageRegion, getIslandRegions, getIslandRoot } from '../regions/region';
+import {
+  getIslandRegions,
+  getIslandRoot,
+  type IPageRegion,
+  type IRegionReact,
+  type PageRegion,
+} from '../regions/region';
 import type { INoteCollabComplete } from './note-collab';
 
 export type NoteSide = 'nw' | 'n' | 'ne' | 'w' | 'e' | 'sw' | 's' | 'se';

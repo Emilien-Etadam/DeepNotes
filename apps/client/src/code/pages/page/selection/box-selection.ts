@@ -1,4 +1,4 @@
-import { Rect, Vec2, listenPointerEvents } from '@stdlib/misc';
+import { listenPointerEvents, Rect, Vec2 } from '@stdlib/misc';
 import type { ComputedRef, UnwrapNestedRefs } from 'vue';
 
 import type { Page } from '../page';

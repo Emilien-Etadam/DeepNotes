@@ -122,23 +122,20 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     code: 'KeyK',
     ctrl: true,
     shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.unsetMark('link')),
+    action: (page) => page.selection.format((chain) => chain.unsetMark('link')),
     when: (_, ctx) => ctx.isEditingElem,
   },
   {
     code: 'KeyM',
     ctrl: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.addInlineMath()),
+    action: (page) => page.selection.format((chain) => chain.addInlineMath()),
     when: (_, ctx) => ctx.isEditingElem,
   },
   {
     code: 'KeyM',
     ctrl: true,
     shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.addMathBlock()),
+    action: (page) => page.selection.format((chain) => chain.addMathBlock()),
     when: (_, ctx) => ctx.isEditingElem,
   },
   {
@@ -153,8 +150,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     code: 'KeyC',
     alt: true,
     shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.toggleCodeBlock()),
+    action: (page) => page.selection.format((chain) => chain.toggleCodeBlock()),
     when: (_, ctx) => ctx.isEditingElem,
   },
   {
@@ -354,8 +350,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     code: 'KeyH',
     ctrl: true,
     shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.toggleHighlight()),
+    action: (page) => page.selection.format((chain) => chain.toggleHighlight()),
     when: (_, ctx) => !ctx.isEditingInput,
   },
   {
@@ -380,8 +375,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     code: 'KeyK',
     ctrl: true,
     shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.unsetMark('link')),
+    action: (page) => page.selection.format((chain) => chain.unsetMark('link')),
     when: (_, ctx) => !ctx.isEditingInput,
   },
   {
@@ -437,8 +431,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     code: 'Digit9',
     ctrl: true,
     shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.toggleTaskList()),
+    action: (page) => page.selection.format((chain) => chain.toggleTaskList()),
     when: (_, ctx) => !ctx.isEditingInput,
   },
   {
@@ -453,8 +446,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     code: 'KeyC',
     alt: true,
     shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.toggleCodeBlock()),
+    action: (page) => page.selection.format((chain) => chain.toggleCodeBlock()),
     when: (_, ctx) => !ctx.isEditingInput,
   },
   {
@@ -484,9 +476,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
   {
     code: 'ArrowLeft',
     action: (page) =>
-      page.selection.shift(
-        new Vec2(-(1 / page.camera.react.zoom), 0),
-      ),
+      page.selection.shift(new Vec2(-(1 / page.camera.react.zoom), 0)),
     when: (_, ctx) => !ctx.isEditingInput,
   },
   {
@@ -498,9 +488,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
   {
     code: 'ArrowUp',
     action: (page) =>
-      page.selection.shift(
-        new Vec2(0, -(1 / page.camera.react.zoom)),
-      ),
+      page.selection.shift(new Vec2(0, -(1 / page.camera.react.zoom))),
     when: (_, ctx) => !ctx.isEditingInput,
   },
   {

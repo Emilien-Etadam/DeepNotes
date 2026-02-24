@@ -30,7 +30,13 @@ import type { NoteDragging } from './notes/dragging';
 import type { NoteDropping } from './notes/dropping';
 import type { PageNotes } from './notes/notes';
 import type { NoteResizing } from './notes/resizing';
-import { type IPageRegion, IRegionCollab, type IRegionReact, getIslandRegions, getIslandRoot } from './regions/region';
+import {
+  getIslandRegions,
+  getIslandRoot,
+  type IPageRegion,
+  IRegionCollab,
+  type IRegionReact,
+} from './regions/region';
 import type { PageRegions } from './regions/regions';
 import type { PageActiveElem } from './selection/active-elem';
 import type { PageActiveRegion } from './selection/active-region';

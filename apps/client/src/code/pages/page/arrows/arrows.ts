@@ -1,4 +1,4 @@
-import { type Y, getYjsValue } from '@syncedstore/core';
+import { getYjsValue, type Y } from '@syncedstore/core';
 import { isString } from 'lodash';
 import type { Factories } from 'src/code/factories';
 

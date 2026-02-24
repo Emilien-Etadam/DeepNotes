@@ -9,7 +9,11 @@ import { multiModePath } from '../utils/misc';
 import { scrollIntoView } from '../utils/scroll-into-view';
 import type { Page } from './page/page';
 import type { PageCache } from './page-cache';
-import type { ISerialArrowInput, ISerialObjectInput, Serialization } from './serialization';
+import type {
+  ISerialArrowInput,
+  ISerialObjectInput,
+  Serialization,
+} from './serialization';
 
 export interface IAppReact {
   pathPageIds: string[];

@@ -78,7 +78,10 @@ export class PageRegions {
       );
     }
 
-    if (Number.isFinite(regionWorldRect.size.x) && Number.isFinite(regionWorldRect.size.y)) {
+    if (
+      Number.isFinite(regionWorldRect.size.x) &&
+      Number.isFinite(regionWorldRect.size.y)
+    ) {
       return regionWorldRect;
     }
   }

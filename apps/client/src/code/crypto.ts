@@ -1,4 +1,13 @@
-import { DataLayer, type KeyPair, type SymmetricKey, createKeyring, createPrivateKeyring, createSymmetricKeyring, wrapKeyPair, wrapSymmetricKey } from '@stdlib/crypto';
+import {
+  createKeyring,
+  createPrivateKeyring,
+  createSymmetricKeyring,
+  DataLayer,
+  type KeyPair,
+  type SymmetricKey,
+  wrapKeyPair,
+  wrapSymmetricKey,
+} from '@stdlib/crypto';
 import { nanoidToBytes } from '@stdlib/misc';
 import sodium from 'libsodium-wrappers-sumo';
 import { nanoid } from 'nanoid';

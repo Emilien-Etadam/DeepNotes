@@ -68,7 +68,12 @@
 </template>
 
 <script setup lang="ts">
-import { type GroupRoleID, canManageRole, roles, rolesMap } from '@deeplib/misc';
+import {
+  canManageRole,
+  type GroupRoleID,
+  roles,
+  rolesMap,
+} from '@deeplib/misc';
 import { acceptJoinRequest } from 'src/code/areas/api-interface/groups/join-requests/accept';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';
 import { handleError } from 'src/code/utils/misc';

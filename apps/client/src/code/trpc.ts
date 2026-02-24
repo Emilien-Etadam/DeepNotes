@@ -16,7 +16,10 @@ export const trpcClient = createTRPCClient<AppRouter>({
       },
 
       fetch(url, options) {
-        const opts = { ...options, credentials: 'include' as RequestCredentials };
+        const opts = {
+          ...options,
+          credentials: 'include' as RequestCredentials,
+        };
         if ((opts.headers as any)?.['X-Trpc-Context'] != null) {
           delete (opts.headers as any)['X-Trpc-Context'];
         }

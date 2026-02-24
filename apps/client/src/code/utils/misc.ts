@@ -1,4 +1,10 @@
-import { type ResizeListener, isNumeric, observeResize, splitStr, unobserveResize } from '@stdlib/misc';
+import {
+  isNumeric,
+  observeResize,
+  type ResizeListener,
+  splitStr,
+  unobserveResize,
+} from '@stdlib/misc';
 import { isString, pull } from 'lodash';
 import { nanoid } from 'nanoid';
 import type { Cookies, QDialogOptions } from 'quasar';

@@ -98,7 +98,6 @@ function processFinds(
     );
 
     for (const m of matches) {
-
       if (m[0] === '') {
         break;
       }

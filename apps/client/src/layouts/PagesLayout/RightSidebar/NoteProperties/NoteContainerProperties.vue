@@ -299,10 +299,19 @@ async function onFileChange() {
 }
 
 async function importChildrenFromFiles() {
-  if ((globalThis as Window & { showOpenFilePicker?: unknown }).showOpenFilePicker == null) {
+  if (
+    (globalThis as Window & { showOpenFilePicker?: unknown })
+      .showOpenFilePicker == null
+  ) {
     fileInput.value?.click();
   } else {
-    const fileHandles = await (globalThis as Window & { showOpenFilePicker: (options?: object) => Promise<FileSystemFileHandle[]> }).showOpenFilePicker({
+    const fileHandles = await (
+      globalThis as Window & {
+        showOpenFilePicker: (
+          options?: object,
+        ) => Promise<FileSystemFileHandle[]>;
+      }
+    ).showOpenFilePicker({
       multiple: true,
 
       types: [

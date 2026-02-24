@@ -1,7 +1,7 @@
-import { type Rect, type Vec2, isNanoID } from '@stdlib/misc';
+import { isNanoID, type Rect, type Vec2 } from '@stdlib/misc';
 import { once } from 'lodash';
 import type { ComputedRef, UnwrapRef, WritableComputedRef } from 'vue';
-import { type ZodType, z } from 'zod';
+import { z, type ZodType } from 'zod';
 
 import type { PageArrow } from '../arrows/arrow';
 import type { PageElem } from '../elems/elem';

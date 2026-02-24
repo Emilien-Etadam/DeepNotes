@@ -2,7 +2,6 @@
   <div
     ref="toolbarRef"
     style="flex: 1; width: 0; display: flex; align-items: center"
-    
   >
     <template
       v-for="(numSubgroups, groupIndex) in toolbarStructure"
@@ -629,9 +628,9 @@ const toolbarGroups: ToolbarButtonGroup[] = [
 
 const page = computed(() => internals.pages.react.page);
 
-
-
-function onToolbarBtnClick(button: (typeof toolbarGroups)[number]['subgroups'][number][number]) {
+function onToolbarBtnClick(
+  button: (typeof toolbarGroups)[number]['subgroups'][number][number],
+) {
   if (page.value) {
     button.click(page.value);
   }

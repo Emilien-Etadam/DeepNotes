@@ -35,7 +35,9 @@ export default boot(({ store }) => {
   uiStore(store).recentPagesWeight =
     Number.parseFloat(internals.localStorage.getItem('recentPagesWeight')) || 1;
   uiStore(store).favoritePagesWeight =
-    Number.parseFloat(internals.localStorage.getItem('favoritePagesWeight')) || 1;
+    Number.parseFloat(internals.localStorage.getItem('favoritePagesWeight')) ||
+    1;
   uiStore(store).selectedPagesWeight =
-    Number.parseFloat(internals.localStorage.getItem('selectedPagesWeight')) || 1;
+    Number.parseFloat(internals.localStorage.getItem('selectedPagesWeight')) ||
+    1;
 });

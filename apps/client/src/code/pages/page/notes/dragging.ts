@@ -1,4 +1,4 @@
-import { Vec2, listenPointerEvents } from '@stdlib/misc';
+import { listenPointerEvents, Vec2 } from '@stdlib/misc';
 import { refProp, watchUntilTrue } from '@stdlib/vue';
 import { isCtrlDown } from 'src/code/utils/misc';
 import type { UnwrapRef } from 'vue';

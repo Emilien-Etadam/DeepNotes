@@ -1,4 +1,4 @@
-import { type IVec2, Vec2, hasScrollbar } from '@stdlib/misc';
+import { hasScrollbar, type IVec2, Vec2 } from '@stdlib/misc';
 
 function domRectScreenToWorld(domRect: DOMRect): DOMRect {
   return new DOMRect(

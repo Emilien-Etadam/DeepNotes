@@ -320,7 +320,10 @@
 import { pack } from 'msgpackr';
 import type { PageArrow } from 'src/code/pages/page/arrows/arrow';
 import type { Page } from 'src/code/pages/page/page';
-import { ISerialArrow, type ISerialArrowInput } from 'src/code/pages/serialization';
+import {
+  ISerialArrow,
+  type ISerialArrowInput,
+} from 'src/code/pages/serialization';
 import { setClipboardText } from 'src/code/utils/clipboard';
 import { handleError } from 'src/code/utils/misc';
 import type { Ref } from 'vue';

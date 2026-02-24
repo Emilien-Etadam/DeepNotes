@@ -237,9 +237,14 @@
             label="X position"
             :model-value="note.react.collab.pos.x"
             @update:model-value="
-              changeProp(Number.parseFloat($event as any), (selectedNote, value) => {
-                selectedNote.react.collab.pos.x = Number.isNaN(value) ? 0 : value;
-              })
+              changeProp(
+                Number.parseFloat($event as any),
+                (selectedNote, value) => {
+                  selectedNote.react.collab.pos.x = Number.isNaN(value)
+                    ? 0
+                    : value;
+                },
+              )
             "
             dense
             :disable="page.react.readOnly"
@@ -254,9 +259,14 @@
             label="Y position"
             :model-value="note.react.collab.pos.y"
             @update:model-value="
-              changeProp(Number.parseFloat($event as any), (selectedNote, value) => {
-                selectedNote.react.collab.pos.y = Number.isNaN(value) ? 0 : value;
-              })
+              changeProp(
+                Number.parseFloat($event as any),
+                (selectedNote, value) => {
+                  selectedNote.react.collab.pos.y = Number.isNaN(value)
+                    ? 0
+                    : value;
+                },
+              )
             "
             dense
             :disable="page.react.readOnly"

@@ -19,16 +19,10 @@ export class PageUndoRedo {
     key: 0,
 
     canUndo: computed(() =>
-      withReactiveDep(
-        this.react.key,
-        this.undoManager?.canUndo() ?? false,
-      ),
+      withReactiveDep(this.react.key, this.undoManager?.canUndo() ?? false),
     ),
     canRedo: computed(() =>
-      withReactiveDep(
-        this.react.key,
-        this.undoManager?.canRedo() ?? false,
-      ),
+      withReactiveDep(this.react.key, this.undoManager?.canRedo() ?? false),
     ),
   });
 

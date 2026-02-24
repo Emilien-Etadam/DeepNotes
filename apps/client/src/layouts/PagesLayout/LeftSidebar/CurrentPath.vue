@@ -84,7 +84,11 @@
 <script setup lang="ts">
 import { listenPointerEvents, map, negateProp } from '@stdlib/misc';
 import PagePopupOptions from 'src/components/PagePopupOptions.vue';
-import { type LeftSidebarSectionName, leftSidebarSectionIndexes, leftSidebarSectionNames } from 'src/stores/ui';
+import {
+  leftSidebarSectionIndexes,
+  type LeftSidebarSectionName,
+  leftSidebarSectionNames,
+} from 'src/stores/ui';
 import type { ComponentPublicInstance } from 'vue';
 
 const listRef = ref<ComponentPublicInstance>();

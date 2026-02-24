@@ -1,4 +1,4 @@
-import { Rect, Vec2, listenPointerEvents } from '@stdlib/misc';
+import { listenPointerEvents, Rect, Vec2 } from '@stdlib/misc';
 import { isCtrlDown } from 'src/code/utils/misc';
 
 import type { Page } from '../page';

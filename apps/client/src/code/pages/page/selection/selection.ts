@@ -203,10 +203,7 @@ export class PageSelection {
     this.page.collab.doc.transact(() => {
       const editor = this.page.editing.react.editor;
       if (editor != null) {
-        chainFunc(
-          editor.chain().focus(),
-          editor,
-        ).run();
+        chainFunc(editor.chain().focus(), editor).run();
       } else {
         for (const elem of this.react.elems) {
           for (const ed of elem.react.editors) {

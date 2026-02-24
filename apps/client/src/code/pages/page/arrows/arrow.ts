@@ -1,5 +1,12 @@
 import { lightenByRatio } from '@stdlib/color';
-import { Line, type Rect, Vec2, getClosestPathPointPercent, getLineRectIntersection, listenPointerEvents } from '@stdlib/misc';
+import {
+  getClosestPathPointPercent,
+  getLineRectIntersection,
+  Line,
+  listenPointerEvents,
+  type Rect,
+  Vec2,
+} from '@stdlib/misc';
 import { Y } from '@syncedstore/core';
 import type { Editor } from '@tiptap/vue-3';
 import Color from 'color';

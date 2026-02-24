@@ -1,4 +1,4 @@
-import { type Y, getYjsDoc } from '@syncedstore/core';
+import { getYjsDoc, type Y } from '@syncedstore/core';
 import type { Factories } from 'src/code/factories';
 import type { PageWebsocket } from 'src/code/pages/page/collab/websocket';
 

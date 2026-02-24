@@ -29,7 +29,7 @@ export const imageResizing = {
 
 <script setup lang="ts">
 import { listenPointerEvents } from '@stdlib/misc';
-import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3';
+import { nodeViewProps, NodeViewWrapper } from '@tiptap/vue-3';
 
 const props = defineProps(nodeViewProps);
 

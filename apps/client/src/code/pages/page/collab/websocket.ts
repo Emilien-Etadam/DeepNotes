@@ -104,7 +104,10 @@ export const PageWebsocket = once(
         // Setup unload listener
 
         if (globalThis.window !== undefined) {
-          globalThis.addEventListener('beforeunload', this.disableLocalAwareness);
+          globalThis.addEventListener(
+            'beforeunload',
+            this.disableLocalAwareness,
+          );
         } else if (typeof process !== 'undefined') {
           process.on('exit', this.disableLocalAwareness);
         }

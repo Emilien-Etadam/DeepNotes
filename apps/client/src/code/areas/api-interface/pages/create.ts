@@ -1,4 +1,9 @@
-import { DataLayer, type Keyring, type SymmetricKeyring, createSymmetricKeyring } from '@stdlib/crypto';
+import {
+  createSymmetricKeyring,
+  DataLayer,
+  type Keyring,
+  type SymmetricKeyring,
+} from '@stdlib/crypto';
 import { textToBytes } from '@stdlib/misc';
 import { nanoid } from 'nanoid';
 import {
@@ -46,16 +51,16 @@ export async function createPage(input: {
       const zxcvbnResult = await zxcvbnAsync(input.createGroup.groupPassword);
       if (zxcvbnResult.score <= 2) {
         await asyncDialog({
-        title: 'Weak password',
-        html: true,
-        message:
-          'Your password is relatively weak.<br/>Are you sure you want to continue?',
-        style: { width: 'max-content', padding: '4px 8px' },
+          title: 'Weak password',
+          html: true,
+          message:
+            'Your password is relatively weak.<br/>Are you sure you want to continue?',
+          style: { width: 'max-content', padding: '4px 8px' },
 
-        focus: 'cancel',
+          focus: 'cancel',
 
-        cancel: { label: 'No', flat: true, color: 'primary' },
-        ok: { label: 'Yes', flat: true, color: 'negative' },
+          cancel: { label: 'No', flat: true, color: 'primary' },
+          ok: { label: 'Yes', flat: true, color: 'negative' },
         });
       }
     }

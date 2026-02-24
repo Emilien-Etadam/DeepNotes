@@ -1,10 +1,10 @@
 import { route } from 'quasar/wrappers';
 import { getRedirectDest } from 'src/code/routing';
 import {
-  type RouteLocationRaw,
   createRouter,
   createWebHashHistory,
   createWebHistory,
+  type RouteLocationRaw,
 } from 'vue-router';
 
 import routes from './routes';
@@ -54,7 +54,10 @@ export default route(async function ({ store }) {
     }
 
     if (redirectDest != null) {
-      moduleLogger.info('beforeEach redirect: %s', JSON.stringify(redirectDest));
+      moduleLogger.info(
+        'beforeEach redirect: %s',
+        JSON.stringify(redirectDest),
+      );
       next(redirectDest);
     } else {
       next();

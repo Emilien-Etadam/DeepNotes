@@ -36,10 +36,7 @@
       <q-toolbar-title
         v-if="uiStore().rightSidebarExpanded"
         class="right-sidebar-title"
-        style="
-          margin-left: -2px;
-          text-align: left;
-        "
+        style="margin-left: -2px; text-align: left"
       >
         <template v-if="page.activeElem.react.value?.type === 'note'">
           Note properties

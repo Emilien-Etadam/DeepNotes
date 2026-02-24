@@ -1,7 +1,5 @@
 <template>
-  <q-footer
-    class="footer-minimal"
-  >
+  <q-footer class="footer-minimal">
     <ResponsiveContainer>
       <div class="footer-line">
         <router-link

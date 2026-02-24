@@ -3,11 +3,7 @@
     elevated
     class="d-none d-md-block main-toolbar-header"
     v-show="uiStore().width >= 840"
-    style="
-      background-color: transparent;
-      z-index: 100;
-      pointer-events: auto;
-    "
+    style="background-color: transparent; z-index: 100; pointer-events: auto"
   >
     <q-toolbar
       class="bg-grey-10"
