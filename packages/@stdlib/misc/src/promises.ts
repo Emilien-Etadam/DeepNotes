@@ -88,7 +88,7 @@ class LazyPromiseLike implements PromiseLike<any> {
 
   constructor(private readonly _asyncFunc: () => PromiseLike<any>) {}
 
-  then<TResult1 = any, TResult2 = never>(
+  then<TResult1 = any, TResult2 = never>( // NOSONAR — intentional thenable (implements PromiseLike)
     onFulfilled?: ((value: any) => TResult1 | PromiseLike<TResult1>) | null,
     onRejected?: ((reason?: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): PromiseLike<TResult1 | TResult2> {

@@ -45,7 +45,7 @@ export class Resolvable<T = void> implements Promise<T> {
     };
   });
 
-  then<TResult1 = T, TResult2 = never>(
+  then<TResult1 = T, TResult2 = never>( // NOSONAR — intentional thenable (implements Promise<T>)
     onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason?: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2> {

@@ -6,6 +6,7 @@
   >
     <iframe
       ref="youtubeElem"
+      title="YouTube video"
       v-bind="{ ...extension.options, ...node.attrs, src: embedUrl }"
       :style="{
         'pointer-events': pointerDown ? 'none' : undefined,
