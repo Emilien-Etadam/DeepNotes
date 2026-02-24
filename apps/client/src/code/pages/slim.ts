@@ -45,9 +45,9 @@ function createDefaultWrapSlimAux<T extends object>(root: T): WrapSlimAux {
 function handleSetDefaultValue(
   aux: WrapSlimAux,
   key: string,
-): boolean {
-  if (aux.value == null) return true;
-  if (!(key in aux.value)) return true;
+): void {
+  if (aux.value == null) return;
+  if (!(key in aux.value)) return;
   delete aux.value[key];
   let curr: WrapSlimAux = aux;
   while (curr.prev != null && Object.keys(curr.value).length === 0) {
@@ -55,7 +55,6 @@ function handleSetDefaultValue(
     delete curr.prev.value[curr.key!];
     curr = curr.prev;
   }
-  return true;
 }
 
 function restoreAuxPath(aux: WrapSlimAux, key: string, value: any) {
