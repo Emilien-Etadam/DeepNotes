@@ -53,12 +53,12 @@
   font-size: $fs-xs;
 }
 .footer-sep {
-  color: rgba(255, 255, 255, 0.35); // TODO: token
+  color: $text-hint;
   user-select: none;
 }
 .footer-link,
 .footer-copy {
-  color: #c8c8c8; // TODO: token
+  color: $text-subtle;
 }
 .footer-link:hover {
   color: #fff;

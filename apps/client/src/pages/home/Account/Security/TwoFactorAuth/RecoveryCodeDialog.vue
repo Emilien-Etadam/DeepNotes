@@ -182,6 +182,6 @@ function printRecoveryCodes() {
 .recovery-codes :deep(*) {
   font-family: $font-mono;
 
-  font-size: 17px; // TODO: token
+  font-size: $fs-subtitle;
 }
 </style>

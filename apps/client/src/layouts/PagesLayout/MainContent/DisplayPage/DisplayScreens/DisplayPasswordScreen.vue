@@ -86,7 +86,7 @@ async function onEnterPassword() {
 
 <style scoped lang="scss">
 .password-screen-title {
-  font-size: 19px; // TODO: token
+  font-size: $fs-password-title;
 }
 
 .password-screen-submit {

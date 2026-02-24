@@ -109,7 +109,7 @@ watch(
 }
 
 .password-feedback {
-  color: #d0d0d0; // TODO: token
+  color: $text-disabled-alt;
 }
 
 .q-field :deep() {

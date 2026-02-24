@@ -204,7 +204,7 @@ h3 {
   width: 15px;
 }
 ::-webkit-scrollbar-track {
-  background: #202020; // TODO: token
+  background: $bg-code;
 }
 ::-webkit-scrollbar-thumb {
   background: $bg-card;

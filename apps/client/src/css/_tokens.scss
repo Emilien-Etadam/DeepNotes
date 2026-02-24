@@ -11,6 +11,7 @@ $bg-overlay: #404040;
 $bg-input-idle: rgba(255, 255, 255, 0.12);
 $bg-input-hover: rgba(255, 255, 255, 0.2);
 $bg-input-focus: rgba(255, 255, 255, 0.25);
+$bg-code: #202020;
 
 // --- Couleurs de texte ---
 $text-primary: rgba(255, 255, 255, 0.92);
@@ -19,10 +20,15 @@ $text-muted: rgba(255, 255, 255, 0.7);
 $text-disabled: rgba(255, 255, 255, 0.5);
 $text-placeholder: rgba(255, 255, 255, 0.5);
 $text-readonly: #d8d8d8;
+$text-hint: rgba(255, 255, 255, 0.35);
+$text-disabled-alt: #d0d0d0;
+$text-subtle: #c8c8c8;
 
 // --- Couleurs d'accent ---
 $color-link: #60b2ff;
 $color-error: #ff4040;
+$color-link-hover: #4fc3f7;
+$color-negative-border: rgb(110, 54, 48);
 
 // --- Bordures ---
 $border-subtle: rgba(255, 255, 255, 0.16);
@@ -41,6 +47,9 @@ $fs-xl: 24px;
 $fs-2xl: 28px;
 $fs-3xl: 32px;
 $fs-4xl: 40px;
+$fs-marker: 15px;
+$fs-subtitle: 17px;
+$fs-password-title: 19px;
 
 // --- Espacements ---
 $sp-1: 4px;
@@ -57,6 +66,10 @@ $sp-9: 64px;
 $radius-sm: 4px;
 $radius-md: 6px;
 $radius-lg: 8px;
+
+// --- Composants ---
+$bg-hover-light: rgba(255, 255, 255, 0.1);
+$input-height-sm: 34px;
 
 // --- Boutons ---
 $btn-padding-sm: 4px 8px;

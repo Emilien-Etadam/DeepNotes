@@ -156,7 +156,7 @@ watch(
 
 .q-input :deep() {
   .q-field__control {
-    height: 34px; // TODO: token
+    height: $input-height-sm;
   }
 }
 .q-input :deep() .q-field__native,

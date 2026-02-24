@@ -139,7 +139,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
 
         > li::marker {
           content: '• ';
-          font-size: 15px; // TODO: token (entre sm et base)
+          font-size: $fs-marker;
         }
       }
 
@@ -201,7 +201,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
 
         color: #fff;
 
-        background: #202020; // TODO: token
+        background: $bg-code;
       }
 
       // Code blocks
@@ -214,7 +214,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
         border-radius: 0.4rem;
         padding: 0.4rem 0.5rem;
 
-        background: #202020; // TODO: token
+        background: $bg-code;
       }
 
       // Headings
@@ -238,7 +238,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
       hr {
         border: none;
         height: 1px;
-        background-color: rgba(255, 255, 255, 0.35); // TODO: token
+        background-color: $text-hint;
       }
 
       // Links

@@ -88,7 +88,7 @@ onMounted(async () => {
     color: $color-link;
   }
   :deep(a:hover) {
-    color: #4fc3f7; // TODO: token
+    color: $color-link-hover;
   }
 
   :deep(.q-btn) {

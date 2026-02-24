@@ -91,7 +91,7 @@ const renderedFormula = computed(() => {
 .text-editor.editing .inline-math:hover {
   cursor: pointer;
 
-  background-color: rgba(255, 255, 255, 0.1); // TODO: token
+  background-color: $bg-hover-light;
 }
 .text-editor.editing .inline-math.selected {
   background-color: rgba(0, 109, 210, 0.2);
