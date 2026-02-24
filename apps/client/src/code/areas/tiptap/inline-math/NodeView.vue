@@ -65,9 +65,9 @@ const renderedFormula = computed(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .inline-math {
-  border-radius: 4px;
+  border-radius: $radius-sm;
 
   text-align: center;
   font-style: italic;
@@ -83,15 +83,15 @@ const renderedFormula = computed(() => {
 
 :deep(.q-field__native),
 :deep(.q-field__input) {
-  color: rgba(255, 255, 255, 0.92);
+  color: $text-primary;
 }
 </style>
 
-<style>
+<style lang="scss">
 .text-editor.editing .inline-math:hover {
   cursor: pointer;
 
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1); // TODO: token
 }
 .text-editor.editing .inline-math.selected {
   background-color: rgba(0, 109, 210, 0.2);

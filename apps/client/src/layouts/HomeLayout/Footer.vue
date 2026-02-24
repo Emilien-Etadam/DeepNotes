@@ -1,10 +1,6 @@
 <template>
   <q-footer
     class="footer-minimal"
-    style="
-      background-color: #202020;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-    "
   >
     <ResponsiveContainer>
       <div class="footer-line">
@@ -44,25 +40,27 @@
 
 <script setup lang="ts"></script>
 
-<style scoped>
+<style scoped lang="scss">
 .footer-minimal {
-  padding: 8px 0;
+  background-color: $bg-page;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: $sp-2 0;
 }
 .footer-line {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 4px 8px;
-  font-size: 12px;
+  gap: $sp-1 $sp-2;
+  font-size: $fs-xs;
 }
 .footer-sep {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.35); // TODO: token
   user-select: none;
 }
 .footer-link,
 .footer-copy {
-  color: #c8c8c8;
+  color: #c8c8c8; // TODO: token
 }
 .footer-link:hover {
   color: #fff;

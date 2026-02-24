@@ -1,7 +1,7 @@
 <template>
   <q-header
     ref="headerRef"
-    style="background-color: #181818"
+    class="home-header"
   >
     <q-toolbar
       style="
@@ -58,10 +58,9 @@
             <div style="width: 8px"></div>
 
             <div
+              class="header-app-name"
               style="
-                font-size: 20px;
                 font-weight: bold;
-                color: rgba(255, 255, 255, 0.9);
                 position: relative;
               "
             >
@@ -113,5 +112,16 @@ useResizeObserver(
   (entry) => {
     uiStore().headerHeight = entry.contentRect.height;
   },
-);
+  );
 </script>
+
+<style scoped lang="scss">
+.home-header {
+  background-color: $bg-page;
+}
+
+.header-app-name {
+  font-size: $fs-lg;
+  color: $text-primary;
+}
+</style>

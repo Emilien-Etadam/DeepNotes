@@ -44,14 +44,14 @@
     >
       <li
         v-if="passwordWarning"
-        style="color: #ff4040"
+        class="password-warning"
       >
         {{ passwordWarning }}
       </li>
       <li
         v-for="feedback in passwordFeedback"
         :key="feedback"
-        style="color: #d0d0d0"
+        class="password-feedback"
       >
         {{ feedback }}
       </li>
@@ -104,6 +104,14 @@ watch(
 </script>
 
 <style scoped lang="scss">
+.password-warning {
+  color: $color-error;
+}
+
+.password-feedback {
+  color: #d0d0d0; // TODO: token
+}
+
 .q-field :deep() {
   .q-field__control:before {
     border-bottom: 0;

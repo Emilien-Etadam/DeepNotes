@@ -112,7 +112,7 @@ const isEmpty = computed(
   padding-left: 5px;
 }
 .horizontal-page.active {
-  border-radius: 4px;
+  border-radius: $radius-sm;
 
   background-color: rgba(255, 255, 255, 0.1);
 }
@@ -120,7 +120,7 @@ const isEmpty = computed(
 .group-title {
   color: color.adjust(#006dd2, $lightness: 23%);
 
-  font-size: 12px;
+  font-size: $fs-xs;
 
   overflow: hidden;
   text-overflow: ellipsis;

@@ -95,7 +95,7 @@ const page = computed(() => internals.pages.react.page);
   pointer-events: auto;
   position: absolute;
 
-  left: 12px;
+  left: $sp-3;
   top: 55px;
 
   display: flex;

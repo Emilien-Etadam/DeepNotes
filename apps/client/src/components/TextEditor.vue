@@ -23,7 +23,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
 
       width: max-content;
 
-      font-size: 13px;
+      font-size: $fs-base;
 
       touch-action: pan-x pan-y !important;
 
@@ -139,7 +139,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
 
         > li::marker {
           content: '• ';
-          font-size: 15px;
+          font-size: 15px; // TODO: token (entre sm et base)
         }
       }
 
@@ -201,7 +201,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
 
         color: #fff;
 
-        background: #202020;
+        background: #202020; // TODO: token
       }
 
       // Code blocks
@@ -214,7 +214,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
         border-radius: 0.4rem;
         padding: 0.4rem 0.5rem;
 
-        background: #202020;
+        background: #202020; // TODO: token
       }
 
       // Headings
@@ -238,16 +238,16 @@ defineProps</* @vue-ignore */ _EditorContent>();
       hr {
         border: none;
         height: 1px;
-        background-color: rgba(255, 255, 255, 0.35);
+        background-color: rgba(255, 255, 255, 0.35); // TODO: token
       }
 
       // Links
 
       a {
-        color: #60b2ff !important;
+        color: $color-link !important;
       }
       &[contenteditable='false'] a:hover {
-        color: color.adjust(#60b2ff, $lightness: 10%) !important;
+        color: color.adjust($color-link, $lightness: 10%) !important;
       }
 
       // Blockquotes
@@ -301,7 +301,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
         position: absolute;
         white-space: nowrap;
 
-        border-radius: 3px;
+        border-radius: $radius-sm;
         border-top-left-radius: 0px;
 
         padding: 0px 3px;
@@ -311,7 +311,7 @@ defineProps</* @vue-ignore */ _EditorContent>();
 
         transform: translateY(100%);
 
-        font-size: 12px;
+        font-size: $fs-xs;
 
         z-index: 2147483647;
 

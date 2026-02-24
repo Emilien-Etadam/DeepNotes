@@ -1,5 +1,6 @@
 <template>
   <div
+    class="display-bottom-right"
     style="
       position: absolute;
 
@@ -9,8 +10,6 @@
       text-align: right;
 
       pointer-events: none;
-
-      font-size: 12px;
     "
   >
     <div
@@ -40,6 +39,10 @@ const subscriptionExpired = computed(() => false);
 
 <style scoped lang="scss">
 @use 'sass:color';
+
+.display-bottom-right {
+  font-size: $fs-xs;
+}
 
 .selection-count {
   color: color.adjust(#006dd2, $lightness: 23%);

@@ -1,5 +1,5 @@
 <template>
-  <div style="font-weight: bold; font-size: 19px; max-width: 240px">
+  <div class="password-screen-title" style="font-weight: bold; max-width: 240px">
     {{ groupNames()(page.react.groupId).get().text }}
   </div>
 
@@ -19,10 +19,10 @@
     <Gap style="height: 16px" />
 
     <DeepBtn
+      class="password-screen-submit"
       label="Enter"
       type="submit"
       color="primary"
-      style="font-size: 16px"
       delay
       @click.prevent="onEnterPassword()"
     />
@@ -80,3 +80,13 @@ async function onEnterPassword() {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.password-screen-title {
+  font-size: 19px; // TODO: token
+}
+
+.password-screen-submit {
+  font-size: $fs-base;
+}
+</style>

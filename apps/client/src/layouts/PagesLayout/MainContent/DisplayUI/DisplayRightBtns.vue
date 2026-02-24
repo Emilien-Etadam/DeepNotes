@@ -86,7 +86,7 @@ const page = computed(() => internals.pages.react.page);
 .display-camera-btns {
   position: absolute;
 
-  left: 12px;
+  left: $sp-3;
   top: 260px;
 
   display: flex;

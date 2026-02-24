@@ -178,12 +178,10 @@ function printRecoveryCodes() {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .recovery-codes :deep(*) {
-  font-family:
-    ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Ubuntu Mono',
-    'Roboto Mono', Menlo, Monaco, Consolas, monospace;
+  font-family: $font-mono;
 
-  font-size: 17px;
+  font-size: 17px; // TODO: token
 }
 </style>
