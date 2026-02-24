@@ -198,7 +198,7 @@ async function rejectSelectedRequests() {
         });
 
         numSuccess++;
-      } catch (error) {
+      } catch (_error) {
         numFailed++;
       }
     }

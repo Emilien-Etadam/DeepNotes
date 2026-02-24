@@ -198,5 +198,5 @@ import NotificationsPopup from '../../MainToolbar/Notifications/NotificationsPop
 import ObjectBtns from '../../MainToolbar/ObjectBtns.vue';
 import PagesSettingsDialog from '../../MainToolbar/PagesSettingsDialog/PagesSettingsDialog.vue';
 
-const quasarMode = process.env.MODE;
+const _quasarMode = process.env.MODE;
 </script>

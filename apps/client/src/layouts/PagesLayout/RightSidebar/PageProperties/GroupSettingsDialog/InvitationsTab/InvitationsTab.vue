@@ -202,7 +202,7 @@ async function cancelSelectedInvitations() {
         });
 
         numSuccess++;
-      } catch (error) {
+      } catch (_error) {
         numFailed++;
       }
     }

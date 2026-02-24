@@ -136,7 +136,7 @@ async function changeRole() {
         });
 
         numSuccess++;
-      } catch (error) {
+      } catch (_error) {
         numFailed++;
       }
     }

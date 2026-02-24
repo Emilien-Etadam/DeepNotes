@@ -53,7 +53,7 @@ export async function getGroupRequestSentNotificationInfo({
           color: 'red',
 
           handler: () => {
-            (async () => {
+            void (async () => {
               try {
                 await asyncDialog({
                   title: 'Reject join request',

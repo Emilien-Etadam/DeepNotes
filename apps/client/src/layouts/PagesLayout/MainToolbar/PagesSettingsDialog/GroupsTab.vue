@@ -173,7 +173,7 @@ async function leaveSelectedGroups() {
         });
 
         numSuccess++;
-      } catch (error) {
+      } catch (_error) {
         numFailed++;
       }
     }

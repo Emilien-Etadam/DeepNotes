@@ -243,7 +243,7 @@ async function movePages() {
         });
 
         numSuccess++;
-      } catch (error) {
+      } catch (_error) {
         numFailed++;
       }
     }
@@ -273,8 +273,8 @@ async function movePages() {
     }
 
     notif(notifUpdateOptions);
-  } catch (error) {
-    handleError(error);
+  } catch (_error) {
+    handleError(_error);
   }
 }
 
@@ -309,7 +309,7 @@ async function deletePages() {
         }
 
         numSuccess++;
-      } catch (error) {
+      } catch (_error) {
         numFailed++;
       }
     }
@@ -339,8 +339,8 @@ async function deletePages() {
     }
 
     notif(notifUpdateOptions);
-  } catch (error) {
-    handleError(error);
+  } catch (_error) {
+    handleError(_error);
   }
 }
 
