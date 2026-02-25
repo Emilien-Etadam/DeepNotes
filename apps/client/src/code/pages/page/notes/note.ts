@@ -1,5 +1,6 @@
 import { hasVertScrollbar, isNumeric, Rect, Vec2 } from '@stdlib/misc';
 import type { Editor } from '@tiptap/vue-3';
+import { APP_URL } from 'src/code/utils/app-url';
 import { sizeToCSS } from 'src/code/utils/misc';
 import type {
   ComputedRef,
@@ -496,17 +497,17 @@ export class PageNote extends PageElem() implements IPageRegion {
           }
 
           if (this.react.collab.link.startsWith('/')) {
-            return `https://deepnotes.app${this.react.collab.link}`;
+            return `${APP_URL}${this.react.collab.link}`;
           }
 
           if (!this.react.collab.link.includes('://')) {
-            return `https://deepnotes.app/${this.react.collab.link}`;
+            return `${APP_URL}/${this.react.collab.link}`;
           }
 
           return this.react.collab.link;
         }),
         external: computed(
-          () => !this.react.link.url.startsWith('https://deepnotes.app/pages/'),
+          () => !this.react.link.url.startsWith(`${APP_URL}/pages/`),
         ),
       },
 

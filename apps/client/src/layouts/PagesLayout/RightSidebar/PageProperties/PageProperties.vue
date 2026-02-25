@@ -71,7 +71,7 @@
         color="primary"
         @click="
           async () => {
-            await setClipboardText(`https://deepnotes.app/pages/${page.id}`);
+            await setClipboardText(appPageUrl(page.id));
 
             $q.notify({
               message: 'Copied to clipboard.',
@@ -166,6 +166,7 @@ import { removeFavoritePages } from 'src/code/areas/api-interface/users/remove-f
 import { pageAbsoluteTitles } from 'src/code/pages/computed/page-absolute-titles';
 import { pageRelativeTitles } from 'src/code/pages/computed/page-relative-titles';
 import type { Page } from 'src/code/pages/page/page';
+import { appPageUrl } from 'src/code/utils/app-url';
 import { setClipboardText } from 'src/code/utils/clipboard';
 import { asyncDialog, handleError } from 'src/code/utils/misc';
 import DeletionDialog from 'src/components/DeletionDialog.vue';

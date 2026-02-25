@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import type { Page } from 'src/code/pages/page/page';
+import { APP_URL } from 'src/code/utils/app-url';
 import { pageSelectionStore } from 'src/stores/page-selection';
 import type { Ref } from 'vue';
 
@@ -63,8 +64,12 @@ function selectLinkedPages() {
       note.react.collab.head.value.toDOM().textContent ?? ''
     ).matchAll(/(?:\/pages\/([\w-]{21})\b)/g);
 
+    const appUrlEscaped = APP_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const linkMatches = note.react.collab.link.matchAll(
-      /^(?:https:\/\/deepnotes.app\/pages\/([\w-]{21})|\/pages\/([\w-]{21})|([\w-]{21}))$/g,
+      new RegExp(
+        `^(?:${appUrlEscaped}/pages/([\\w-]{21})|/pages/([\\w-]{21})|([\\w-]{21}))$`,
+        'g',
+      ),
     );
 
     const matches = [...headMatches, ...bodyMatches, ...linkMatches];

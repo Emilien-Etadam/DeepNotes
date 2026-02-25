@@ -257,7 +257,7 @@
         @click="
           async () => {
             await setClipboardText(
-              `https://deepnotes.app/pages/${page.id}?elem=${arrow.id}`,
+              appPageUrl(page.id, `elem=${arrow.id}`),
             );
 
             $q.notify({
@@ -324,6 +324,7 @@ import {
   ISerialArrow,
   type ISerialArrowInput,
 } from 'src/code/pages/serialization';
+import { appPageUrl } from 'src/code/utils/app-url';
 import { setClipboardText } from 'src/code/utils/clipboard';
 import { handleError } from 'src/code/utils/misc';
 import type { Ref } from 'vue';

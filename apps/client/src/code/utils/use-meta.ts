@@ -1,4 +1,5 @@
 import { isString } from 'lodash';
+import { APP_URL } from 'src/code/utils/app-url';
 import { useMeta as _useMeta } from 'quasar';
 import type { MetaOptions } from 'quasar/dist/types/meta';
 
@@ -14,11 +15,11 @@ export function useMeta(options: MetaOptions | (() => MetaOptions)) {
 
     optionsObj.meta['og:url'] = {
       name: 'og:url',
-      content: `https://deepnotes.app${route.fullPath}`,
+      content: `${APP_URL}${route.fullPath}`,
     };
     optionsObj.meta['twitter:url'] = {
       name: 'twitter:url',
-      content: `https://deepnotes.app${route.fullPath}`,
+      content: `${APP_URL}${route.fullPath}`,
     };
 
     if (isString(optionsObj.title)) {

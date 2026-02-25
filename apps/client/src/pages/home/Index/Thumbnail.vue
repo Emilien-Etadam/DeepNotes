@@ -1,10 +1,11 @@
 <template>
   <div class="highlight-cell col-12 col-sm-6 col-lg-4 col-xl-3">
-    <a
+    <component
+      :is="href != null ? 'a' : 'div'"
       class="highlight"
       :style="{ 'background-image': `url('${thumbnailImage}')` }"
       :href="href"
-      target="_blank"
+      :target="href != null ? '_blank' : undefined"
     >
       <div class="highlight-text">
         <div
@@ -24,7 +25,7 @@
       </div>
 
       <div class="highlight-overlay"></div>
-    </a>
+    </component>
   </div>
 </template>
 

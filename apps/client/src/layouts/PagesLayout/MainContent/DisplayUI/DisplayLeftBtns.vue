@@ -81,13 +81,43 @@
         Find and replace
       </q-tooltip>
     </DisplayBtn>
+
+    <Gap style="height: 16px" />
+
+    <DisplayBtn
+      icon="mdi-export-variant"
+      size="11px"
+      :btn-size="34"
+      @click="exportCurrentPage()"
+    >
+      <q-tooltip
+        anchor="center right"
+        self="center left"
+        transition-show="jump-right"
+        transition-hide="jump-left"
+      >
+        Export for AI
+      </q-tooltip>
+    </DisplayBtn>
   </div>
 </template>
 
 <script setup lang="ts">
+import { exportPageToMarkdown } from 'src/code/pages/export/export-markdown';
+import ExportMarkdownDialog from './ExportMarkdownDialog.vue';
 import TakeScreenshotDialog from '../../MainToolbar/TakeScreenshotDialog.vue';
 
 const page = computed(() => internals.pages.react.page);
+
+function exportCurrentPage() {
+  const currentPage = internals.pages.react.page;
+  if (!currentPage) return;
+  const markdown = exportPageToMarkdown(currentPage);
+  $q.dialog({
+    component: ExportMarkdownDialog,
+    componentProps: { markdown },
+  });
+}
 </script>
 
 <style lang="scss" scoped>

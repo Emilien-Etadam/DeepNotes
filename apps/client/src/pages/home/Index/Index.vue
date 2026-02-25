@@ -187,49 +187,41 @@
           <Thumbnail
             thumbnail-image="/applications/mind-map.webp"
             title="Mind maps"
-            href="https://deepnotes.app/pages/cMwNNxpa2jZKuP_0zzrMP"
           />
 
           <Thumbnail
             thumbnail-image="/applications/diagram-thumbnail.webp"
             title="Diagrams"
-            href="https://deepnotes.app/pages/lZ0M_o6493_D2mqYe9AoY"
           />
 
           <Thumbnail
             thumbnail-image="/applications/kanban-board-thumbnail.webp"
             title="Kanban boards"
-            href="https://deepnotes.app/pages/rUgBRksD5jyM6TDF_U_WN"
           />
 
           <Thumbnail
             thumbnail-image="/applications/database-structure-thumbnail.webp"
             title="Database diagrams"
-            href="https://deepnotes.app/pages/Gl8IxI7j9mKUsWyKHkv3V"
           />
 
           <Thumbnail
             thumbnail-image="/applications/family-tree-thumbnail.webp"
             title="Family trees"
-            href="https://deepnotes.app/pages/5QyqYGXVzHF_10dNC4uux"
           />
 
           <Thumbnail
             thumbnail-image="/applications/flashcards-thumbnail.webp"
             title="Flashcards"
-            href="https://deepnotes.app/pages/CPvCy_IjiRWqQNBj0cikY"
           />
 
           <Thumbnail
             thumbnail-image="/applications/cheat-sheet-thumbnail.webp"
             title="Cheat sheets"
-            href="https://deepnotes.app/pages/nRea-8JgIXvbIyEi0ONCN"
           />
 
           <Thumbnail
             thumbnail-image="/applications/history-study-thumbnail.webp"
             title="Studies"
-            href="https://deepnotes.app/pages/soL5nZWNv_elUnh78iVsN"
           />
         </div>
       </div>

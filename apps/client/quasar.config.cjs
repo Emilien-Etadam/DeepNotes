@@ -119,7 +119,13 @@ module.exports = configure(function (ctx) {
 
       // publicPath: '/',
       // analyze: true,
-      env,
+      env: {
+        ...env,
+        APP_URL:
+          env.CLIENT_APP_URL ||
+          process.env.CLIENT_APP_URL ||
+          'https://deepnotes.app',
+      },
       chunkSizeWarningLimit: 800,
       // rawDefine: {}
       // ignorePublicFolder: true,

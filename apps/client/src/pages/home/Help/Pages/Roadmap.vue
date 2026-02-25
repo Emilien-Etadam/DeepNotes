@@ -4,16 +4,15 @@
   <Gap style="height: 36px" />
 
   <div>
-    Yes, it is available at:
-
-    <div>
-      <a
-        href="https://deepnotes.app/pages/voEG2WDb5e2x1Ep6hjwVp"
-        target="_blank"
-      >
-        https://deepnotes.app/pages/voEG2WDb5e2x1Ep6hjwVp
-      </a>
-    </div>
+    The roadmap is maintained in the project repository. You can follow
+    development and contribute on
+    <a
+      href="https://github.com/DeepNotesApp/DeepNotes"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      GitHub
+    </a>.
   </div>
 </template>
 

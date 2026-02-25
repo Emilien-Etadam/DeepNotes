@@ -203,7 +203,7 @@
         @click="
           async () => {
             await setClipboardText(
-              `https://deepnotes.app/pages/${page.id}?elem=${note.id}`,
+              appPageUrl(page.id, `elem=${note.id}`),
             );
 
             $q.notify({
@@ -621,6 +621,7 @@ import { createPageBacklink } from 'src/code/areas/api-interface/pages/backlinks
 import { createPage } from 'src/code/areas/api-interface/pages/create';
 import type { PageNote } from 'src/code/pages/page/notes/note';
 import type { Page } from 'src/code/pages/page/page';
+import { appPageUrl } from 'src/code/utils/app-url';
 import { setClipboardText } from 'src/code/utils/clipboard';
 import { handleError } from 'src/code/utils/misc';
 import TutorialTooltip from 'src/components/TutorialTooltip.vue';

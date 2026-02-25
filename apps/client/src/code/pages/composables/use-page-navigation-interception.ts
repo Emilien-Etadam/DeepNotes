@@ -1,6 +1,7 @@
 import { useEventListener } from '@vueuse/core';
 import { imageResizing } from 'src/code/areas/tiptap/image-resize/NodeView.vue';
 import { youtubeResizing } from 'src/code/areas/tiptap/youtube-video/NodeView.vue';
+import { APP_URL } from 'src/code/utils/app-url';
 import { handleError, isCtrlDown } from 'src/code/utils/misc';
 
 export function usePageNavigationInterception() {
@@ -54,8 +55,8 @@ export function usePageNavigationInterception() {
         !(
           href.startsWith('/pages/') ||
           href.startsWith('/groups/') ||
-          href.startsWith('https://deepnotes.app/pages/') ||
-          href.startsWith('https://deepnotes.app/groups/')
+          href.startsWith(`${APP_URL}/pages/`) ||
+          href.startsWith(`${APP_URL}/groups/`)
         )
       ) {
         mainLogger

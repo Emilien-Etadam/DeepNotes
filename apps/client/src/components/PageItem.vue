@@ -1,6 +1,6 @@
 <template>
   <a
-    :href="`https://deepnotes.app/pages/${pageId}`"
+    :href="appPageUrl(pageId)"
     @click.prevent.stop
   >
     <q-item
@@ -33,6 +33,7 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { appPageUrl } from 'src/code/utils/app-url';
 import { isCtrlDown } from 'src/code/utils/misc';
 
 defineProps<{

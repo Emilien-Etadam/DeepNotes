@@ -112,6 +112,7 @@ const html = marked(`
 
   ## Contact Information
 
-  For any questions or concerns, please email us at contact@deepnotes.app.
+  For any questions or concerns, please contact us via the support channel
+  configured for your instance (e.g. the link in the app footer or help section).
 `);
 </script>
