@@ -103,10 +103,12 @@
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import { exportPageToMarkdown } from 'src/code/pages/export/export-markdown';
 import ExportMarkdownDialog from './ExportMarkdownDialog.vue';
 import TakeScreenshotDialog from '../../MainToolbar/TakeScreenshotDialog.vue';
 
+const $q = useQuasar();
 const page = computed(() => internals.pages.react.page);
 
 function exportCurrentPage() {

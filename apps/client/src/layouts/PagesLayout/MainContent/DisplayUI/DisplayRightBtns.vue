@@ -87,7 +87,7 @@ const page = computed(() => internals.pages.react.page);
   position: absolute;
 
   left: $sp-3;
-  top: 260px;
+  top: 298px;
 
   display: flex;
   flex-direction: column;
