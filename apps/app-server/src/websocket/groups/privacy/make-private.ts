@@ -51,10 +51,6 @@ export async function makePrivateStep1({
 }: InferProcedureOpts<typeof baseProcedureStep1>) {
   (ctx as Context).groupId = input.groupId;
 
-  // Assert that user is subscribed
-
-  await ctx.assertUserSubscribed({ userId: ctx.userId });
-
   // Check sufficient permissions
 
   await ctx.assertSufficientGroupPermissions({

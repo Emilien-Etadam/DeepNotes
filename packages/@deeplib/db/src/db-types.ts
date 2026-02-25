@@ -1,5 +1,7 @@
-import type { Plan } from '@deeplib/misc';
 import type { Generated, Selectable } from 'kysely';
+
+/** Legacy: plan column kept for DB compatibility, no longer used for access control */
+type Plan = 'basic' | 'pro';
 
 /** GroupRoleID from @deeplib/misc */
 type GroupRoleID = 'owner' | 'admin' | 'moderator' | 'member' | 'viewer';

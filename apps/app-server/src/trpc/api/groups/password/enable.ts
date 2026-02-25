@@ -29,10 +29,6 @@ export async function enable({
     [[`user-lock:${ctx.userId}`], [`group-lock:${input.groupId}`]],
     async (signals) => {
       return await ctx.dataAbstraction.transaction(async (dtrx) => {
-        // Assert agent is subscribed
-
-        await ctx.assertUserSubscribed({ userId: ctx.userId });
-
         // Check if user can edit group settings
 
         await ctx.assertSufficientGroupPermissions({

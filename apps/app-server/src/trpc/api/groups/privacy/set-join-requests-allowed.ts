@@ -24,10 +24,6 @@ export async function setJoinRequestsAllowed({
     [[`user-lock:${ctx.userId}`], [`group-lock:${input.groupId}`]],
     async (signals) => {
       return await ctx.dataAbstraction.transaction(async (dtrx) => {
-        // Assert agent is subscribed
-
-        await ctx.assertUserSubscribed({ userId: ctx.userId });
-
         // Check if user has sufficient permissions
 
         await ctx.assertSufficientGroupPermissions({

@@ -58,10 +58,6 @@ export async function changeUserRoleStep1({
   typeof baseProcedureStep1
 >): Promise<NotificationsResponse> {
   return await ctx.dataAbstraction.transaction(async (dtrx) => {
-    // Assert agent is subscribed
-
-    await ctx.assertUserSubscribed({ userId: ctx.userId });
-
     // Check sufficient permissions
 
     const [agentRole, patientRole] = await ctx.dataAbstraction.mhget([

@@ -217,10 +217,6 @@ export async function assertCorrectUserPassword(input: {
   }
 }
 
-export async function assertUserSubscribed(_input: { userId: string }) {
-  // Commercialization removed: no plan check, all users have full access.
-}
-
 export async function assertNonDemoAccount(input: { userId: string }) {
   if (await (await dataAbstraction()).hget('user', input.userId, 'demo')) {
     throw new TRPCError({

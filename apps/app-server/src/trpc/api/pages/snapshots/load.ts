@@ -32,10 +32,6 @@ export async function load({
       return await ctx.usingLocks(
         [[`group-lock:${groupId}`]],
         async (signals) => {
-          // Assert agent is subscribed
-
-          await ctx.assertUserSubscribed({ userId: ctx.userId });
-
           // Check if user has sufficient permissions
 
           await ctx.assertSufficientGroupPermissions({

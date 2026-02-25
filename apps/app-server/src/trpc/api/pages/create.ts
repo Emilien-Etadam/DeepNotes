@@ -45,10 +45,6 @@ export async function create({
           'personal-group-id',
         );
 
-        if (input.groupId !== personalGroupId || input.groupCreation != null) {
-          await ctx.assertUserSubscribed({ userId: ctx.userId });
-        }
-
         // Create group if requested
 
         if (input.groupCreation != null) {
@@ -99,7 +95,6 @@ export async function create({
 
         return {
           pageId: input.pageId,
-          numFreePages: 0,
         };
       });
     },

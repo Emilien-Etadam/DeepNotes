@@ -712,11 +712,7 @@ async function createNewPageQuick() {
   await internals.pages.goToPage(response.pageId, { fromParent: true });
 
   $quasar().notify({
-    message:
-      'Page created successfully.' +
-      (response.numFreePages != null
-        ? ` (${response.numFreePages + 1}/50)`
-        : ''),
+    message: 'Page created successfully.',
     type: 'positive',
   });
 

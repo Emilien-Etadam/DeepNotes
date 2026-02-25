@@ -58,17 +58,6 @@
           </router-link>
         </li>
 
-        <li>
-          <router-link :to="{ name: 'help/refund-policy' }">
-            What is the refund policy on DeepNotes?
-          </router-link>
-        </li>
-
-        <li>
-          <router-link :to="{ name: 'help/subscription-expiration' }">
-            What happens when my subscription expires?
-          </router-link>
-        </li>
       </ul>
 
       <Gap style="height: 80px" />

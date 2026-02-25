@@ -59,10 +59,6 @@ export async function sendStep1({
   typeof baseProcedureStep1
 >): Promise<NotificationsResponse> {
   return await ctx.dataAbstraction.transaction(async (dtrx) => {
-    // Assert that user is subscribed
-
-    await ctx.assertUserSubscribed({ userId: ctx.userId });
-
     // Check if agent has sufficient permissions
 
     const agentRole = await ctx.dataAbstraction.hget(

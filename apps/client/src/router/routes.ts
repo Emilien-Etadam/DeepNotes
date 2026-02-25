@@ -172,30 +172,6 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
-        path: 'refund-policy',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/refund-policy',
-            component: () =>
-              import('src/pages/home/Help/Pages/RefundPolicy.vue'),
-          },
-        ],
-      },
-      {
-        path: 'subscription-expiration',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/subscription-expiration',
-            component: () =>
-              import('src/pages/home/Help/Pages/SubscriptionExpiration.vue'),
-          },
-        ],
-      },
-      {
         path: 'roadmap',
         component: () => import('src/pages/home/Help/HelpLayout.vue'),
         children: [

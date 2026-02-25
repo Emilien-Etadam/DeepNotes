@@ -96,10 +96,6 @@ export async function moveStep1({
   input,
 }: InferProcedureOpts<typeof baseProcedureStep1>) {
   return await ctx.dataAbstraction.transaction(async (dtrx) => {
-    // Assert user is subscribed
-
-    await ctx.assertUserSubscribed({ userId: ctx.userId });
-
     // Check sufficient permissions
 
     await ctx.assertSufficientGroupPermissions({

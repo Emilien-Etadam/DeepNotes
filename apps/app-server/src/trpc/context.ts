@@ -9,7 +9,6 @@ import {
 import {
   assertCorrectUserPassword,
   assertNonDemoAccount,
-  assertUserSubscribed,
 } from 'src/utils/users';
 
 export async function createContext({ req, res }: CreateFastifyContextOptions) {
@@ -26,7 +25,6 @@ export async function createContext({ req, res }: CreateFastifyContextOptions) {
     assertCorrectGroupPassword,
 
     assertCorrectUserPassword,
-    assertUserSubscribed,
     assertNonDemoAccount,
   };
 }
