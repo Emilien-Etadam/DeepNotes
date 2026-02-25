@@ -25,3 +25,5 @@ coverage/
 
 .scannerwork
 .sonarlint
+
+*.md
