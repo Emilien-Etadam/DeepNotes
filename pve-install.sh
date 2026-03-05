@@ -77,7 +77,11 @@ read -rp "Public URL (e.g., https://notes.example.com) [http://localhost]: " APP
 APP_URL=${APP_URL:-http://localhost}
 
 # ─── Download template ───
-TEMPLATE="debian-12-standard_12.7-1_amd64.tar.zst"
+TEMPLATE=$(pveam available --section system | grep -oP 'debian-12-standard_\S+' | tail -1)
+if [[ -z "$TEMPLATE" ]]; then
+  msg_error "No Debian 12 template found. Run: pveam update"
+  exit 1
+fi
 TEMPLATE_STORAGE="local"
 
 if ! pveam list "$TEMPLATE_STORAGE" 2>/dev/null | grep -q "$TEMPLATE"; then
