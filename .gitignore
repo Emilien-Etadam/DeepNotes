@@ -26,4 +26,5 @@ coverage/
 .scannerwork
 .sonarlint
 
-*.md
+.cursor/
+test-superjson.js
