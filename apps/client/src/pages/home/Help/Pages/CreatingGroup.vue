@@ -4,8 +4,7 @@
   <Gap style="height: 36px" />
 
   <div style="max-width: 700px">
-    You can create private and public groups if you're
-    <b>subscribed to the pro plan</b>.<br />
+    You can create groups to collaborate with other users.<br />
 
     <br />
 

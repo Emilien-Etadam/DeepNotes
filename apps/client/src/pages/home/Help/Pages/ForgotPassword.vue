@@ -17,9 +17,8 @@
     </p>
 
     <p>
-      If you wish to delete your old account and subscription, please don't
-      hesitate to contact our support team, and we'll be glad to assist you with
-      the process.
+      If you've set up two-factor authentication, your recovery codes remain your
+      only fallback. Store them securely.
     </p>
   </div>
 </template>

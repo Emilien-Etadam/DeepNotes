@@ -148,37 +148,62 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
-        path: 'offline-usage',
+        path: 'canvas-navigation',
         component: () => import('src/pages/home/Help/HelpLayout.vue'),
         children: [
           {
             path: '',
-            name: 'help/offline-usage',
+            name: 'help/canvas-navigation',
             component: () =>
-              import('src/pages/home/Help/Pages/OfflineUsage.vue'),
+              import('src/pages/home/Help/Pages/CanvasNavigation.vue'),
           },
         ],
       },
       {
-        path: 'multi-page-text-search',
+        path: 'notes-and-arrows',
         component: () => import('src/pages/home/Help/HelpLayout.vue'),
         children: [
           {
             path: '',
-            name: 'help/multi-page-text-search',
+            name: 'help/notes-and-arrows',
             component: () =>
-              import('src/pages/home/Help/Pages/MultiPageTextSearch.vue'),
+              import('src/pages/home/Help/Pages/NotesAndArrows.vue'),
           },
         ],
       },
       {
-        path: 'roadmap',
+        path: 'export-for-ai',
         component: () => import('src/pages/home/Help/HelpLayout.vue'),
         children: [
           {
             path: '',
-            name: 'help/roadmap',
-            component: () => import('src/pages/home/Help/Pages/Roadmap.vue'),
+            name: 'help/export-for-ai',
+            component: () =>
+              import('src/pages/home/Help/Pages/ExportForAI.vue'),
+          },
+        ],
+      },
+      {
+        path: 'encryption',
+        component: () => import('src/pages/home/Help/HelpLayout.vue'),
+        children: [
+          {
+            path: '',
+            name: 'help/encryption',
+            component: () =>
+              import('src/pages/home/Help/Pages/Encryption.vue'),
+          },
+        ],
+      },
+      {
+        path: 'keyboard-shortcuts',
+        component: () => import('src/pages/home/Help/HelpLayout.vue'),
+        children: [
+          {
+            path: '',
+            name: 'help/keyboard-shortcuts',
+            component: () =>
+              import('src/pages/home/Help/Pages/KeyboardShortcuts.vue'),
           },
         ],
       },

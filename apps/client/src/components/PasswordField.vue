@@ -9,7 +9,7 @@
   >
     <template #append>
       <q-icon
-        :name="showPassword ? 'visibility' : 'visibility_off'"
+        :name="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         class="cursor-pointer"
         @click="showPassword = !showPassword"
       />
