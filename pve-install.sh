@@ -144,38 +144,30 @@ done
 msg_ok "Container running"
 
 # ─── Upload and run install script ───
-msg_info "Running install script inside container..."
+msg_info "Preparing install script..."
 
-pct exec "$CTID" -- bash -c "
-export DEBIAN_FRONTEND=noninteractive
-export APP_URL='${APP_URL}'
-export REPO='${REPO}'
-export BRANCH='${BRANCH}'
-
-$(cat << 'INSTALL_EOF'
-
+INSTALL_SCRIPT=$(mktemp /tmp/deepnotes-install-XXXXXX.sh)
+cat > "$INSTALL_SCRIPT" << 'INSTALL_EOF'
+#!/usr/bin/env bash
 set -euo pipefail
 
 RD='\033[01;31m'
 GN='\033[01;32m'
 BL='\033[01;34m'
 CL='\033[m'
-msg_info() { echo -e \"\${BL}[info]\${CL} \$1\"; }
-msg_ok()   { echo -e \"\${GN}[ok]\${CL} \$1\"; }
-msg_error(){ echo -e \"\${RD}[error]\${CL} \$1\"; }
+msg_info() { echo -e "${BL}[info]${CL} $1"; }
+msg_ok()   { echo -e "${GN}[ok]${CL} $1"; }
+msg_error(){ echo -e "${RD}[error]${CL} $1"; }
 
-# ── System update ──
 msg_info 'Updating system...'
 apt-get update -qq
 apt-get upgrade -y -qq
 msg_ok 'System updated'
 
-# ── Install dependencies ──
 msg_info 'Installing dependencies (curl, git, ca-certificates)...'
-apt-get install -y -qq curl git ca-certificates gnupg lsb-release
+apt-get install -y -qq curl git ca-certificates gnupg lsb-release openssl
 msg_ok 'Dependencies installed'
 
-# ── Install Docker ──
 msg_info 'Installing Docker...'
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -186,13 +178,11 @@ apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-compose-plug
 systemctl enable --now docker
 msg_ok 'Docker installed'
 
-# ── Clone repo ──
 msg_info "Cloning DeepNotes (${BRANCH})..."
 git clone --branch "${BRANCH}" --depth 1 "${REPO}" /opt/deepnotes
 cd /opt/deepnotes
 msg_ok 'Repository cloned'
 
-# ── Generate secrets ──
 msg_info 'Generating .env with secure secrets...'
 cp template.env .env
 
@@ -207,34 +197,36 @@ sed -i "s|email_secret_here|$(generate_secret)|" .env
 sed -i "s|postgres_password_here|$(generate_secret)|g" .env
 sed -i "s|keydb_password_here|$(generate_secret)|" .env
 
-# Replace all base64 encryption keys
 for key in USER_EMAIL_ENCRYPTION_KEY USER_REHASHED_LOGIN_HASH_ENCRYPTION_KEY USER_AUTHENTICATOR_SECRET_ENCRYPTION_KEY USER_RECOVERY_CODES_ENCRYPTION_KEY GROUP_REHASHED_PASSWORD_HASH_ENCRYPTION_KEY; do
   NEW_KEY=$(generate_b64_key)
   sed -i "s|${key}=\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\"|${key}=\"${NEW_KEY}\"|" .env
 done
 
-# Also update docker-compose postgres password to match
 POSTGRES_PW=$(grep '^POSTGRES_PASSWORD=' .env | head -1 | cut -d'"' -f2)
 sed -i "s|POSTGRES_PASSWORD: postgres_password_here|POSTGRES_PASSWORD: ${POSTGRES_PW}|" docker-compose.yml
 
-# Remove host port bindings for postgres and keydb (internal only)
-sed -i "/ports:/,/volumes:/{/- '5432:5432'/d}" docker-compose.yml
-sed -i "/ports:/,/volumes:/{/- '6379:6379'/d}" docker-compose.yml
-
 msg_ok '.env generated with unique secrets'
 
-# ── Build and start ──
 msg_info 'Building DeepNotes (this may take 5-10 minutes)...'
 docker compose up -d --build
 msg_ok 'DeepNotes is running'
 
-# ── Version tracking ──
 echo "$(git rev-parse --short HEAD)" > /opt/deepnotes/.version
 
 msg_ok 'Installation complete'
-
 INSTALL_EOF
-"
+
+chmod +x "$INSTALL_SCRIPT"
+
+# Copy script into container
+pct push "$CTID" "$INSTALL_SCRIPT" /tmp/deepnotes-install.sh
+
+# Execute inside container with env vars
+pct exec "$CTID" -- bash -c "export APP_URL='${APP_URL}' REPO='${REPO}' BRANCH='${BRANCH}' && bash /tmp/deepnotes-install.sh"
+
+# Cleanup
+rm -f "$INSTALL_SCRIPT"
+pct exec "$CTID" -- rm -f /tmp/deepnotes-install.sh
 
 msg_ok "DeepNotes installed inside container ${CTID}"
 
