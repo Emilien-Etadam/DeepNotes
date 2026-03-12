@@ -23,13 +23,6 @@
           GitHub
         </a>
         <span class="footer-sep">·</span>
-        <router-link
-          :to="{ name: 'terms-of-service' }"
-          class="footer-link"
-        >
-          Terms
-        </router-link>
-        <span class="footer-sep">·</span>
         <span class="footer-copy">© {{ new Date().getFullYear() }}</span>
       </div>
     </ResponsiveContainer>

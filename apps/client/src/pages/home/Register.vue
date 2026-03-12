@@ -91,10 +91,7 @@
           />
 
           <div style="flex: 1">
-            I have read and agree to the
-            <router-link :to="{ name: 'terms-of-service' }">
-              Terms of Service</router-link
-            >.
+            I have read and agree to the Terms of Service.
           </div>
         </div>
 

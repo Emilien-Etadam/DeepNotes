@@ -17,8 +17,7 @@
         <template
           v-if="
             uiStore().width < BREAKPOINT_LG_MIN &&
-            ($route.name === 'terms-of-service' ||
-              $route.path.startsWith('/account/'))
+            $route.path.startsWith('/account/')
           "
         >
           <ToolbarBtn
@@ -32,10 +31,7 @@
               auto-close
             >
               <q-list>
-                <TermsOfServiceItems
-                  v-if="$route.name === 'terms-of-service'"
-                />
-                <AccountItems v-if="$route.path.startsWith('/account/')" />
+                <AccountItems />
               </q-list>
             </q-menu>
           </ToolbarBtn>
@@ -96,7 +92,6 @@
 import { BREAKPOINT_LG_MIN } from '@stdlib/misc';
 import { useResizeObserver } from 'src/code/utils/misc';
 import AccountItems from 'src/pages/home/Account/AccountItems.vue';
-import TermsOfServiceItems from 'src/pages/home/TermsOfService/TermsOfServiceItems.vue';
 import type { ComponentPublicInstance } from 'vue';
 
 import RightButtons from './RightButtons/RightButtons.vue';

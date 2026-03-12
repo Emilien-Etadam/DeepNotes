@@ -211,19 +211,6 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/terms-of-service',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    children: [
-      {
-        path: '',
-        name: 'terms-of-service',
-        component: () =>
-          import('src/pages/home/TermsOfService/TermsOfService.vue'),
-      },
-    ],
-  },
-
-  {
     path: '/accept-invite/:token',
     component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
     meta: { requiresGuest: true },
