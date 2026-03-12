@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/deepnotes
+  IMAGE_PREFIX: ghcr.io/emilien-etadam/deepnotes
 
 jobs:
   build-and-push:
