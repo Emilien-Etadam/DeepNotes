@@ -87,6 +87,10 @@ services:
       - '80:80'
     depends_on:
       - app-server
+    environment:
+      APP_SERVER_URL: ${APP_SERVER_URL}
+      COLLAB_SERVER_URL: ${COLLAB_SERVER_URL}
+      REALTIME_SERVER_URL: ${REALTIME_SERVER_URL}
 
 volumes:
   postgres_data:
