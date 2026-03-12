@@ -218,6 +218,7 @@ done
 
 POSTGRES_PW=$(grep '^POSTGRES_PASSWORD=' .env | head -1 | cut -d'"' -f2)
 sed -i "s|POSTGRES_PASSWORD: postgres_password_here|POSTGRES_PASSWORD: ${POSTGRES_PW}|" docker-compose.yml
+sed -i "s|POSTGRES_PASSWORD: postgres_password_here|POSTGRES_PASSWORD: ${POSTGRES_PW}|" docker-compose.prod.yml
 
 msg_ok '.env generated with unique secrets'
 
