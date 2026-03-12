@@ -164,6 +164,13 @@ apt-get update -qq
 apt-get upgrade -y -qq
 msg_ok 'System updated'
 
+msg_info 'Configuring locale...'
+apt-get install -y -qq locales
+sed -i 's/# en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+locale-gen en_US.UTF-8 >/dev/null 2>&1
+export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+msg_ok 'Locale configured'
+
 msg_info 'Installing dependencies (curl, git, ca-certificates)...'
 apt-get install -y -qq curl git ca-certificates gnupg lsb-release openssl
 msg_ok 'Dependencies installed'
@@ -227,6 +234,13 @@ pct exec "$CTID" -- bash -c "export APP_URL='${APP_URL}' REPO='${REPO}' BRANCH='
 # Cleanup
 rm -f "$INSTALL_SCRIPT"
 pct exec "$CTID" -- rm -f /tmp/deepnotes-install.sh
+
+pct exec "$CTID" -- bash -c "
+passwd -d root
+sed -i 's/^root:x:/root::/' /etc/passwd
+echo 'pts/0' >> /etc/securetty 2>/dev/null
+sed -i 's/^auth.*required.*pam_securetty.so/#&/' /etc/pam.d/login
+"
 
 msg_ok "DeepNotes installed inside container ${CTID}"
 
