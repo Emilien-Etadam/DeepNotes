@@ -1,26 +1,4 @@
 <template>
-  <div
-    style="
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      white-space: nowrap;
-    "
-  >
-    Want a quick taste?
-
-    <Gap style="width: 16px" />
-
-    <DeepBtn
-      label="Try the demo"
-      color="primary"
-      style="padding: 0px 10px; border-radius: 5px; font-size: 14px"
-      @click="enterDemo()"
-    />
-  </div>
-
-  <Gap style="height: 16px" />
-
   <TextField
     label="Email"
     label-color="grey-5"
@@ -93,7 +71,6 @@
 
 <script setup lang="ts">
 import { maxEmailLength, w3cEmailRegex } from '@stdlib/misc';
-import { enterDemo } from 'src/code/areas/auth/demo';
 import { login } from 'src/code/areas/auth/login';
 import { deriveUserValues } from 'src/code/crypto';
 import { handleError } from 'src/code/utils/misc';
@@ -144,11 +121,6 @@ const password = inject('password') as Ref<string>;
 
 async function onSubmit() {
   try {
-    if (email.value === 'demo') {
-      await enterDemo();
-      return;
-    }
-
     if (!w3cEmailRegex.test(email.value)) {
       throw new Error('Invalid email.');
     }

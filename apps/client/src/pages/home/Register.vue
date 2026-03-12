@@ -2,28 +2,6 @@
   <q-page>
     <ResponsiveContainer style="padding: 120px 32px">
       <q-form style="margin: 0px auto; max-width: 270px">
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            white-space: nowrap;
-          "
-        >
-          Want a quick taste?
-
-          <Gap style="width: 16px" />
-
-          <DeepBtn
-            label="Try the demo"
-            color="primary"
-            style="padding: 0px 10px; border-radius: 5px; font-size: 14px"
-            @click="enterDemo()"
-          />
-        </div>
-
-        <Gap style="height: 16px" />
-
         <q-input
           label-slot
           filled
@@ -148,7 +126,6 @@
 <script setup lang="ts">
 import { maxNameLength } from '@deeplib/misc';
 import { maxEmailLength, w3cEmailRegex } from '@stdlib/misc';
-import { enterDemo } from 'src/code/areas/auth/demo';
 import { getRegistrationValues } from 'src/code/areas/auth/register';
 import { deriveUserValues } from 'src/code/crypto';
 import { asyncDialog, handleError } from 'src/code/utils/misc';
