@@ -1,0 +1,93 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password_here
+      POSTGRES_DB: deepnotes
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  keydb:
+    image: eqalpha/keydb:alpine_x86_64_v6.3.3
+    container_name: keydb
+    restart: always
+    volumes:
+      - ./keydb.conf:/etc/keydb/redis.conf
+      - keydb_data:/data
+    healthcheck:
+      test: ['CMD', 'keydb-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app-server:
+    image: ghcr.io/emilien-etadam/deepnotes-app-server:latest
+    container_name: app-server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      KEYDB_HOSTS: keydb:6379
+    ports:
+      - '48922:48922'
+
+  collab-server:
+    image: ghcr.io/emilien-etadam/deepnotes-collab-server:latest
+    container_name: collab-server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      KEYDB_HOSTS: keydb:6379
+      COLLAB_SERVER_PORT: '48923'
+    ports:
+      - '48923:48923'
+
+  realtime-server:
+    image: ghcr.io/emilien-etadam/deepnotes-realtime-server:latest
+    container_name: realtime-server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      KEYDB_HOSTS: keydb:6379
+      REALTIME_SERVER_PORT: '48924'
+    ports:
+      - '48924:48924'
+
+  client:
+    image: ghcr.io/emilien-etadam/deepnotes-client:latest
+    container_name: client
+    restart: always
+    ports:
+      - '80:80'
+    depends_on:
+      - app-server
+
+volumes:
+  postgres_data:
+  keydb_data:
