@@ -88,7 +88,7 @@ fi
 TEMPLATE_STORAGE="local"
 
 if ! pveam list "$TEMPLATE_STORAGE" 2>/dev/null | grep -q "$TEMPLATE"; then
-  msg_info "Downloading Debian 12 template..."
+  msg_info "Downloading template ${TEMPLATE}..."
   pveam download "$TEMPLATE_STORAGE" "$TEMPLATE"
   msg_ok "Template downloaded"
 else
@@ -162,17 +162,17 @@ msg_info() { echo -e "${BL}[info]${CL} $1"; }
 msg_ok()   { echo -e "${GN}[ok]${CL} $1"; }
 msg_error(){ echo -e "${RD}[error]${CL} $1"; }
 
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -qq >/dev/null 2>&1
+apt-get install -y -qq locales >/dev/null 2>&1
+sed -i 's/# en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+locale-gen en_US.UTF-8 >/dev/null 2>&1
+export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
 msg_info 'Updating system...'
 apt-get update -qq
 apt-get upgrade -y -qq
 msg_ok 'System updated'
-
-msg_info 'Configuring locale...'
-apt-get install -y -qq locales
-sed -i 's/# en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
-locale-gen en_US.UTF-8 >/dev/null 2>&1
-export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-msg_ok 'Locale configured'
 
 msg_info 'Installing dependencies (curl, git, ca-certificates)...'
 apt-get install -y -qq curl git ca-certificates gnupg lsb-release openssl
