@@ -193,6 +193,10 @@ git clone --branch "${BRANCH}" --depth 1 "${REPO}" /opt/deepnotes
 cd /opt/deepnotes
 msg_ok 'Repository cloned'
 
+msg_info 'Copying production compose file...'
+cp docker-compose.prod.yml docker-compose.override.yml
+msg_ok 'Production compose file ready'
+
 msg_info 'Generating .env with secure secrets...'
 cp template.env .env
 
@@ -218,7 +222,8 @@ sed -i "s|POSTGRES_PASSWORD: postgres_password_here|POSTGRES_PASSWORD: ${POSTGRE
 msg_ok '.env generated with unique secrets'
 
 msg_info 'Building DeepNotes (this may take 5-10 minutes)...'
-docker compose up -d --build
+docker compose pull
+docker compose up -d
 msg_ok 'DeepNotes is running'
 
 echo "$(git rev-parse --short HEAD)" > /opt/deepnotes/.version
