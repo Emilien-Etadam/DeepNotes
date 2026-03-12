@@ -235,11 +235,16 @@ pct exec "$CTID" -- bash -c "export APP_URL='${APP_URL}' REPO='${REPO}' BRANCH='
 rm -f "$INSTALL_SCRIPT"
 pct exec "$CTID" -- rm -f /tmp/deepnotes-install.sh
 
+# ─── Passwordless root console + locale fix ───
 pct exec "$CTID" -- bash -c "
-passwd -d root
-sed -i 's/^root:x:/root::/' /etc/passwd
-echo 'pts/0' >> /etc/securetty 2>/dev/null
-sed -i 's/^auth.*required.*pam_securetty.so/#&/' /etc/pam.d/login
+mkdir -p /etc/systemd/system/container-getty@1.service.d
+cat > /etc/systemd/system/container-getty@1.service.d/override.conf << 'EOF'
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin root --noclear tty1 linux
+EOF
+systemctl daemon-reload
+systemctl restart container-getty@1
 "
 
 msg_ok "DeepNotes installed inside container ${CTID}"
