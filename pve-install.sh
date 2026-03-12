@@ -229,6 +229,11 @@ sed -i "s|COLLAB_SERVER_URL=ws://localhost:33245|COLLAB_SERVER_URL=ws://${CONTAI
 sed -i "s|HOST=localhost|HOST=0.0.0.0|" .env
 msg_ok "Server URLs set to ${CONTAINER_IP}"
 
+msg_info 'Configuring KeyDB password...'
+KEYDB_PASS=$(grep KEYDB_PASSWORD .env | cut -d'"' -f2)
+echo "requirepass ${KEYDB_PASS}" > keydb.conf
+msg_ok 'KeyDB password configured'
+
 msg_info 'Building DeepNotes (this may take 5-10 minutes)...'
 docker compose pull
 docker compose up -d

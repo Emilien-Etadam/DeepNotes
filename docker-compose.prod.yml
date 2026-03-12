@@ -24,7 +24,7 @@ services:
       - ./keydb.conf:/etc/keydb/redis.conf
       - keydb_data:/data
     healthcheck:
-      test: ['CMD', 'keydb-cli', 'ping']
+      test: ['CMD', 'keydb-cli', '-a', '${KEYDB_PASSWORD}', 'ping']
       interval: 5s
       timeout: 5s
       retries: 5
