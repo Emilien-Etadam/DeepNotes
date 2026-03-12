@@ -222,12 +222,12 @@ sed -i "s|POSTGRES_PASSWORD: postgres_password_here|POSTGRES_PASSWORD: ${POSTGRE
 msg_ok '.env generated with unique secrets'
 
 msg_info 'Configuring server URLs...'
-CONTAINER_IP=\$(hostname -I | awk '{print \$1}')
-sed -i "s|APP_SERVER_URL=http://localhost:48922/trpc|APP_SERVER_URL=http://\${CONTAINER_IP}:48922/trpc|" .env
-sed -i "s|REALTIME_SERVER_URL=ws://localhost:31074|REALTIME_SERVER_URL=ws://\${CONTAINER_IP}:48924|" .env
-sed -i "s|COLLAB_SERVER_URL=ws://localhost:33245|COLLAB_SERVER_URL=ws://\${CONTAINER_IP}:48923|" .env
+CONTAINER_IP=$(hostname -I | awk '{print $1}')
+sed -i "s|APP_SERVER_URL=http://localhost:48922/trpc|APP_SERVER_URL=http://${CONTAINER_IP}:48922/trpc|" .env
+sed -i "s|REALTIME_SERVER_URL=ws://localhost:31074|REALTIME_SERVER_URL=ws://${CONTAINER_IP}:48924|" .env
+sed -i "s|COLLAB_SERVER_URL=ws://localhost:33245|COLLAB_SERVER_URL=ws://${CONTAINER_IP}:48923|" .env
 sed -i "s|HOST=localhost|HOST=0.0.0.0|" .env
-msg_ok "Server URLs set to \${CONTAINER_IP}"
+msg_ok "Server URLs set to ${CONTAINER_IP}"
 
 msg_info 'Building DeepNotes (this may take 5-10 minutes)...'
 docker compose pull
