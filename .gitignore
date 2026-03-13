@@ -18,6 +18,7 @@ deploy-*.sh
 
 postgres_data
 keydb_data
+keydb.conf
 backups/
 coverage/
 
