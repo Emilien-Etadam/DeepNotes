@@ -222,6 +222,11 @@ sed -i "s|POSTGRES_PASSWORD: postgres_password_here|POSTGRES_PASSWORD: ${POSTGRE
 
 msg_ok '.env generated with unique secrets'
 
+msg_info 'Configuring client URL...'
+CONTAINER_IP=$(hostname -I | awk '{print $1}')
+sed -i "s|CLIENT_APP_URL=http://localhost|CLIENT_APP_URL=http://${CONTAINER_IP}|" .env
+msg_ok "Client URL set to http://${CONTAINER_IP}"
+
 msg_info 'Configuring KeyDB password...'
 KEYDB_PASS=$(grep KEYDB_PASSWORD .env | cut -d'"' -f2)
 echo "requirepass ${KEYDB_PASS}" > keydb.conf
