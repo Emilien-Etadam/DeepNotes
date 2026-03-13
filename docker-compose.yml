@@ -44,8 +44,6 @@ services:
     environment:
       POSTGRES_HOST: postgres
       KEYDB_HOSTS: keydb:6379
-    ports:
-      - '48922:48922'
 
   collab-server:
     build:
@@ -63,8 +61,6 @@ services:
       POSTGRES_HOST: postgres
       KEYDB_HOSTS: keydb:6379
       COLLAB_SERVER_PORT: '48923'
-    ports:
-      - '48923:48923'
 
   realtime-server:
     build:
@@ -82,8 +78,6 @@ services:
       POSTGRES_HOST: postgres
       KEYDB_HOSTS: keydb:6379
       REALTIME_SERVER_PORT: '48924'
-    ports:
-      - '48924:48924'
 
   client:
     build:
@@ -96,9 +90,9 @@ services:
     depends_on:
       - app-server
     environment:
-      APP_SERVER_URL: ${APP_SERVER_URL}
-      COLLAB_SERVER_URL: ${COLLAB_SERVER_URL}
-      REALTIME_SERVER_URL: ${REALTIME_SERVER_URL}
+      APP_SERVER_URL: /trpc
+      COLLAB_SERVER_URL: /collab
+      REALTIME_SERVER_URL: /realtime
 
 volumes:
   postgres_data:
