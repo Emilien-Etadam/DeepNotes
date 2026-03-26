@@ -25,6 +25,7 @@ function processNotesInBox(
 ) {
   const regionValue = region.value;
   for (const note of regionValue.react.notes) {
+    if (note == null) continue;
     const noteClientRect = note.getClientRect('note-frame');
     if (noteClientRect == null) continue;
     if (!boxClientRect.intersectsRect(noteClientRect)) continue;
@@ -44,6 +45,7 @@ function processArrowsInBox(
 ) {
   const regionValue = region.value;
   for (const arrow of regionValue.react.arrows) {
+    if (arrow == null) continue;
     const arrowClientRect = arrow.getClientRect();
     if (arrowClientRect == null) continue;
     if (!boxClientRect.containsVec2(arrowClientRect.center)) continue;
