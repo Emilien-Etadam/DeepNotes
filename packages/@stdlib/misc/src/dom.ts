@@ -123,11 +123,9 @@ export function listenPointerEvents(
         if (distance > options.dragStartDistance!) {
           cancel(false);
         }
-      } else {
-        if (distance > options.dragStartDistance!) {
-          dragging = true;
-          options.dragStart?.(moveEvent, downEvent);
-        }
+      } else if (distance > options.dragStartDistance!) {
+        dragging = true;
+        options.dragStart?.(moveEvent, downEvent);
       }
     } else {
       options.dragUpdate?.(moveEvent, downEvent);

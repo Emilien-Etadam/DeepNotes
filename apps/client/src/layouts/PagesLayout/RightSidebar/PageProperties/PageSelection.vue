@@ -64,10 +64,10 @@ function selectLinkedPages() {
       note.react.collab.head.value.toDOM().textContent ?? ''
     ).matchAll(/(?:\/pages\/([\w-]{21})\b)/g);
 
-    const appUrlEscaped = APP_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const appUrlEscaped = APP_URL.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const linkMatches = note.react.collab.link.matchAll(
       new RegExp(
-        `^(?:${appUrlEscaped}/pages/([\\w-]{21})|/pages/([\\w-]{21})|([\\w-]{21}))$`,
+        String.raw`^(?:${appUrlEscaped}/pages/([\w-]{21})|/pages/([\w-]{21})|([\w-]{21}))$`,
         'g',
       ),
     );

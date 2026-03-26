@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import type { Factories } from 'src/code/factories';
 import {
   prosemirrorJSONToYXmlFragment,
-  yXmlFragmentToProsemirrorJSON,
+  yXmlFragmentToProseMirrorRootNode,
 } from 'y-prosemirror';
 
 import { ISerialArrow } from '../../serialization';
@@ -64,9 +64,10 @@ export class PageArrowCreation {
             source: undefined,
             target: undefined,
 
-            label: yXmlFragmentToProsemirrorJSON(
+            label: yXmlFragmentToProseMirrorRootNode(
               input.baseArrow.react.collab.label,
-            ),
+              internals.tiptap().schema,
+            ).toJSON(),
           })
         : ISerialArrow().parse(internals.pages.defaultArrow);
 

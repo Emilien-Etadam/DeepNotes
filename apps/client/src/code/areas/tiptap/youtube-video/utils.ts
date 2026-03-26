@@ -99,7 +99,7 @@ function parseYoutubeUrlToEmbedBase(
   }
   const videoIdRegex = /v=([-\w]+)/gm;
   const matches = videoIdRegex.exec(url);
-  if (!matches || !matches[1]) return null;
+  if (!matches?.[1]) return null;
   return `${getYoutubeEmbedUrl(nocookie)}${matches[1]}`;
 }
 

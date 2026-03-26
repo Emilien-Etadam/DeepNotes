@@ -328,7 +328,7 @@ import { appPageUrl } from 'src/code/utils/app-url';
 import { setClipboardText } from 'src/code/utils/clipboard';
 import { handleError } from 'src/code/utils/misc';
 import type { Ref } from 'vue';
-import { yXmlFragmentToProsemirrorJSON } from 'y-prosemirror';
+import { yXmlFragmentToProseMirrorRootNode } from 'y-prosemirror';
 
 const page = inject<Ref<Page>>('page')!;
 
@@ -350,7 +350,10 @@ async function setAsDefault() {
       source: 0,
       target: 0,
 
-      label: yXmlFragmentToProsemirrorJSON(arrow.value.react.collab.label),
+      label: yXmlFragmentToProseMirrorRootNode(
+        arrow.value.react.collab.label,
+        internals.tiptap().schema,
+      ).toJSON(),
     } as ISerialArrowInput);
 
     internals.pages.defaultArrow = serialArrow;

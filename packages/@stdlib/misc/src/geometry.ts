@@ -17,17 +17,18 @@ export function getLineRectIntersection(line: Line, rect: Rect): Vec2 | null {
   return result[0];
 }
 
-function getEdgeParams(
-  edge: number,
-  x0: number,
-  y0: number,
-  xmin: number,
-  xmax: number,
-  ymin: number,
-  ymax: number,
-  dx: number,
-  dy: number,
-): { p: number; q: number } {
+function getEdgeParams(options: {
+  edge: number;
+  x0: number;
+  y0: number;
+  xmin: number;
+  xmax: number;
+  ymin: number;
+  ymax: number;
+  dx: number;
+  dy: number;
+}): { p: number; q: number } {
+  const { edge, x0, y0, xmin, xmax, ymin, ymax, dx, dy } = options;
   if (edge === 0) {
     return { p: -dx, q: -(xmin - x0) };
   }
@@ -79,7 +80,7 @@ function liangBarsky(l0: Vec2, l1: Vec2, r0: Vec2, r1: Vec2): Vec2[] | null {
   const dy = y1 - y0;
 
   for (let edge = 0; edge < 4; edge++) {
-    const { p, q } = getEdgeParams(
+    const { p, q } = getEdgeParams({
       edge,
       x0,
       y0,
@@ -89,7 +90,7 @@ function liangBarsky(l0: Vec2, l1: Vec2, r0: Vec2, r1: Vec2): Vec2[] | null {
       ymax,
       dx,
       dy,
-    );
+    });
 
     const next = applyLiangBarskyEdge(p, q, t0, t1);
     if (next == null) return null;

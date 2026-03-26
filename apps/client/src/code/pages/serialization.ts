@@ -1,8 +1,9 @@
 import { once } from 'lodash';
 import { nanoid } from 'nanoid';
+import type { Y } from '@syncedstore/core';
 import {
   prosemirrorJSONToYXmlFragment,
-  yXmlFragmentToProsemirrorJSON,
+  yXmlFragmentToProseMirrorRootNode,
 } from 'y-prosemirror';
 import { z } from 'zod';
 
@@ -148,6 +149,13 @@ export class Serialization {
     return aux.serialObj;
   }
 
+  private _xmlFragmentToJson(xmlFragment: Y.XmlFragment) {
+    return yXmlFragmentToProseMirrorRootNode(
+      xmlFragment,
+      internals.tiptap().schema,
+    ).toJSON();
+  }
+
   private _serializeRegionNotes(
     region: IRegionElemsOutput,
     serialRegion: ISerialRegionOutput,
@@ -175,12 +183,12 @@ export class Serialization {
         head: {
           ...note.react.collab.head,
 
-          value: yXmlFragmentToProsemirrorJSON(note.react.collab.head.value),
+          value: this._xmlFragmentToJson(note.react.collab.head.value),
         },
         body: {
           ...note.react.collab.body,
 
-          value: yXmlFragmentToProsemirrorJSON(note.react.collab.body.value),
+          value: this._xmlFragmentToJson(note.react.collab.body.value),
         },
 
         regionIdxs: [],
@@ -250,7 +258,7 @@ export class Serialization {
         source: sourceNoteIdx,
         target: targetNoteIdx,
 
-        label: yXmlFragmentToProsemirrorJSON(arrow.react.collab.label),
+        label: this._xmlFragmentToJson(arrow.react.collab.label),
       }),
       ISerialArrowDefault(),
     );

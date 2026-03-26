@@ -1,4 +1,4 @@
-import { yXmlFragmentToProsemirrorJSON } from 'y-prosemirror';
+import { yXmlFragmentToProseMirrorRootNode } from 'y-prosemirror';
 
 import type { Page } from '../page';
 import type { PageArrow } from '../page/arrows/arrow';
@@ -21,7 +21,10 @@ interface PMNode {
  */
 export function extractText(fragment: Y.XmlFragment): string {
   try {
-    const json = yXmlFragmentToProsemirrorJSON(fragment) as { content?: PMNode[] };
+    const json = yXmlFragmentToProseMirrorRootNode(
+      fragment,
+      internals.tiptap().schema,
+    ).toJSON() as { content?: PMNode[] };
     const content = json?.content;
     if (!Array.isArray(content) || content.length === 0) {
       return '';

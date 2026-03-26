@@ -136,7 +136,8 @@ async function changeRole() {
         });
 
         numSuccess++;
-      } catch (_error) {
+      } catch (error) {
+        console.error('changeUserRole failed', { userId, error });
         numFailed++;
       }
     }

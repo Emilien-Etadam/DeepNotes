@@ -9,17 +9,20 @@ function applyResizeRectFromPointer(
   side: NoteSide,
   worldPos: Vec2,
 ) {
+  const resizing = activeNote.react.resizing;
+  if (resizing == null) return;
+
   if (side.includes('w')) {
-    activeNote.react.resizing!.newResizeRect.topLeft.x = worldPos.x;
+    resizing.newResizeRect.topLeft.x = worldPos.x;
   }
   if (side.includes('n')) {
-    activeNote.react.resizing!.newResizeRect.topLeft.y = worldPos.y;
+    resizing.newResizeRect.topLeft.y = worldPos.y;
   }
   if (side.includes('e')) {
-    activeNote.react.resizing!.newResizeRect.bottomRight.x = worldPos.x;
+    resizing.newResizeRect.bottomRight.x = worldPos.x;
   }
   if (side.includes('s')) {
-    activeNote.react.resizing!.newResizeRect.bottomRight.y = worldPos.y;
+    resizing.newResizeRect.bottomRight.y = worldPos.y;
   }
 }
 
@@ -28,7 +31,8 @@ function applyCtrlResize(
   side: NoteSide,
   worldPos: Vec2,
 ) {
-  const resizing = activeNote.react.resizing!;
+  const resizing = activeNote.react.resizing;
+  if (resizing == null) return;
   const old = resizing.oldResizeRect;
   if (side.includes('w')) {
     resizing.newResizeRect.bottomRight.x =

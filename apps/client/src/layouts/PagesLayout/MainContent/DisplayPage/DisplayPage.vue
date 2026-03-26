@@ -146,7 +146,6 @@ function applyPageStatusFromDeps(page: Page, deps: ReturnType<typeof getPageWatc
     page
       .finishSetup()
       .catch((err) => componentLogger.error('finishSetup failed:', err));
-    return;
   }
 }
 

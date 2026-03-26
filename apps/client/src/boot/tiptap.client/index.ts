@@ -6,7 +6,7 @@ import * as tiptapModule from '@tiptap/vue-3';
 import { once } from 'lodash';
 import {
   prosemirrorJSONToYXmlFragment,
-  yXmlFragmentToProsemirrorJSON,
+  yXmlFragmentToProseMirrorRootNode,
 } from 'y-prosemirror';
 
 import { extensions } from './extensions';
@@ -24,8 +24,8 @@ export function swapXmlFragments(frag1: Y.XmlFragment, frag2: Y.XmlFragment) {
   const schema = internals.tiptap().schema;
   if (!schema)
     throw new Error('swapXmlFragments: no schema (no editor created yet)');
-  const json1 = yXmlFragmentToProsemirrorJSON(frag1);
-  const json2 = yXmlFragmentToProsemirrorJSON(frag2);
+  const json1 = yXmlFragmentToProseMirrorRootNode(frag1, schema).toJSON();
+  const json2 = yXmlFragmentToProseMirrorRootNode(frag2, schema).toJSON();
   prosemirrorJSONToYXmlFragment(schema, json2, frag1);
   prosemirrorJSONToYXmlFragment(schema, json1, frag2);
 }

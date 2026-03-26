@@ -39,12 +39,6 @@ export async function create({
           });
         }
 
-        const personalGroupId = await ctx.dataAbstraction.hget(
-          'user',
-          ctx.userId,
-          'personal-group-id',
-        );
-
         // Create group if requested
 
         if (input.groupCreation != null) {

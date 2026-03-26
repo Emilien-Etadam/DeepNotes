@@ -564,8 +564,12 @@ export class SocketAuxObject {
         { dtrx },
       );
 
+      if (dtrx.trx == null) {
+        throw new Error('Transaction is required to patch snapshots.');
+      }
+
       await patchMultiple(
-        dtrx.trx!,
+        dtrx.trx,
         'page_snapshots',
 
         ['id', 'encrypted_symmetric_key'],
