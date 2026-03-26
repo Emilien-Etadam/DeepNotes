@@ -53,6 +53,12 @@ Six Docker containers:
 
 Copy `template.env` to `.env`. All secrets must be replaced with unique values generated via `openssl rand -hex 32` (for hex secrets) or `openssl rand -base64 32` (for base64 keys). `CLIENT_APP_URL` must match your public HTTPS URL.
 
+## Update
+
+```bash
+bash /opt/deepnotes/update.sh
+```
+
 ## License
 
 AGPL-3.0 — same as the original project.
