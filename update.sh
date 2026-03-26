@@ -18,5 +18,8 @@ docker compose pull
 
 echo "[info] Updating containers..."
 docker compose up -d --remove-orphans
+# Restart client to refresh DNS cache for upstream containers
+docker compose restart client
+echo "[info] Client restarted to refresh DNS"
 
 echo "[ok] DeepNotes updated successfully."
