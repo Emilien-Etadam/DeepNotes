@@ -54,7 +54,8 @@ function onLeftPointerDown(event: PointerEvent) {
 
   const clickedAnchor =
     event.target instanceof HTMLElement && event.target.nodeName === 'A';
-  const shouldFollowLink = clickedAnchor || !!note.react.link.external;
+  const hasLink = !!note.react.link.url;
+  const shouldFollowLink = hasLink && (clickedAnchor || note.react.link.external);
 
   if (
     shouldFollowLink &&
