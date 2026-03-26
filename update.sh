@@ -16,8 +16,7 @@ fi
 echo "[info] Pulling latest images..."
 docker compose pull
 
-echo "[info] Restarting containers..."
-docker compose down
-docker compose up -d
+echo "[info] Updating containers..."
+docker compose up -d --remove-orphans
 
 echo "[ok] DeepNotes updated successfully."
