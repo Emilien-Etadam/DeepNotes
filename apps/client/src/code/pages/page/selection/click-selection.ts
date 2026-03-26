@@ -30,9 +30,10 @@ export class PageClickSelection {
           step > 0 ? i < toIndex : i > toIndex;
           i += step
         ) {
-          this.page.selection.add(
-            this.page.activeRegion.react.value.react.notes[i],
-          );
+          const noteInRange = this.page.activeRegion.react.value.react.notes[i];
+          if (noteInRange != null) {
+            this.page.selection.add(noteInRange);
+          }
         }
       }
 

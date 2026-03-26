@@ -83,6 +83,10 @@ export class PageSelection {
   add(...elems: PageElem[]) {
     this.page.collab.doc.transact(() => {
       for (const elem of elems) {
+        if (elem == null) {
+          continue;
+        }
+
         if (elem.react.selected || elem.type == null) {
           continue;
         }
@@ -110,6 +114,10 @@ export class PageSelection {
   remove(...elems: PageElem[]) {
     this.page.collab.doc.transact(() => {
       for (const elem of elems) {
+        if (elem == null) {
+          continue;
+        }
+
         if (!elem.react.selected || elem.type == null) {
           continue;
         }
