@@ -602,8 +602,8 @@ importers:
         specifier: ^0.0.27
         version: 0.0.27
       ws:
-        specifier: 8.11.0
-        version: 8.11.0(utf-8-validate@5.0.10)
+        specifier: ^8.18.0
+        version: 8.18.3(utf-8-validate@5.0.10)
       y-protocols:
         specifier: ^1.0.6
         version: 1.0.7(yjs@13.6.29)
@@ -715,8 +715,8 @@ importers:
         specifier: ^0.0.27
         version: 0.0.27
       ws:
-        specifier: 8.11.0
-        version: 8.11.0(utf-8-validate@5.0.10)
+        specifier: ^8.18.0
+        version: 8.18.3(utf-8-validate@5.0.10)
     devDependencies:
       '@types/cookie':
         specifier: ^0.5.3
@@ -808,8 +808,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@sendgrid/mail':
-        specifier: ^7.7.0
-        version: 7.7.0
+        specifier: ^8.1.6
+        version: 8.1.6
       '@stdlib/misc':
         specifier: workspace:*
         version: link:../../@stdlib/misc
@@ -2239,17 +2239,17 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sendgrid/client@7.7.0':
-    resolution: {integrity: sha512-SxH+y8jeAQSnDavrTD0uGDXYIIkFylCo+eDofVmZLQ0f862nnqbC3Vd1ej6b7Le7lboyzQF6F7Fodv02rYspuA==}
-    engines: {node: 6.* || 8.* || >=10.*}
+  '@sendgrid/client@8.1.6':
+    resolution: {integrity: sha512-/BHu0hqwXNHr2aLhcXU7RmmlVqrdfrbY9KpaNj00KZHlVOVoRxRVrpOCabIB+91ISXJ6+mLM9vpaVUhK6TwBWA==}
+    engines: {node: '>=12.*'}
 
-  '@sendgrid/helpers@7.7.0':
-    resolution: {integrity: sha512-3AsAxfN3GDBcXoZ/y1mzAAbKzTtUZ5+ZrHOmWQ279AuaFXUNCh9bPnRpN504bgveTqoW+11IzPg3I0WVgDINpw==}
-    engines: {node: '>= 6.0.0'}
+  '@sendgrid/helpers@8.0.0':
+    resolution: {integrity: sha512-Ze7WuW2Xzy5GT5WRx+yEv89fsg/pgy3T1E3FS0QEx0/VvRmigMZ5qyVGhJz4SxomegDkzXv/i0aFPpHKN8qdAA==}
+    engines: {node: '>= 12.0.0'}
 
-  '@sendgrid/mail@7.7.0':
-    resolution: {integrity: sha512-5+nApPE9wINBvHSUxwOxkkQqM/IAAaBYoP9hw7WwgDNQPxraruVqHizeTitVtKGiqWCKm2mnjh4XGN3fvFLqaw==}
-    engines: {node: 6.* || 8.* || >=10.*}
+  '@sendgrid/mail@8.1.6':
+    resolution: {integrity: sha512-/ZqxUvKeEztU9drOoPC/8opEPOk+jLlB2q4+xpx6HVLq6aFu3pMpalkTpAQz8XfRfpLp8O25bh6pGPcHDCYpqg==}
+    engines: {node: '>=12.*'}
 
   '@sesamecare-oss/redlock@1.4.0':
     resolution: {integrity: sha512-2z589R+yxKLN4CgKxP1oN4dsg6Y548SE4bVYam/R0kHk7Q9VrQ9l66q+k1ehhSLLY4or9hcchuF9/MhuuZdjJg==}
@@ -3113,9 +3113,6 @@ packages:
 
   avvio@9.2.0:
     resolution: {integrity: sha512-2t/sy01ArdHHE0vRH5Hsay+RtCZt3dLPji7W7/MMOCEgze5b7SNDC4j5H6FnVgPkI1MTNFGzHdHrVXDDl7QSSQ==}
-
-  axios@0.26.1:
-    resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}
 
   axios@1.13.5:
     resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
@@ -8154,18 +8151,6 @@ packages:
   write-file-atomic@3.0.3:
     resolution: {integrity: sha512-AvHcyZ5JnSfq3ioSyjrBkH9yW4m7Ayk8/9My/DD9onKeu/94fwrMocemO2QAJFAlnnDN+ZDS+ZjAR5ua1/PV/Q==}
 
-  ws@8.11.0:
-    resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
   ws@8.18.3:
     resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
     engines: {node: '>=10.0.0'}
@@ -9593,21 +9578,21 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.57.1':
     optional: true
 
-  '@sendgrid/client@7.7.0':
+  '@sendgrid/client@8.1.6':
     dependencies:
-      '@sendgrid/helpers': 7.7.0
-      axios: 0.26.1
+      '@sendgrid/helpers': 8.0.0
+      axios: 1.13.5
     transitivePeerDependencies:
       - debug
 
-  '@sendgrid/helpers@7.7.0':
+  '@sendgrid/helpers@8.0.0':
     dependencies:
       deepmerge: 4.3.1
 
-  '@sendgrid/mail@7.7.0':
+  '@sendgrid/mail@8.1.6':
     dependencies:
-      '@sendgrid/client': 7.7.0
-      '@sendgrid/helpers': 7.7.0
+      '@sendgrid/client': 8.1.6
+      '@sendgrid/helpers': 8.0.0
     transitivePeerDependencies:
       - debug
 
@@ -10598,12 +10583,6 @@ snapshots:
     dependencies:
       '@fastify/error': 4.2.0
       fastq: 1.20.1
-
-  axios@0.26.1:
-    dependencies:
-      follow-redirects: 1.15.11
-    transitivePeerDependencies:
-      - debug
 
   axios@1.13.5:
     dependencies:
@@ -16191,10 +16170,6 @@ snapshots:
       is-typedarray: 1.0.0
       signal-exit: 3.0.7
       typedarray-to-buffer: 3.1.5
-
-  ws@8.11.0(utf-8-validate@5.0.10):
-    optionalDependencies:
-      utf-8-validate: 5.0.10
 
   ws@8.18.3(utf-8-validate@5.0.10):
     optionalDependencies:

@@ -18,7 +18,7 @@
     "msgpackr": "^1.9.9",
     "pg": "^8.18.0",
     "unilogr": "^0.0.27",
-    "ws": "8.11.0"
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/cookie": "^0.5.3",

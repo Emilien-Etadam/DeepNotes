@@ -5,7 +5,7 @@
   "author": "",
   "dependencies": {
     "@getbrevo/brevo": "^1.0.1",
-    "@sendgrid/mail": "^7.7.0",
+    "@sendgrid/mail": "^8.1.6",
     "@stdlib/misc": "workspace:*",
     "node-mailjet": "^6.0.4",
     "nodemailer": "^6.10.1",
