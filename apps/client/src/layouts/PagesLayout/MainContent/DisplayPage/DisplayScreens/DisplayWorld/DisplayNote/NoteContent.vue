@@ -52,9 +52,12 @@ function onLeftPointerDown(event: PointerEvent) {
     return;
   }
 
+  const clickedAnchor =
+    event.target instanceof HTMLElement && event.target.nodeName === 'A';
+  const shouldFollowLink = clickedAnchor || !!note.react.link.external;
+
   if (
-    ((event.target instanceof HTMLElement && event.target.nodeName === 'A') ||
-      note.react.link.url) &&
+    shouldFollowLink &&
     !event.altKey &&
     !event.shiftKey &&
     !internals.mobileAltKey &&
