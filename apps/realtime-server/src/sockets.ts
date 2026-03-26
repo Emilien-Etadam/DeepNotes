@@ -442,6 +442,9 @@ export class SocketAuxObject {
         updateListener,
       );
 
+      // NOTE: listener is registered before full authorization check.
+      // The initial value is only sent if userGettable passes.
+      // Future improvement: block subscription entirely if unauthorized.
       this._listeners.set(fullKey, updateListener);
     }
 

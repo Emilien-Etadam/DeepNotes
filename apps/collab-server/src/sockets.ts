@@ -381,8 +381,14 @@ export class SocketAuxObject {
   }
 
   private async _handleMessage(messageBuffer: ArrayBuffer) {
+    if (this.sessionId == null) {
+      moduleLogger.warn('Missing sessionId, closing connection');
+      this.socket.close();
+      return;
+    }
+
     const [sessionInvalidated, pageGroupId] = await Promise.all([
-      (await dataAbstraction()).hget('session', this.sessionId!, 'invalidated'),
+      (await dataAbstraction()).hget('session', this.sessionId, 'invalidated'),
       (await dataAbstraction()).hget('page', this.room.pageId, 'group-id'),
     ]);
 
