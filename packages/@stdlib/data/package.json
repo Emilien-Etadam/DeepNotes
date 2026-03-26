@@ -6,7 +6,7 @@
   "dependencies": {
     "@stdlib/base64": "workspace:*",
     "@stdlib/misc": "workspace:*",
-    "kysely": "^0.28.11",
+    "kysely": "^0.28.14",
     "lodash": "^4.17.21",
     "msgpackr": "^1.9.9",
     "nanoid": "^3.3.7",
