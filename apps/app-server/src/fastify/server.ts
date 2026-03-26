@@ -22,6 +22,13 @@ import { registerUsersChangeEmailFinish } from 'src/websocket/users/account/emai
 import { registerUsersRotateKeys } from 'src/websocket/users/account/rotate-keys';
 
 export const fastify = once(async () => {
+  const sensitiveRoutes = [
+    'sessions.login',
+    'sessions.register',
+    'users.account.verify-email',
+    'users.account.change-password',
+  ];
+
   const fastify = Fastify({
     logger: true,
 
@@ -63,8 +70,12 @@ export const fastify = once(async () => {
   });
 
   await fastify.register(import('@fastify/rate-limit'), {
-    // Accept up to 5 requests/second within 5 minutes
-    max: 5 * 60 * 5,
+    // Strict limit on sensitive auth endpoints, default limit for the rest.
+    max: (request) => {
+      return sensitiveRoutes.some((route) => request.url.includes(route))
+        ? 10
+        : 5 * 60 * 5;
+    },
     timeWindow: 5 * 60 * 1000,
 
     redis: getRedis(),
