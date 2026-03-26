@@ -13,6 +13,8 @@ WORKDIR /app
 COPY --from=builder /build/apps/app-server/dist/ ./
 RUN corepack enable && corepack prepare pnpm@10.30.1 --activate && \
     pnpm init && \
-    pnpm add pg kysely @getbrevo/brevo libsodium-wrappers-sumo
+    pnpm add pg kysely @getbrevo/brevo libsodium-wrappers-sumo && \
+    addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
 
 CMD ["node", "index.js"]

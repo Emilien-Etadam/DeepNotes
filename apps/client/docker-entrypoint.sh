@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+if ! echo "$CLIENT_APP_URL" | grep -qE '^https?://[a-zA-Z0-9._-]+(:[0-9]+)?$'; then
+  echo "[warn] CLIENT_APP_URL looks invalid: $CLIENT_APP_URL"
+fi
+
 # Build absolute WebSocket URLs from CLIENT_APP_URL
 if [ -n "$CLIENT_APP_URL" ]; then
   # Convert http(s)://host to ws(s)://host
