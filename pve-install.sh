@@ -232,6 +232,11 @@ KEYDB_PASS=$(grep KEYDB_PASSWORD .env | cut -d'"' -f2)
 echo "requirepass ${KEYDB_PASS}" > keydb.conf
 msg_ok 'KeyDB password configured'
 
+msg_info 'Configuring cookie domain...'
+COOKIE_DOMAIN=$(grep CLIENT_APP_URL .env | head -1 | sed -e 's|CLIENT_APP_URL=||' -e 's|https://||' -e 's|http://||' -e 's|/.*||' -e 's|:.*||')
+sed -i "s|HOST=deepnotes.local|HOST=${COOKIE_DOMAIN}|" .env
+msg_ok "Cookie domain set to ${COOKIE_DOMAIN}"
+
 msg_info 'Building DeepNotes (this may take 5-10 minutes)...'
 docker compose pull
 docker compose up -d
