@@ -21,7 +21,10 @@ httpServer().on('upgrade', (req: IncomingMessage, socket: Socket, head) => {
 
   const cookies = cookie.parse(req.headers.cookie ?? '');
 
-  funcLogger.info('Access token: %o', cookies['accessToken']);
+  funcLogger.info(
+    'Access token: %s',
+    cookies['accessToken'] ? '[PRESENT]' : '[ABSENT]',
+  );
   funcLogger.info('Logged in: %o', cookies['loggedIn']);
 
   if (cookies['accessToken'] != null && cookies['loggedIn'] === 'true') {

@@ -165,11 +165,17 @@ export class SocketAuxObject {
     }
   }
   private async _handleRequest(decoder: decoding.Decoder) {
+    const funcLogger = moduleLogger.sub('handleRequest');
+
     // Gather commands
 
     const firstCommandId = decoding.readVarUint(decoder);
 
     const commandCount = decoding.readVarUint(decoder);
+    if (commandCount > 1000) {
+      funcLogger.warn('Command count too high (%d), dropping message', commandCount);
+      return;
+    }
 
     let commands: RealtimeCommand[] = [];
 
