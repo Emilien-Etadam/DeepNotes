@@ -100,11 +100,12 @@ async function _getPathPageIds(input: {
 }): Promise<string[] | undefined> {
   const pathPageIds: string[] = [];
 
-  const visitedPageIds = new Set();
+  const visitedPageIds = new Set<string>();
+  const MAX_DEPTH = 100;
 
   let pathPageId: string | null = input.initialPageId;
 
-  while (pathPageId != null) {
+  while (pathPageId != null && visitedPageIds.size < MAX_DEPTH) {
     if (visitedPageIds.has(pathPageId)) {
       return;
     }
