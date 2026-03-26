@@ -28,7 +28,7 @@
           ref="containerTooltip"
           pos="bottom"
         >
-          <div v-html="containerTooltipHTML"></div>
+          <div v-html="DOMPurify.sanitize(containerTooltipHTML)"></div>
         </TutorialTooltip>
       </Checkbox>
 
@@ -157,6 +157,7 @@
 
 <script setup lang="ts">
 import { useIntervalFn } from '@vueuse/core';
+import DOMPurify from 'dompurify';
 import showdown from 'showdown';
 import type { PageNote } from 'src/code/pages/page/notes/note';
 import type { Page } from 'src/code/pages/page/page';

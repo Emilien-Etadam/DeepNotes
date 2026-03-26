@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
 import { type NodeViewProps, NodeViewWrapper } from '@tiptap/vue-3';
+import DOMPurify from 'dompurify';
 import katex from 'katex';
 
 type Props = NodeViewProps;
@@ -56,12 +57,14 @@ const renderedFormula = computed(() => {
     return '[Enter formula]';
   }
 
-  return katex.renderToString(props.node.attrs.input, {
-    throwOnError: false,
-    strict: false,
-    displayMode: false,
-    output: 'html',
-  });
+  return DOMPurify.sanitize(
+    katex.renderToString(props.node.attrs.input, {
+      throwOnError: false,
+      strict: false,
+      displayMode: false,
+      output: 'html',
+    }),
+  );
 });
 </script>
 

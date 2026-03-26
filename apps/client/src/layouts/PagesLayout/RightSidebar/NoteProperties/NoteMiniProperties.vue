@@ -13,7 +13,7 @@
         "
         pos="left"
       >
-        <div v-html="newPageTooltipHTML"></div>
+        <div v-html="DOMPurify.sanitize(newPageTooltipHTML)"></div>
       </TutorialTooltip>
     </MiniSidebarBtn>
 
@@ -75,7 +75,7 @@
         "
         pos="left"
       >
-        <div v-html="bodyTooltipHTML"></div>
+        <div v-html="DOMPurify.sanitize(bodyTooltipHTML)"></div>
       </TutorialTooltip>
     </MiniSidebarBtn>
 
@@ -108,7 +108,7 @@
         "
         pos="left"
       >
-        <div v-html="collapsibleTooltipHTML"></div>
+        <div v-html="DOMPurify.sanitize(collapsibleTooltipHTML)"></div>
       </TutorialTooltip>
     </MiniSidebarBtn>
 
@@ -164,7 +164,7 @@
         "
         pos="left"
       >
-        <div v-html="containerTooltipHTML"></div>
+        <div v-html="DOMPurify.sanitize(containerTooltipHTML)"></div>
       </TutorialTooltip>
     </MiniSidebarBtn>
 
@@ -214,6 +214,7 @@
 <script setup lang="ts">
 import { splitStr } from '@stdlib/misc';
 import { useIntervalFn } from '@vueuse/core';
+import DOMPurify from 'dompurify';
 import { createPage } from 'src/code/areas/api-interface/pages/create';
 import type { PageNote } from 'src/code/pages/page/notes/note';
 import type { Page } from 'src/code/pages/page/page';

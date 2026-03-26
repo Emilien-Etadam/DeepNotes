@@ -44,7 +44,8 @@ export const fastify = once(async () => {
 
   await fastify.register(import('@fastify/cors'), {
     origin: (requestOrigin, callback) => {
-      console.log('CORS Origin: %s', requestOrigin);
+      // CORS origin logged only in dev
+      if (process.env.DEV) console.log('CORS Origin: %s', requestOrigin);
 
       if (
         process.env.DEV ||

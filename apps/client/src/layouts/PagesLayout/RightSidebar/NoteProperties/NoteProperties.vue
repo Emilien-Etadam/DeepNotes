@@ -58,7 +58,7 @@
             ref="newPageTooltip"
             pos="bottom"
           >
-            <div v-html="newPageTooltipHTML"></div>
+            <div v-html="DOMPurify.sanitize(newPageTooltipHTML)"></div>
           </TutorialTooltip>
         </template>
       </DeepBtnDropdown>
@@ -113,7 +113,7 @@
             ref="bodyTooltip"
             pos="bottom"
           >
-            <div v-html="bodyTooltipHTML"></div>
+            <div v-html="DOMPurify.sanitize(bodyTooltipHTML)"></div>
           </TutorialTooltip>
         </Checkbox>
       </div>
@@ -473,7 +473,7 @@
             ref="collapsibleTooltip"
             pos="bottom"
           >
-            <div v-html="collapsibleTooltipHTML"></div>
+            <div v-html="DOMPurify.sanitize(collapsibleTooltipHTML)"></div>
           </TutorialTooltip>
         </Checkbox>
 
@@ -616,6 +616,7 @@
 <script setup lang="ts">
 import { splitStr } from '@stdlib/misc';
 import { useIntervalFn } from '@vueuse/core';
+import DOMPurify from 'dompurify';
 import { pack } from 'msgpackr';
 import { createPageBacklink } from 'src/code/areas/api-interface/pages/backlinks/create';
 import { createPage } from 'src/code/areas/api-interface/pages/create';
