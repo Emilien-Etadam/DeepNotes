@@ -1,12 +1,17 @@
 #!/bin/sh
 set -e
 
-# Replace hardcoded localhost URLs with paths served by this nginx (single port)
-if [ -n "$APP_SERVER_URL" ]; then
+# Build absolute WebSocket URLs from CLIENT_APP_URL
+if [ -n "$CLIENT_APP_URL" ]; then
+  # Convert http(s)://host to ws(s)://host
+  WS_BASE=$(echo "$CLIENT_APP_URL" | sed 's|^http|ws|')
+  
+  echo "Injecting URLs: APP=$CLIENT_APP_URL, WS_BASE=$WS_BASE"
+  
   find /usr/share/nginx/html/assets -name '*.js' -exec sed -i \
-    -e "s|http://localhost:48922/trpc|/trpc|g" \
-    -e "s|ws://localhost:48923|/collab|g" \
-    -e "s|ws://localhost:48924|/realtime|g" \
+    -e "s|http://localhost:48922/trpc|${CLIENT_APP_URL}/trpc|g" \
+    -e "s|ws://localhost:48923|${WS_BASE}/collab|g" \
+    -e "s|ws://localhost:48924|${WS_BASE}/realtime|g" \
     {} +
 fi
 

@@ -82,9 +82,7 @@ services:
     depends_on:
       - app-server
     environment:
-      APP_SERVER_URL: /trpc
-      COLLAB_SERVER_URL: /collab
-      REALTIME_SERVER_URL: /realtime
+      CLIENT_APP_URL: ${CLIENT_APP_URL}
 
 volumes:
   postgres_data:
