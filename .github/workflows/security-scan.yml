@@ -1,0 +1,28 @@
+name: Security Scan
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [client, app-server, collab-server, realtime-server]
+    steps:
+      - uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/emilien-etadam/deepnotes-${{ matrix.image }}:latest
+          format: table
+          exit-code: 0
+          severity: CRITICAL,HIGH
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod --audit-level=high
+        continue-on-error: true

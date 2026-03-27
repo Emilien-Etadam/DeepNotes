@@ -59,6 +59,21 @@ Copy `template.env` to `.env`. All secrets must be replaced with unique values g
 bash /opt/deepnotes/update.sh
 ```
 
+## Backups
+
+- Manual run:
+  ```bash
+  bash scripts/backup-db.sh
+  ```
+- Install cron:
+  ```bash
+  echo "0 3 * * * /opt/deepnotes/scripts/backup-db.sh >> /var/log/deepnotes-backup.log 2>&1" | crontab -
+  ```
+- Restore:
+  ```bash
+  docker exec -i deepnotes-postgres pg_restore -U deepnotes -d deepnotes --clean < backup.dump
+  ```
+
 ## License
 
 AGPL-3.0 — same as the original project.
