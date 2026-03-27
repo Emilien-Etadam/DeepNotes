@@ -44,9 +44,8 @@ export function route(router_?: Router) {
     return _route;
   }
 
-  let route: Ref<RouteLocationNormalized> | undefined;
-
-  route ??= router(router_).currentRoute;
+  const route: Ref<RouteLocationNormalized> | undefined =
+    router(router_).currentRoute;
 
   if (route == null) {
     throw new Error('Unable to load route.');
