@@ -16,7 +16,9 @@ function makeHelper<T>(
     value ??= helperFunc();
 
     value ??=
-      getCurrentInstance()?.appContext.app.config.globalProperties[globalPropKey];
+      getCurrentInstance()?.appContext.app.config.globalProperties[
+        globalPropKey
+      ];
 
     if (value == null) {
       throw new Error(`Unable to load ${name}.`);

@@ -12,11 +12,7 @@ import { makeSlim } from '../../slim';
 import { roundTimeToMinutes } from '../notes/date';
 import type { PageNote } from '../notes/note';
 import type { Page } from '../page';
-import {
-  IArrowCollab,
-  IArrowCollabDefault,
-  type PageArrow,
-} from './arrow';
+import { IArrowCollab, IArrowCollabDefault, type PageArrow } from './arrow';
 
 export class PageArrowCreation {
   readonly page: Page;
@@ -113,8 +109,7 @@ export class PageArrowCreation {
       return;
     }
 
-    this.fakeArrow.react.collab[looseEndpoint] =
-      input.note.id;
+    this.fakeArrow.react.collab[looseEndpoint] = input.note.id;
 
     if (!this.fakeArrow.react.valid) {
       return;

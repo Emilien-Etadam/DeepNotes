@@ -106,9 +106,7 @@ export async function tryRefreshTokens(): Promise<void> {
 
     internals.personalGroupId = personalGroupId;
 
-    const publicKeyring = createKeyring(
-      base64ToBytesSafe(publicKeyringBase64),
-    );
+    const publicKeyring = createKeyring(base64ToBytesSafe(publicKeyringBase64));
 
     const privateKeyring = createPrivateKeyring(
       base64ToBytes(encryptedPrivateKeyringBase64),

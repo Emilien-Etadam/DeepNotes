@@ -108,12 +108,12 @@ export class PageNotes {
   observeMap() {
     const yNoteMap: Y.Map<INoteCollabComplete> = getYjsValue(this.react.collab);
     yNoteMap.observe((event) => {
-        for (const [noteId, change] of event.changes.keys) {
-          if (change.action === 'delete') {
-            delete this.react.map[noteId];
-          }
+      for (const [noteId, change] of event.changes.keys) {
+        if (change.action === 'delete') {
+          delete this.react.map[noteId];
         }
-      });
+      }
+    });
   }
 
   async create(params: {

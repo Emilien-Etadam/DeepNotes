@@ -257,10 +257,7 @@ export class Pages {
 
     if (params?.openInNewTab) {
       const elemQuery = params?.elemId == null ? '' : `?elem=${params.elemId}`;
-      globalThis.open(
-        multiModePath(`/pages/${pageId}${elemQuery}`),
-        '_blank',
-      );
+      globalThis.open(multiModePath(`/pages/${pageId}${elemQuery}`), '_blank');
       return;
     }
 

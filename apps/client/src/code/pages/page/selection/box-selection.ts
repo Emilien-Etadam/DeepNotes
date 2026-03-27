@@ -82,7 +82,9 @@ export class PageBoxSelection {
     this.react = reactive({
       active: false,
 
-      region: computed(() => this.page.regions.fromId(this.react.regionId ?? '')),
+      region: computed(() =>
+        this.page.regions.fromId(this.react.regionId ?? ''),
+      ),
 
       clientStartPos: new Vec2(),
       clientEndPos: new Vec2(),

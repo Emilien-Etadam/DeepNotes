@@ -178,7 +178,8 @@ export async function rotateUserKeys(input: { password: string }) {
                   ? null
                   : createSymmetricKeyring(encryptedAccessKeyring)
                       .unwrapAsymmetric(oldPrivateKeyring)
-                      .wrapAsymmetric(newKeyPair, newPublicKeyring).wrappedValue,
+                      .wrapAsymmetric(newKeyPair, newPublicKeyring)
+                      .wrappedValue,
               encryptedInternalKeyring: createSymmetricKeyring(
                 encryptedInternalKeyring,
               )
@@ -198,7 +199,8 @@ export async function rotateUserKeys(input: { password: string }) {
                   ? null
                   : createSymmetricKeyring(encryptedAccessKeyring)
                       .unwrapAsymmetric(oldPrivateKeyring)
-                      .wrapAsymmetric(newKeyPair, newPublicKeyring).wrappedValue,
+                      .wrapAsymmetric(newKeyPair, newPublicKeyring)
+                      .wrappedValue,
               encryptedInternalKeyring: createSymmetricKeyring(
                 encryptedInternalKeyring,
               )

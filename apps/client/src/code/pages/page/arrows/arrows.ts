@@ -99,39 +99,39 @@ export class PageArrows {
   observeMap() {
     const yArrowMap: Y.Map<IArrowCollabOutput> = getYjsValue(this.react.collab);
     yArrowMap.observe((event) => {
-        for (const [arrowId, change] of event.changes.keys) {
-          if (change.action !== 'delete') {
-            continue;
-          }
-
-          // Remove arrow from outgoing arrows
-
-          const source = change.oldValue._map.get('source')?.content.arr?.[0];
-
-          if (isString(source)) {
-            const note = this.page.notes.fromId(source);
-
-            if (note != null) {
-              note.outgoingArrowIds.delete(arrowId);
-            }
-          }
-
-          // Remove arrow from incoming arrows
-
-          const target = change.oldValue._map.get('target')?.content.arr?.[0];
-
-          if (isString(target)) {
-            const note = this.page.notes.fromId(target);
-
-            if (note != null) {
-              note.incomingArrowIds.delete(arrowId);
-            }
-          }
-
-          // Remove arrow from map
-
-          delete this.react.map[arrowId];
+      for (const [arrowId, change] of event.changes.keys) {
+        if (change.action !== 'delete') {
+          continue;
         }
-      });
+
+        // Remove arrow from outgoing arrows
+
+        const source = change.oldValue._map.get('source')?.content.arr?.[0];
+
+        if (isString(source)) {
+          const note = this.page.notes.fromId(source);
+
+          if (note != null) {
+            note.outgoingArrowIds.delete(arrowId);
+          }
+        }
+
+        // Remove arrow from incoming arrows
+
+        const target = change.oldValue._map.get('target')?.content.arr?.[0];
+
+        if (isString(target)) {
+          const note = this.page.notes.fromId(target);
+
+          if (note != null) {
+            note.incomingArrowIds.delete(arrowId);
+          }
+        }
+
+        // Remove arrow from map
+
+        delete this.react.map[arrowId];
+      }
+    });
   }
 }

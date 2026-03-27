@@ -202,76 +202,76 @@ function changeProp(value: any, func: (note: PageNote, value: any) => void) {
 async function createChildFromFile(file: File) {
   const content = await file.text();
 
-    const childNote = await page.value.notes.create({
-      region: note.value,
-      center: false,
-      edit: false,
+  const childNote = await page.value.notes.create({
+    region: note.value,
+    center: false,
+    edit: false,
+  });
+
+  if (childNote == null) {
+    return;
+  }
+
+  childNote.react.collab.head.enabled = true;
+  childNote.react.collab.body.enabled = false;
+  childNote.react.collab.container.enabled = false;
+
+  if (file.name.endsWith('.md')) {
+    const converter = new showdown.Converter({
+      emoji: true,
+      parseImgDimensions: true,
+      strikethrough: true,
+      tables: true,
+      underline: true,
     });
 
-    if (childNote == null) {
-      return;
+    converter.addExtension(() => [
+      {
+        type: 'output',
+        regex: /\$(.+?)\$/g,
+        replace: '<inline-math>$1</inline-math>',
+      },
+      {
+        type: 'output',
+        regex: /\$\$((?:.|\n)+?)\$\$/g,
+        replace: '<math-block>$1</math-block>',
+      },
+    ]);
+
+    const initialHTML = converter
+      .makeHtml(content)
+      .replaceAll('\n', '')
+      .replaceAll(/<br \/> +/g, '<br />');
+
+    const parser = new DOMParser();
+    const parsedDoc = parser.parseFromString(initialHTML, 'text/html');
+
+    // Fix math blocks (unwrap <p><math-block>...</math-block></p> without using outerHTML to avoid XSS)
+    for (const mathBlock of Array.from(
+      parsedDoc.querySelectorAll('p > math-block'),
+    )) {
+      const parent = mathBlock.parentElement!;
+      const clone = mathBlock.cloneNode(true) as HTMLElement;
+      stripScriptsAndEventHandlers(clone);
+      parent.replaceWith(clone);
     }
 
-    childNote.react.collab.head.enabled = true;
-    childNote.react.collab.body.enabled = false;
-    childNote.react.collab.container.enabled = false;
-
-    if (file.name.endsWith('.md')) {
-      const converter = new showdown.Converter({
-        emoji: true,
-        parseImgDimensions: true,
-        strikethrough: true,
-        tables: true,
-        underline: true,
-      });
-
-      converter.addExtension(() => [
-        {
-          type: 'output',
-          regex: /\$(.+?)\$/g,
-          replace: '<inline-math>$1</inline-math>',
-        },
-        {
-          type: 'output',
-          regex: /\$\$((?:.|\n)+?)\$\$/g,
-          replace: '<math-block>$1</math-block>',
-        },
-      ]);
-
-      const initialHTML = converter
-        .makeHtml(content)
-        .replaceAll('\n', '')
-        .replaceAll(/<br \/> +/g, '<br />');
-
-      const parser = new DOMParser();
-      const parsedDoc = parser.parseFromString(initialHTML, 'text/html');
-
-      // Fix math blocks (unwrap <p><math-block>...</math-block></p> without using outerHTML to avoid XSS)
-      for (const mathBlock of Array.from(
-        parsedDoc.querySelectorAll('p > math-block'),
-      )) {
-        const parent = mathBlock.parentElement!;
-        const clone = mathBlock.cloneNode(true) as HTMLElement;
-        stripScriptsAndEventHandlers(clone);
-        parent.replaceWith(clone);
-      }
-
-      // Fix blockquotes (unwrap <blockquote><p>...</p></blockquote> without using innerHTML to avoid XSS from imported file content)
-      for (const paragraph of Array.from(
-        parsedDoc.querySelectorAll('blockquote > p'),
-      )) {
-        const parent = paragraph.parentElement!;
-        const clone = paragraph.cloneNode(true) as HTMLElement;
-        stripScriptsAndEventHandlers(clone);
-        parent.replaceChildren(clone);
-      }
-
-      const finalHTML = parsedDoc.body.innerHTML;
-
-      childNote.react.editors[0]?.commands.insertContent(finalHTML);
-    } else {
-      childNote.react.editors[0]?.commands.insertContent(content);
+    // Fix blockquotes (unwrap <blockquote><p>...</p></blockquote> without using innerHTML to avoid XSS from imported file content)
+    for (const paragraph of Array.from(
+      parsedDoc.querySelectorAll('blockquote > p'),
+    )) {
+      const parent = paragraph.parentElement!;
+      const clone = paragraph.cloneNode(true) as HTMLElement;
+      stripScriptsAndEventHandlers(clone);
+      parent.replaceChildren(clone);
     }
+
+    const finalHTML = parsedDoc.body.innerHTML;
+
+    childNote.react.editors[0]?.commands.insertContent(finalHTML);
+  } else {
+    childNote.react.editors[0]?.commands.insertContent(content);
+  }
 }
 
 async function importChildrenFromFilesAux(files: File[]) {

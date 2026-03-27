@@ -74,8 +74,8 @@ export const PageElem = once(
             }
           }),
 
-          region: computed(
-            () => this.page.regions.fromId(this.react.collab?.regionId ?? null),
+          region: computed(() =>
+            this.page.regions.fromId(this.react.collab?.regionId ?? null),
           ),
 
           visible: computed(() => {

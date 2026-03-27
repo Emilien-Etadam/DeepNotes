@@ -14,10 +14,7 @@ import {
 } from './page/arrows/arrow';
 import { roundTimeToMinutes } from './page/notes/date';
 import type { PageNote } from './page/notes/note';
-import {
-  INoteCollab,
-  INoteCollabDefault,
-} from './page/notes/note-collab';
+import { INoteCollab, INoteCollabDefault } from './page/notes/note-collab';
 import {
   IRegionCollab,
   type IRegionCollabOutput,
@@ -227,12 +224,7 @@ export class Serialization {
       if (noteSerial == null) {
         continue;
       }
-      this._serializeRegionArrows(
-        note.react,
-        noteSerial,
-        aux,
-        note,
-      );
+      this._serializeRegionArrows(note.react, noteSerial, aux, note);
     }
   }
   private _serializeArrow(

@@ -45,20 +45,18 @@ const props = defineProps<{
 const page = inject<Page>('page')!;
 const note = inject<PageNote>('note')!;
 
-const section = computed(
-  () => {
-    if (props.section != null) {
-      return props.section;
-    }
-    if (props.side.includes('n')) {
-      return note.react.topSection;
-    }
-    if (props.side.includes('s')) {
-      return note.react.bottomSection;
-    }
-    return undefined;
-  },
-);
+const section = computed(() => {
+  if (props.section != null) {
+    return props.section;
+  }
+  if (props.side.includes('n')) {
+    return note.react.topSection;
+  }
+  if (props.side.includes('s')) {
+    return note.react.bottomSection;
+  }
+  return undefined;
+});
 
 async function onLeftPointerDown(event: PointerEvent) {
   await page.resizing.start(event, note, props.side, section.value);
