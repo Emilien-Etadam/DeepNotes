@@ -6,7 +6,7 @@ import { mainLogger } from '@stdlib/misc';
 import { fastify } from './fastify/server';
 
 async function main() {
-  const app = fastify();
+  const app = await fastify();
   await app.listen({
     port: Number.parseInt(process.env.APP_SERVER_PORT ?? '3000', 10),
     host: '0.0.0.0',
