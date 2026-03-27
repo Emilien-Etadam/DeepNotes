@@ -1,20 +1,11 @@
-import {
-  createPrivateKeyring,
-  createSymmetricKeyring,
-  encodePasswordHash,
-  getPasswordHashValues,
-} from '@stdlib/crypto';
-import { TRPCError } from '@trpc/server';
 import type Fastify from 'fastify';
 import { type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
-import { db } from 'src/data/knex';
-import {
-  decryptUserRehashedLoginHash,
-  derivePasswordValues,
-  encryptUserRehashedLoginHash,
-} from 'src/utils/crypto';
 import { invalidateAllSessions } from 'src/utils/sessions';
 import { createWebsocketEndpoint } from 'src/utils/websocket-endpoints';
+import {
+  buildAccountUpdateStep2Patch,
+  getAccountUpdateStep1Data,
+} from './account-update-common';
 import { z } from 'zod';
 
 const baseProcedureStep1 = authProcedure.input(
@@ -58,67 +49,12 @@ export async function changePasswordStep1({
   ctx,
   input,
 }: InferProcedureOpts<typeof baseProcedureStep1>) {
-  // Assert correct old password
-
-  await ctx.assertCorrectUserPassword({
+  return await getAccountUpdateStep1Data({
     userId: ctx.userId,
-    loginHash: input.oldLoginHash,
+    oldLoginHash: input.oldLoginHash,
+    assertCorrectUserPassword: ctx.assertCorrectUserPassword,
+    assertNonDemoAccount: ctx.assertNonDemoAccount,
   });
-
-  // Assert non-demo account
-
-  await ctx.assertNonDemoAccount({ userId: ctx.userId });
-
-  // Get user data
-
-  const user = await db
-    .selectFrom('users')
-    .where('id', '=', ctx.userId)
-    .select([
-      'encrypted_rehashed_login_hash',
-      'encrypted_symmetric_keyring',
-      'encrypted_private_keyring',
-    ])
-    .executeTakeFirst();
-
-  if (user == null) {
-    throw new TRPCError({
-      code: 'BAD_REQUEST',
-      message: 'User not found.',
-    });
-  }
-
-  // Get password values
-
-  const passwordHashValues = getPasswordHashValues(
-    decryptUserRehashedLoginHash(user.encrypted_rehashed_login_hash),
-  );
-
-  const passwordValues = derivePasswordValues({
-    password: input.oldLoginHash,
-    salt: passwordHashValues.saltBytes,
-  });
-
-  // Return old encrypted keyrings
-
-  return {
-    encryptedPrivateKeyring: createPrivateKeyring(
-      user.encrypted_private_keyring,
-    ).unwrapSymmetric(passwordValues.key, {
-      associatedData: {
-        context: 'UserEncryptedPrivateKeyring',
-        userId: ctx.userId,
-      },
-    }).wrappedValue,
-    encryptedSymmetricKeyring: createSymmetricKeyring(
-      user.encrypted_symmetric_keyring,
-    ).unwrapSymmetric(passwordValues.key, {
-      associatedData: {
-        context: 'UserEncryptedSymmetricKeyring',
-        userId: ctx.userId,
-      },
-    }).wrappedValue,
-  };
 }
 
 export async function changePasswordStep2({
@@ -126,35 +62,10 @@ export async function changePasswordStep2({
   input,
 }: InferProcedureOpts<typeof baseProcedureStep2>) {
   return await ctx.dataAbstraction.transaction(async (dtrx) => {
-    const passwordValues = derivePasswordValues({
-      password: input.newLoginHash,
-    });
-
     await ctx.dataAbstraction.patch(
       'user',
       ctx.userId,
-      {
-        encrypted_rehashed_login_hash: encryptUserRehashedLoginHash(
-          encodePasswordHash(passwordValues.hash, passwordValues.salt, 2, 32),
-        ),
-
-        encrypted_private_keyring: createPrivateKeyring(
-          input.newEncryptedPrivateKeyring,
-        ).wrapSymmetric(passwordValues.key, {
-          associatedData: {
-            context: 'UserEncryptedPrivateKeyring',
-            userId: ctx.userId,
-          },
-        }).wrappedValue,
-        encrypted_symmetric_keyring: createSymmetricKeyring(
-          input.newEncryptedSymmetricKeyring,
-        ).wrapSymmetric(passwordValues.key, {
-          associatedData: {
-            context: 'UserEncryptedSymmetricKeyring',
-            userId: ctx.userId,
-          },
-        }).wrappedValue,
-      },
+      buildAccountUpdateStep2Patch({ userId: ctx.userId, input }),
       { dtrx },
     );
 

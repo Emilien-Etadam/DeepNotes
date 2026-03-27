@@ -74,7 +74,11 @@ export async function request({
 
         // Send email
 
-        if (process.env.SEND_EMAILS !== 'false') {
+        if (process.env.SEND_EMAILS === 'false') {
+          return {
+            emailVerificationCode,
+          };
+        } else {
           await sendMail({
             from: {
               name: 'DeepNotes',
@@ -87,10 +91,6 @@ export async function request({
               If you did not request this action, you can safely ignore this email.
             `,
           });
-        } else {
-          return {
-            emailVerificationCode,
-          };
         }
       });
     },

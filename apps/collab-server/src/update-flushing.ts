@@ -1,4 +1,3 @@
-import type { PageUpdateRow } from '@deeplib/db';
 import { base64ToBytes } from '@stdlib/base64';
 import { mainLogger, namedPromises } from '@stdlib/misc';
 import { throttle } from 'lodash';
@@ -29,7 +28,11 @@ export const flushPageUpdatesThrottled = throttle(
 
       // Prepare page updates
 
-      const pageUpdateModels: Partial<PageUpdateRow>[] = [];
+      const pageUpdateModels: Array<{
+        page_id: string;
+        index: number;
+        encrypted_data: Buffer;
+      }> = [];
       const pageUpdateIndexes: Record<string, number> = {};
 
       for (const [pageId, msgpackPageUpdates] of Object.entries(
@@ -59,7 +62,7 @@ export const flushPageUpdatesThrottled = throttle(
       for (const row of pageUpdateModels) {
         await db
           .insertInto('page_updates')
-          .values(row as any)
+          .values(row)
           .onConflict((oc) => oc.columns(['page_id', 'index']).doNothing())
           .execute();
       }

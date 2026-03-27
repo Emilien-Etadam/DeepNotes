@@ -280,7 +280,7 @@ export async function moveStep2({
           page_id: (ctx as Context).pageId,
           index: 0,
           encrypted_data: input.pageEncryptedUpdate,
-        } as any)
+        })
         .execute();
 
       await bumpRecentItem({

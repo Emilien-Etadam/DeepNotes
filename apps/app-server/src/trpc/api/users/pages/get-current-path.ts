@@ -118,12 +118,12 @@ async function _getPathPageIds(input: {
       return pathPageIds;
     }
 
-    const lastParentId = await input.dataAbstraction.hget(
+    const lastParentId: unknown = await input.dataAbstraction.hget(
       'user-page',
       `${input.userId}:${pathPageId}`,
       'last-parent-id',
     );
 
-    pathPageId = lastParentId ?? null;
+    pathPageId = typeof lastParentId === 'string' ? lastParentId : null;
   }
 }

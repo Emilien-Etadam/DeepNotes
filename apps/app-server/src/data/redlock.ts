@@ -6,6 +6,8 @@ import { getRedis } from './redis';
 
 export const getRedlock = once(
   () =>
+    // SAFETY: @sesamecare-oss/redlock typings do not model ioredis instances used here,
+    // but runtime compatibility is intended and validated by current production usage.
     new Redlock([getRedis() as any], {
       // The expected clock drift; for more details see:
       // http://redis.io/topics/distlock

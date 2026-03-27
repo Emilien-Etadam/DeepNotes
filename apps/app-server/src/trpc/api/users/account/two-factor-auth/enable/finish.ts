@@ -37,7 +37,7 @@ export async function finish({
 
         // Get authenticator secret from the database.
 
-        const user = await (dtrx.trx! as any)
+        const user = await dtrx.trx!
           .selectFrom('users')
           .where('id', '=', ctx.userId)
           .select('encrypted_authenticator_secret')
@@ -78,7 +78,7 @@ export async function finish({
 
         // Generate recovery codes
 
-        const recoveryCodes = Array(6)
+        const recoveryCodes = new Array(6)
           .fill(null)
           .map(() => sodium.to_hex(sodium.randombytes_buf(16)));
 

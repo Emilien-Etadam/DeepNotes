@@ -19,8 +19,8 @@ declare namespace NodeJS {
     COLLAB_SERVER_PORT: string;
     COLLAB_SERVER_URL: string;
 
-    ACCESS_SECRET: string;
-    REFRESH_SECRET: string;
+    ACCESS_TOKEN_SECRET: string;
+    REFRESH_TOKEN_SECRET: string;
 
     EMAIL_CASE_SENSITIVITY_EXCEPTIONS: string;
 

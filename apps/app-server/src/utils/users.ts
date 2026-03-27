@@ -1,5 +1,5 @@
 import { encryptUserEmail, hashUserEmail } from '@deeplib/data';
-import type { UserRow } from '@deeplib/db';
+import type { Database, UserRow } from '@deeplib/db';
 import { db } from 'src/data/knex';
 import {
   createPrivateKeyring,
@@ -10,15 +10,18 @@ import {
 import type { DataTransaction } from '@stdlib/data';
 import { addHours, isNanoID } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
+import type { Transaction } from 'kysely';
 import sodium from 'libsodium-wrappers-sumo';
 import { once } from 'lodash';
 import { nanoid } from 'nanoid';
 import { dataAbstraction } from 'src/data/data-abstraction';
 import {
   type PasswordValues,
+  TARGET_OPS_LIMIT,
   decryptUserRehashedLoginHash,
   derivePasswordValues,
   encryptUserRehashedLoginHash,
+  TARGET_MEM_LIMIT,
 } from 'src/utils/crypto';
 import { createGroup } from 'src/utils/groups';
 import { z } from 'zod';
@@ -67,7 +70,8 @@ export async function registerUser(
 ) {
   const emailVerificationCode = input.skipEmailVerification ? null : nanoid();
 
-  const executor = (input.dtrx?.trx ?? db) as any;
+  const executor: typeof db | Transaction<Database> =
+    (input.dtrx?.trx as Transaction<Database> | undefined) ?? db;
   await executor
     .deleteFrom('users')
     .where('email_hash', '=', Buffer.from(hashUserEmail(input.email)))
@@ -85,8 +89,8 @@ export async function registerUser(
           encodePasswordHash(
             input.passwordValues.hash,
             input.passwordValues.salt,
-            2,
-            32,
+            TARGET_OPS_LIMIT,
+            TARGET_MEM_LIMIT / 1048576,
           ),
         ),
 

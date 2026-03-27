@@ -64,11 +64,11 @@ export async function createGroup(
       main_page_id: input.groupMainPageId,
 
       encrypted_rehashed_password_hash:
-        input.groupPasswordHash != null
-          ? encryptGroupRehashedPasswordHash(
+        input.groupPasswordHash == null
+          ? undefined
+          : encryptGroupRehashedPasswordHash(
               computePasswordHash(input.groupPasswordHash) as unknown as string,
-            )
-          : undefined,
+            ),
 
       access_keyring: input.groupIsPublic
         ? input.groupAccessKeyring
@@ -188,8 +188,8 @@ export async function getGroupMembers(
 }
 
 export async function assertSufficientGroupPermissions(input: {
-  userId: any;
-  groupId: any;
+  userId: string;
+  groupId: string;
   permission: GroupRolePermission;
 }) {
   if (

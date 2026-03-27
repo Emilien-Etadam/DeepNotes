@@ -26,6 +26,7 @@ const getSetupStatusProcedure = once(() =>
       const anyUser = await hasAnyUser();
       return { needsSetup: !anyUser, error: null as string | null };
     } catch (err) {
+      console.error(err);
       // Database or backend unavailable (e.g. PostgreSQL not running)
       return {
         needsSetup: false,

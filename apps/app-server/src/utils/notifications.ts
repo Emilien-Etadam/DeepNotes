@@ -49,7 +49,7 @@ export async function notifyUsers(
             type,
             encrypted_content: encryptedContent,
             datetime: dateTime,
-          } as any)
+          })
           .returning('id')
           .executeTakeFirstOrThrow();
         const notificationId = Number(row.id);
@@ -63,7 +63,7 @@ export async function notifyUsers(
                   user_id: userId,
                   notification_id: notificationId,
                   encrypted_symmetric_key: encryptedSymmetricKey,
-                } as any)
+                })
                 .execute();
 
               await getRedis().publish(

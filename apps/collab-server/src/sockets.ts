@@ -1,4 +1,5 @@
 import { getAllPageUpdates, insertPageSnapshot } from '@deeplib/data';
+import type { Database } from '@deeplib/db';
 import {
   CollabClientDocMessageType,
   CollabMessageType,
@@ -13,6 +14,7 @@ import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import { randomBytes } from 'node:crypto';
 import type { IncomingMessage } from 'node:http';
 import { decoding, encoding } from 'lib0';
+import type { OnConflictBuilder } from 'kysely';
 import type { WebSocket } from 'ws';
 
 import { dataAbstraction } from './data/data-abstraction';
@@ -622,8 +624,8 @@ export class SocketAuxObject {
         page_id: this.room.pageId,
         index: updateIndex,
         encrypted_data: encryptedUpdate,
-      } as any)
-      .onConflict((oc) =>
+      })
+      .onConflict((oc: OnConflictBuilder<Database, 'page_updates'>) =>
         oc.columns(['page_id', 'index']).doNothing(),
       )
       .execute();
@@ -705,7 +707,7 @@ export class SocketAuxObject {
   destroySocket() {
     // Terminate socket
 
-    this.socket.aux = null as any;
+    this.socket.aux = null;
 
     this.socket.terminate();
 

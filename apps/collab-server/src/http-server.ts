@@ -1,4 +1,3 @@
-import type { AccessTokenPayload } from '@deeplib/misc';
 import { mainLogger } from '@stdlib/misc';
 import cookie from 'cookie';
 import { type IncomingMessage, createServer } from 'node:http';
@@ -24,8 +23,12 @@ httpServer().on('upgrade', (req: IncomingMessage, socket: Socket, head) => {
     try {
       const jwtPayload = jwt.verify(
         cookies['accessToken'],
-        process.env.ACCESS_SECRET!,
-      ) as unknown as AccessTokenPayload;
+        process.env.ACCESS_SECRET,
+      );
+
+      if (typeof jwtPayload === 'string' || jwtPayload.sid == null) {
+        throw new Error('Invalid access token payload');
+      }
 
       req.sessionId = jwtPayload.sid;
 

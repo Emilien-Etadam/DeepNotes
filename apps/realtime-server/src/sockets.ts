@@ -4,7 +4,7 @@ import {
   RealtimeCommandType,
   RealtimeServerMessageType,
 } from '@deeplib/misc';
-import type { DataHash, DataUpdateListener } from '@stdlib/data';
+import type { DataUpdateListener } from '@stdlib/data';
 import {
   allAsyncProps,
   bytesToText,
@@ -156,12 +156,10 @@ export class SocketAuxObject {
 
     const messageType = decoding.readVarUint(decoder);
 
-    switch (messageType) {
-      case RealtimeClientMessageType.REQUEST:
-        await this._handleRequest(decoder);
-        break;
-      default:
-        throw new Error('Unknown message type');
+    if (messageType === RealtimeClientMessageType.REQUEST) {
+      await this._handleRequest(decoder);
+    } else {
+      throw new Error('Unknown message type');
     }
   }
   private async _handleRequest(decoder: decoding.Decoder) {
@@ -225,9 +223,10 @@ export class SocketAuxObject {
 
       encoding.writeVarUint(encoder, command.id);
 
+      const result = results[commandIndex];
       encoding.writeVarUint8Array(
         encoder,
-        pack((results[commandIndex] as any).value),
+        pack(result.status === 'fulfilled' ? result.value : undefined),
       );
     }
 
@@ -250,11 +249,12 @@ export class SocketAuxObject {
 
   private async _handleHGet(args: [DataPrefix, string, string]) {
     const [prefix, suffix, field] = args;
+    const hash = dataHashes[prefix];
 
     // Check if user can access value
 
     if (
-      !(dataHashes[prefix] as DataHash)?.fields[field]?.userGettable?.({
+      !hash?.fields[field]?.userGettable?.({
         dataAbstraction: (await dataAbstraction()),
         userId: this.userId,
         suffix,
@@ -288,9 +288,7 @@ export class SocketAuxObject {
     for (const [prefix, suffix, field] of hGetBuffer) {
       const key = `${prefix}:${suffix}`;
 
-      if (hashValues[key] == null) {
-        hashValues[key] = {};
-      }
+      hashValues[key] ??= {};
 
       hashValues[key][field] = undefined;
     }
@@ -306,7 +304,7 @@ export class SocketAuxObject {
 
       objPromises[key] = objectifyPromiseResults(
         fields,
-        (await dataAbstraction()).hmget(prefix as any, suffix, fields),
+        (await dataAbstraction()).hmget(prefix, suffix, fields),
       );
     }
 
@@ -323,9 +321,10 @@ export class SocketAuxObject {
 
   private async _handleHSet(args: [DataPrefix, string, string, any]) {
     const [prefix, suffix, field] = args;
+    const hash = dataHashes[prefix];
 
     if (
-      !(await (dataHashes[prefix] as DataHash)?.fields[field]?.userSettable?.({
+      !(await hash?.fields[field]?.userSettable?.({
         dataAbstraction: (await dataAbstraction()),
         userId: this.userId,
         suffix,
@@ -359,9 +358,7 @@ export class SocketAuxObject {
     for (const [prefix, suffix, field, value] of hSetBuffer) {
       const key = `${prefix}:${suffix}`;
 
-      if (hashValues[key] == null) {
-        hashValues[key] = {};
-      }
+      hashValues[key] ??= {};
 
       hashValues[key][field] = value;
     }
@@ -376,7 +373,7 @@ export class SocketAuxObject {
       const [prefix, suffix] = splitStr(key, ':', 2);
 
       promises.push(
-        (await dataAbstraction()).hmset(prefix as any, suffix, obj, {
+        (await dataAbstraction()).hmset(prefix, suffix, obj, {
           origin: this.socket,
         }),
       );
@@ -402,7 +399,7 @@ export class SocketAuxObject {
 
     // Check if user can access value
 
-    const fieldInfo = (dataHashes[prefix] as DataHash)?.fields[field];
+    const fieldInfo = dataHashes[prefix]?.fields[field];
 
     // Subscribe to value
 
@@ -436,7 +433,7 @@ export class SocketAuxObject {
       };
 
       await (await dataAbstraction()).addUpdateListener(
-        prefix as any,
+        prefix,
         suffix,
         field,
         updateListener,
@@ -455,7 +452,11 @@ export class SocketAuxObject {
         suffix,
       })
     ) {
-      const value = await (await dataAbstraction()).hget(prefix as any, suffix, field);
+      const value = await (await dataAbstraction()).hget(
+        prefix,
+        suffix,
+        field,
+      );
 
       this._dataNotificationBuffer.push([prefix, suffix, field, value]);
     } else {
@@ -502,7 +503,7 @@ export class SocketAuxObject {
   destroySocket() {
     // Clear auxiliar object
 
-    this.socket.aux = null as any;
+    this.socket.aux = null;
 
     this.socket.terminate();
 

@@ -45,6 +45,7 @@
     "@types/libsodium-wrappers-sumo": "^0.7.7",
     "@types/lodash": "^4.14.200",
     "@types/ws": "8.5.3",
+    "@vitest/coverage-v8": "^4.0.18",
     "tsup": "^8.3.0"
   },
   "license": "MIT",
@@ -59,6 +60,7 @@
     "preinstall": "npx only-allow pnpm",
     "repo:build": "tsc-alias -p tsconfig.json",
     "repo:build:watch": "tsc-alias -p tsconfig.json --watch",
-    "start": "tsx ./src/index.ts"
+    "start": "tsx ./src/index.ts",
+    "test": "vitest run --coverage"
   }
 }

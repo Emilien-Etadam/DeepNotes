@@ -1,6 +1,8 @@
+import type { Database } from '@deeplib/db';
 import type { DataTransaction } from '@stdlib/data';
 import { addDays } from '@stdlib/misc';
 import type { FastifyReply } from 'fastify';
+import type { Insertable, Transaction, Updateable } from 'kysely';
 import sodium from 'libsodium-wrappers-sumo';
 import { nanoid } from 'nanoid';
 import { dataAbstraction } from 'src/data/data-abstraction';
@@ -22,32 +24,36 @@ export async function generateSessionValues(input: {
   const sessionKey = sodium.crypto_aead_xchacha20poly1305_ietf_keygen();
   const refreshCode = nanoid();
 
-  const executor = (input.dtrx?.trx ?? db) as any;
+  const executor: typeof db | Transaction<Database> =
+    (input.dtrx?.trx as Transaction<Database> | undefined) ?? db;
 
   // Update session in database
 
-  if (input.deviceId != null) {
+  if (input.deviceId == null) {
+    await executor
+      .updateTable('sessions')
+      .set({
+        encryption_key: Buffer.from(sessionKey),
+        refresh_code: refreshCode,
+        last_refresh_date: new Date(),
+        expiration_date: addDays(new Date(), 7),
+      } satisfies Updateable<Database['sessions']>)
+      .where('id', '=', input.sessionId)
+      .execute();
+  } else {
     await executor
       .insertInto('sessions')
       .values({
         id: input.sessionId,
         user_id: input.userId,
         device_id: input.deviceId,
-        encryption_key: sessionKey,
+        encryption_key: Buffer.from(sessionKey),
         refresh_code: refreshCode,
-        expiration_date: addDays(new Date(), 7),
-      } as any)
-      .execute();
-  } else {
-    await (executor as any)
-      .updateTable('sessions')
-      .set({
-        encryption_key: sessionKey,
-        refresh_code: refreshCode,
+        invalidated: false,
+        creation_date: new Date(),
         last_refresh_date: new Date(),
         expiration_date: addDays(new Date(), 7),
-      } as any)
-      .where('id', '=', input.sessionId)
+      } satisfies Insertable<Database['sessions']>)
       .execute();
   }
 
@@ -74,6 +80,8 @@ export async function generateSessionValues(input: {
 
     sessionKey,
     refreshCode,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
   };
 }
 

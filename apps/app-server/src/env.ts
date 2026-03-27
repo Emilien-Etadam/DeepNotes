@@ -1,17 +1,11 @@
-import { once } from '@stdlib/misc';
-import dotenv from 'dotenv';
-import * as dotenvExpand from 'dotenv-expand';
+import { initializeSharedEnv } from '@deeplib/misc';
 
-Object.defineProperty(process, 'env', {
-  get: once(() => {
-    dotenvExpand.expand(
-      dotenv.config({ path: '../../.env' }).parsed?.DEV
-        ? dotenv.config({ path: '../../.env' }).parsed?.PRODEV
-          ? dotenv.config({ path: '../../.env.prodev' })
-          : dotenv.config({ path: '../../.env.dev' })
-        : dotenv.config({ path: '../../.env.prod' }),
-    );
+export { getDbConfig, getKeyDbConfig, getCommonConfig } from '@deeplib/misc';
 
-    return process.env;
-  }, process.env),
-});
+initializeSharedEnv();
+
+export function getAppServerConfig() {
+  return {
+    appServerPort: process.env.APP_SERVER_PORT,
+  };
+}

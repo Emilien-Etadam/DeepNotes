@@ -2,6 +2,7 @@ import { mainLogger, Resolvable } from '@stdlib/misc';
 import { checkRedlockSignalAborted } from '@stdlib/redlock';
 import type { AnyProcedure } from '@trpc/server';
 import { getParseFn } from '@trpc/server/unstable-core-do-not-import';
+import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 import type { FastifyInstance } from 'fastify';
 import { pack, unpack } from 'msgpackr';
 import { WebSocket } from 'ws';
@@ -9,6 +10,16 @@ import { createContext } from 'src/trpc/context';
 import { authHelper } from 'src/trpc/helpers';
 
 const moduleLogger = mainLogger.sub('Websocket endpoints');
+
+type WebsocketAuthContext = Exclude<
+  Awaited<ReturnType<typeof authHelper>>,
+  false
+>;
+
+type WebsocketProcedure = [
+  AnyProcedure,
+  (...args: any[]) => any,
+];
 
 function sendErrorAndDisconnect(socket: WebSocket, error: string) {
   if (socket.readyState !== WebSocket.OPEN) {
@@ -32,9 +43,9 @@ function sendErrorAndDisconnect(socket: WebSocket, error: string) {
 
 function createWebsocketMessageHandler(input: {
   socket: WebSocket;
-  ctx: any;
-  acquireLocks: (input) => any;
-  procedures: [AnyProcedure, (...args: any) => any][];
+  ctx: WebsocketAuthContext;
+  acquireLocks: (input: unknown) => PromiseLike<void>;
+  procedures: WebsocketProcedure[];
 }) {
   let step = 1;
 
@@ -97,8 +108,10 @@ function createWebsocketMessageHandler(input: {
         }
 
         step++;
-      } catch (error: any) {
-        finishPromise.reject(String(error?.message ?? error));
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        finishPromise.reject(errorMessage);
       }
     },
   };
@@ -108,12 +121,12 @@ export function createWebsocketEndpoint<Input>(input: {
   fastify: FastifyInstance;
   url: string;
   lockCommunication: (input: {
-    ctx: Exclude<Awaited<ReturnType<typeof authHelper>>, false>;
+    ctx: WebsocketAuthContext;
     input: Input;
 
     performCommunication(signals: AbortSignal[]): Promise<void>;
   }) => Promise<void>;
-  procedures: [AnyProcedure, (...args: any) => any][];
+  procedures: WebsocketProcedure[];
 }) {
   input.fastify.get(input.url, { websocket: true }, async (socket, req) => {
     const ctxReadyPromise = new Resolvable();
@@ -132,9 +145,9 @@ export function createWebsocketEndpoint<Input>(input: {
       });
 
       const abortController = new AbortController();
-      const originalCtx = createContext({
+      const originalCtx = await createContext({
         req,
-        res: null as any,
+        res: null as unknown as CreateFastifyContextOptions['res'],
         info: {
           accept: null,
           type: 'unknown',
@@ -146,7 +159,9 @@ export function createWebsocketEndpoint<Input>(input: {
         },
       });
 
-      const ctx = await authHelper({ ctx: originalCtx } as any);
+      const ctx = await authHelper({
+        ctx: originalCtx,
+      } as unknown as Parameters<typeof authHelper>[0]);
 
       if (!ctx) {
         sendErrorAndDisconnect(socket, 'Unauthorized.');
@@ -162,8 +177,8 @@ export function createWebsocketEndpoint<Input>(input: {
 
           void input
             .lockCommunication({
-              ctx: ctx as any,
-              input: input_,
+              ctx,
+              input: input_ as Input,
 
               async performCommunication(signals: AbortSignal[]) {
                 messageHandler.redlockSignals.push(...signals);
@@ -189,7 +204,7 @@ export function createWebsocketEndpoint<Input>(input: {
       });
 
       ctxReadyPromise.resolve();
-    } catch (error: any) {
+    } catch (error: unknown) {
       moduleLogger.error(error);
 
       sendErrorAndDisconnect(socket, String(error));

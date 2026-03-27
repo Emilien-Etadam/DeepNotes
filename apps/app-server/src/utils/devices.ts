@@ -1,5 +1,6 @@
-import type { DeviceRow } from '@deeplib/db';
+import type { Database, DeviceRow } from '@deeplib/db';
 import type { DataTransaction } from '@stdlib/data';
+import type { Insertable, Transaction } from 'kysely';
 import { nanoid } from 'nanoid';
 import { db } from 'src/data/knex';
 import { getDeviceHash } from 'src/utils/crypto';
@@ -17,7 +18,8 @@ export async function getUserDevice(input: {
     userId: input.userId,
   });
 
-  const executor = (input.dtrx?.trx ?? db) as any;
+  const executor: typeof db | Transaction<Database> =
+    (input.dtrx?.trx as Transaction<Database> | undefined) ?? db;
 
   let device = await executor
     .selectFrom('devices')
@@ -34,7 +36,7 @@ export async function getUserDevice(input: {
         user_id: input.userId,
         hash: deviceHash,
         trusted: false,
-      } as any)
+      } satisfies Insertable<Database['devices']>)
       .returningAll()
       .executeTakeFirst();
     if (inserted == null) throw new Error('Insert device failed');

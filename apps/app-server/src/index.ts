@@ -5,11 +5,11 @@ import { mainLogger } from '@stdlib/misc';
 
 import { fastify } from './fastify/server';
 
-void fastify().then(async (fastify) => {
-  await fastify.listen({
-    port: Number.parseInt(process.env.APP_SERVER_PORT ?? '3000', 10),
-    host: '0.0.0.0',
-  });
+const app = fastify();
 
-  mainLogger.info(`app-server started on port ${process.env.APP_SERVER_PORT}`);
+await app.listen({
+  port: Number.parseInt(process.env.APP_SERVER_PORT ?? '3000', 10),
+  host: '0.0.0.0',
 });
+
+mainLogger.info(`app-server started on port ${process.env.APP_SERVER_PORT}`);

@@ -185,6 +185,7 @@ async function _updatePageBacklink(input: {
         dataAbstraction: input.dataAbstraction,
       });
     } catch (error) {
+      mainLogger.error(error);
       // Ignore error: Page doesn't need to exist for bump to succeed
     }
   }
@@ -198,6 +199,7 @@ async function _updatePageLastActivityDate(input: { pageId: string }) {
       .where('id', '=', input.pageId)
       .execute();
   } catch (error) {
+    mainLogger.error(error);
     // Ignore error: Page doesn't need to exist for bump to succeed
   }
 }
@@ -214,6 +216,7 @@ async function _updateGroupLastActivityDate(input: {
         .where('user_id', '=', input.userId)
         .execute();
     } catch (error) {
+      mainLogger.error(error);
       // Ignore error: Page doesn't need to exist for bump to succeed
     }
   }

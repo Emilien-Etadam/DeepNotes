@@ -48,7 +48,7 @@ export async function generateRecoveryCodes({
 
         // Generate recovery codes
 
-        const recoveryCodes = Array(6)
+        const recoveryCodes = new Array(6)
           .fill(null)
           .map(() => sodium.to_hex(sodium.randombytes_buf(16)));
         // Save recovery codes

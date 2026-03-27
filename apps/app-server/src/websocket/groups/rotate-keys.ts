@@ -1,5 +1,6 @@
 import { isNanoID } from '@stdlib/misc';
 import type Fastify from 'fastify';
+import { TRPCError } from '@trpc/server';
 import { type InferProcedureInput, type InferProcedureOpts, authProcedure } from 'src/trpc/helpers';
 import { getGroupKeyRotationValues, groupKeyRotationSchema, rotateGroupKeys } from 'src/utils/group-key-rotation';
 import { createWebsocketEndpoint } from 'src/utils/websocket-endpoints';
@@ -16,6 +17,8 @@ export const rotateKeysProcedureStep1 =
 const baseProcedureStep2 = authProcedure.input(groupKeyRotationSchema);
 export const rotateKeysProcedureStep2 =
   baseProcedureStep2.mutation(rotateKeysStep2);
+
+const pendingGroupIdBySession = new Map<string, string>();
 
 export function registerGroupsRotateKeys(fastify: ReturnType<typeof Fastify>) {
   createWebsocketEndpoint<InferProcedureInput<typeof baseProcedureStep1>>({
@@ -40,7 +43,7 @@ export async function rotateKeysStep1({
   ctx,
   input,
 }: InferProcedureOpts<typeof baseProcedureStep1>) {
-  (ctx as any).groupId = input.groupId;
+  pendingGroupIdBySession.set(ctx.sessionId, input.groupId);
 
   // Check sufficient permissions
 
@@ -57,13 +60,24 @@ export async function rotateKeysStep2({
   ctx,
   input,
 }: InferProcedureOpts<typeof baseProcedureStep2>) {
-  return await ctx.dataAbstraction.transaction(async (dtrx) => {
-    return await rotateGroupKeys({
-      ...input,
+  const groupId = pendingGroupIdBySession.get(ctx.sessionId);
 
-      groupId: (ctx as any).groupId,
-
-      dtrx,
+  if (groupId == null) {
+    throw new TRPCError({
+      code: 'BAD_REQUEST',
+      message: 'Missing groupId from step 1.',
     });
+  }
+
+  return await ctx.dataAbstraction.transaction(async (dtrx) => {
+    try {
+      return await rotateGroupKeys({
+        ...input,
+        groupId,
+        dtrx,
+      });
+    } finally {
+      pendingGroupIdBySession.delete(ctx.sessionId);
+    }
   });
 }

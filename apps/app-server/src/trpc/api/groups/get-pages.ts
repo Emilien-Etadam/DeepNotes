@@ -1,4 +1,5 @@
 import { isNanoID } from '@stdlib/misc';
+import { TRPCError } from '@trpc/server';
 import { once } from 'lodash';
 import { type InferProcedureOpts, optionalAuthProcedure } from 'src/trpc/helpers';
 import { z } from 'zod';
@@ -18,6 +19,13 @@ export async function getPages({
   ctx,
   input,
 }: InferProcedureOpts<typeof baseProcedure>) {
+  if (ctx.userId == null) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Authorization required.',
+    });
+  }
+
   await ctx.assertSufficientGroupPermissions({
     userId: ctx.userId,
     groupId: input.groupId,
