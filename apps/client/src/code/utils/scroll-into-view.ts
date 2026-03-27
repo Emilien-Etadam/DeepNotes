@@ -78,9 +78,9 @@ export function scrollIntoView(
     ancestor = ancestor.parentElement;
   }
 
-  const pageElem = document.querySelector(
+  const pageElem = document.querySelector<HTMLElement>(
     `.display-screens[data-page-id="${internals.pages.react.pageId}"]`,
-  ) as HTMLElement;
+  );
   const pageRect = pageElem.getBoundingClientRect();
 
   const targetCenter = new Vec2(
@@ -95,7 +95,7 @@ export function scrollIntoView(
   const cameraStartPos = internals.pages.react.page.camera.react.pos;
   const cameraEndPos = cameraStartPos.add(targetCenter.sub(pageCenter));
 
-  const duration = params?.animate !== false ? 400 : 0.0001;
+  const duration = params?.animate === false ? 0.0001 : 400;
   const startTime = Date.now();
   const endTime = startTime + duration;
 

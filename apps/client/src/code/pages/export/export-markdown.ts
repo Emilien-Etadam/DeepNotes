@@ -1,10 +1,10 @@
+import type { Y } from '@syncedstore/core';
 import { yXmlFragmentToProseMirrorRootNode } from 'y-prosemirror';
 
 import type { Page } from '../page';
 import type { PageArrow } from '../page/arrows/arrow';
 import type { PageNote } from '../page/notes/note';
 import { getPageTitle } from '../utils';
-import type { Y } from '@syncedstore/core';
 
 /** Noeud ProseMirror JSON (structure typique de y-prosemirror) */
 interface PMNode {
@@ -35,7 +35,10 @@ export function extractText(fragment: Y.XmlFragment): string {
   }
 }
 
-function nodesToMarkdown(nodes: PMNode[], listContext?: { kind: 'bullet' | 'ordered'; index: number }): string {
+function nodesToMarkdown(
+  nodes: PMNode[],
+  listContext?: { kind: 'bullet' | 'ordered'; index: number },
+): string {
   const lines: string[] = [];
   let orderedIndex = listContext?.kind === 'ordered' ? listContext.index : 0;
 
@@ -56,7 +59,7 @@ function nodesToMarkdown(nodes: PMNode[], listContext?: { kind: 'bullet' | 'orde
       }
       case 'bulletList': {
         const items = node.content ?? [];
-        items.forEach((item, i) => {
+        items.forEach((item, _i) => {
           const itemLines = listItemToMarkdown(item, 'bullet', 0);
           lines.push(...itemLines);
         });
@@ -72,7 +75,11 @@ function nodesToMarkdown(nodes: PMNode[], listContext?: { kind: 'bullet' | 'orde
         break;
       }
       case 'listItem': {
-        const itemLines = listItemToMarkdown(node, listContext?.kind ?? 'bullet', listContext?.index ?? orderedIndex++);
+        const itemLines = listItemToMarkdown(
+          node,
+          listContext?.kind ?? 'bullet',
+          listContext?.index ?? orderedIndex++,
+        );
         lines.push(...itemLines);
         break;
       }
@@ -117,7 +124,11 @@ function nodesToMarkdown(nodes: PMNode[], listContext?: { kind: 'bullet' | 'orde
   return lines.join('\n');
 }
 
-function listItemToMarkdown(item: PMNode, kind: 'bullet' | 'ordered', index: number): string[] {
+function listItemToMarkdown(
+  item: PMNode,
+  kind: 'bullet' | 'ordered',
+  index: number,
+): string[] {
   const lines: string[] = [];
   const prefix = kind === 'ordered' ? `${index}. ` : '- ';
   const content = item.content ?? [];
@@ -132,7 +143,9 @@ function listItemToMarkdown(item: PMNode, kind: 'bullet' | 'ordered', index: num
       subLines.split('\n').forEach((line) => lines.push('  ' + line));
     } else if (node.content) {
       const sub = nodesToMarkdown(node.content);
-      sub.split('\n').forEach((line) => lines.push((first ? prefix : '  ') + line));
+      sub
+        .split('\n')
+        .forEach((line) => lines.push((first ? prefix : '  ') + line));
       first = false;
     }
   }
@@ -149,7 +162,10 @@ function taskItemToMarkdown(node: PMNode): string[] {
   return [prefix + text];
 }
 
-function inlineContentToText(content: PMNode[] | undefined, preserveNewlines?: boolean): string {
+function inlineContentToText(
+  content: PMNode[] | undefined,
+  preserveNewlines?: boolean,
+): string {
   if (!content?.length) return '';
   const parts: string[] = [];
   for (const node of content) {
@@ -177,7 +193,9 @@ export function exportNote(note: PageNote, depth: number): string {
 
   const headFragment = note.react.collab.head?.value;
   const headText = headFragment ? extractText(headFragment).trim() : '';
-  const headLine = headText ? `${prefix} ${headText}` : `${prefix} (sans titre)`;
+  const headLine = headText
+    ? `${prefix} ${headText}`
+    : `${prefix} (sans titre)`;
 
   const bodyFragment = note.react.collab.body?.value;
   const bodyText = bodyFragment ? extractText(bodyFragment).trim() : '';
@@ -237,7 +255,10 @@ export function exportArrows(page: Page): string {
  */
 export function exportPageToMarkdown(page: Page): string {
   const titleResult = getPageTitle(page.id, { prefer: 'relative' });
-  const pageTitle = titleResult?.status === 'success' && titleResult?.text ? titleResult.text : 'Page';
+  const pageTitle =
+    titleResult?.status === 'success' && titleResult?.text
+      ? titleResult.text
+      : 'Page';
 
   const parts: string[] = [`# ${pageTitle}`, ''];
 
@@ -251,5 +272,8 @@ export function exportPageToMarkdown(page: Page): string {
     parts.push(connections);
   }
 
-  return parts.join('\n').replaceAll(/\n{3,}/g, '\n\n').trim();
+  return parts
+    .join('\n')
+    .replaceAll(/\n{3,}/g, '\n\n')
+    .trim();
 }

@@ -46,8 +46,10 @@ const getRegex = (
   disableRegex: boolean,
   caseSensitive: boolean,
 ): RegExp => {
-  return RegExp(
-    disableRegex ? s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') : s,
+  return new RegExp(
+    disableRegex
+      ? s.replaceAll(/[-/\\^$*+?.()|[\]{}]/g, String.raw`\$&`)
+      : s,
     caseSensitive ? 'gu' : 'gui',
   );
 };

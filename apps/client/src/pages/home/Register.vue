@@ -39,7 +39,6 @@
           filled
           stack-label
           label-color="grey-5"
-          autocomplete="username"
           v-model="userName"
           :maxlength="maxNameLength"
         >
@@ -69,7 +68,6 @@
         <EvaluatedPasswordField
           label="Password"
           stack-label
-          autocomplete="new-password"
           v-model="password"
         />
 
@@ -78,7 +76,6 @@
         <PasswordField
           label="Repeat password"
           stack-label
-          autocomplete="new-password"
           v-model="repeatPassword"
         />
 
@@ -213,7 +210,14 @@ async function register() {
 
     internals.sessionStorage.setItem('email', email.value);
 
-    if (process.env.SEND_EMAILS !== 'false') {
+    if (process.env.SEND_EMAILS === 'false') {
+      $quasar().notify({
+        message: 'User registered successfully.',
+        type: 'positive',
+      });
+
+      await router().push({ name: 'login' });
+    } else {
       $quasar().notify({
         message: 'Verification email sent.',
         type: 'positive',
@@ -223,13 +227,6 @@ async function register() {
         name: 'finish-registration',
         query: route().value.query,
       });
-    } else {
-      $quasar().notify({
-        message: 'User registered successfully.',
-        type: 'positive',
-      });
-
-      await router().push({ name: 'login' });
     }
   } catch (error: any) {
     handleError(error);

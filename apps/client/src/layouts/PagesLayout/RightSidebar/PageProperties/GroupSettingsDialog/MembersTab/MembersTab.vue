@@ -243,7 +243,8 @@ async function removeSelectedUsers() {
         });
 
         numSuccess++;
-      } catch (_error) {
+      } catch (error) {
+        console.error(error);
         numFailed++;
       }
     }

@@ -211,11 +211,19 @@ export class NoteDragging {
       );
 
       this.page.collab.doc.transact(() => {
+        const activeElemPrevCenter = prevCenters.get(activeElem.id);
+        if (activeElemPrevCenter == null) {
+          return;
+        }
+
         for (const selectedNote of this.page.selection.react.notes) {
           const worldPos = this.page.pos.clientToWorld(this.initialPointerPos);
-          const mouseOffset = worldPos.sub(prevCenters.get(activeElem.id)!);
+          const mouseOffset = worldPos.sub(activeElemPrevCenter);
 
-          const prevCenter = prevCenters.get(selectedNote.id)!;
+          const prevCenter = prevCenters.get(selectedNote.id);
+          if (prevCenter == null) {
+            continue;
+          }
 
           const worldRect = selectedNote.getWorldRect('note-frame');
 

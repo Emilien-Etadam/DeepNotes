@@ -1,7 +1,7 @@
 import { isNanoID, type Rect, type Vec2 } from '@stdlib/misc';
 import { once } from 'lodash';
 import type { ComputedRef, UnwrapRef, WritableComputedRef } from 'vue';
-import { z, type ZodType } from 'zod';
+import { z } from 'zod';
 
 import type { PageArrow } from '../arrows/arrow';
 import type { PageElem } from '../elems/elem';
@@ -29,8 +29,8 @@ export type IRegionCollabOutput = z.output<ReturnType<typeof IRegionCollab>>;
 
 export const IRegionElems = once(() =>
   z.object({
-    notes: (z.any() as ZodType<PageNote>).array().default([]),
-    arrows: (z.any() as ZodType<PageArrow>).array().default([]),
+    notes: z.custom<PageNote>().array().default([]),
+    arrows: z.custom<PageArrow>().array().default([]),
   }),
 );
 export type IRegionElemsInput = z.input<ReturnType<typeof IRegionElems>>;
@@ -88,32 +88,38 @@ export function getIslandRoot(region: PageRegion): PageRegion {
 export function getIslandRegions(region: PageRegion): Set<PageRegion> {
   if (region.react.islandRoot !== region) {
     return region.react.islandRoot.react.islandRegions;
-  } else {
-    const regionStack = [region];
+  }
 
-    const islandRegions = new Set<PageRegion>();
+  const regionStack = [region];
+  const islandRegions = new Set<PageRegion>();
 
-    while (regionStack.length > 0) {
-      const region = regionStack.pop()!;
+  while (regionStack.length > 0) {
+    const currentRegion = regionStack.pop();
 
-      if (islandRegions.has(region)) {
-        continue;
-      }
+    if (currentRegion == null || islandRegions.has(currentRegion)) {
+      continue;
+    }
 
-      islandRegions.add(region);
+    islandRegions.add(currentRegion);
 
-      for (const note of region.react.notes) {
-        if (
-          !note.react.collab.container.enabled ||
-          (!note.react.container.spatial && note.react.container.overflow)
-        ) {
-          continue;
-        }
-
+    for (const note of currentRegion.react.notes) {
+      if (shouldTraverseToChildIslandRegion(note)) {
         regionStack.push(note);
       }
     }
-
-    return islandRegions;
   }
+
+  return islandRegions;
+}
+
+function shouldTraverseToChildIslandRegion(note: PageNote): boolean {
+  if (!note.react.collab.container.enabled) {
+    return false;
+  }
+
+  if (!note.react.container.spatial && note.react.container.overflow) {
+    return false;
+  }
+
+  return true;
 }

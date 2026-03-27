@@ -6,6 +6,8 @@ import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
 import { processGroupKeyRotationValues } from '../key-rotation';
 
+function noopStep3(_input: unknown) {}
+
 export async function makeGroupPrivate(input: { groupId: string }) {
   const { promise } = createWebsocketRequest({
     url: `${process.env.APP_SERVER_URL.replaceAll(
@@ -13,7 +15,7 @@ export async function makeGroupPrivate(input: { groupId: string }) {
       'ws',
     )}/groups.privacy.makePrivate`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   async function step1(): Promise<
@@ -34,12 +36,6 @@ export async function makeGroupPrivate(input: { groupId: string }) {
 
       groupIsPublic: false,
     });
-  }
-
-  async function step3(
-    _input: (typeof makePrivateProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

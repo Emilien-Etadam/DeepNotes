@@ -42,7 +42,7 @@ export const groupNames = once(() =>
       }
 
       const [accessKeyring, groupEncryptedName] = await Promise.all([
-        groupAccessKeyrings()(groupId!).getAsync(),
+        groupAccessKeyrings()(groupId).getAsync(),
 
         internals.realtime.globalCtx.hgetAsync(
           'group',
@@ -77,7 +77,8 @@ export const groupNames = once(() =>
         _getLogger.info(`${groupId}: ${groupName}`);
 
         return { status: 'success', text: groupName };
-      } catch (_error) {
+      } catch (error) {
+        mainLogger.error(error);
         _getLogger.info(`${groupId}: Failed to decrypt group name`);
 
         return { status: 'success', text: `[Group ${groupId}]` };

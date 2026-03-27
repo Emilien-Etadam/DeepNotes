@@ -638,9 +638,9 @@ export class PageNote extends PageElem() implements IPageRegion {
       this.react.collab.zIndex = destRegion.react.nextZIndex++;
 
       destRegion.react.collab.noteIds.splice(
-        afterId != null
-          ? destRegion.react.collab.noteIds.indexOf(afterId) + 1
-          : 0,
+        afterId == null
+          ? 0
+          : destRegion.react.collab.noteIds.indexOf(afterId) + 1,
         0,
         this.id,
       );
@@ -662,7 +662,7 @@ export class PageNote extends PageElem() implements IPageRegion {
         this.react.collab.noteIds.length,
       );
 
-      this.react.collab.noteIds.push(...children.reverse());
+      this.react.collab.noteIds.push(...children.toReversed());
     });
   }
 }

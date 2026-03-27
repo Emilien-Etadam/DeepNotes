@@ -44,7 +44,7 @@ export type SettledAwaited<T extends readonly any[]> = {
   [K in keyof T]: T[K] extends PromiseLike<infer U> ? U | undefined : T[K];
 };
 
-export type ClassType<T = any> = { new (...args: any[]): T };
+export type ClassType<T = any> = new (...args: any[]) => T;
 
 export type Constructor<T extends abstract new (...args: any) => any> = new (
   ...params: ConstructorParameters<T>

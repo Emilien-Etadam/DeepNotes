@@ -102,12 +102,13 @@ export class PageSelection {
         this.react[`${elem.type}Set`][elem.id] = true;
 
         if (elem.type === 'note') {
-          (elem as PageNote).bringToTop();
+          elem.bringToTop();
         }
       }
 
-      if (this.page.activeElem.react.value !== elems.at(-1)) {
-        this.page.activeElem.set(elems.at(-1)!);
+      const lastElem = elems.at(-1);
+      if (this.page.activeElem.react.value !== lastElem) {
+        this.page.activeElem.set(lastElem ?? null);
       }
     });
   }
@@ -210,14 +211,14 @@ export class PageSelection {
   ) {
     this.page.collab.doc.transact(() => {
       const editor = this.page.editing.react.editor;
-      if (editor != null) {
-        chainFunc(editor.chain().focus(), editor).run();
-      } else {
+      if (editor == null) {
         for (const elem of this.react.elems) {
           for (const ed of elem.react.editors) {
             chainFunc(ed.chain().selectAll(), ed).run();
           }
         }
+      } else {
+        chainFunc(editor.chain().focus(), editor).run();
       }
     });
   }
@@ -250,27 +251,29 @@ export class PageSelection {
   }
 
   async copy() {
-    if (this.page.editing.react.editor != null) {
+    if (this.page.editing.react.editor == null) {
+      await this.page.clipboard.copy();
+    } else {
       const state = this.page.editing.react.editor.view.state;
 
       await setClipboardText(
         state.doc.cut(state.selection.from, state.selection.to).textContent,
       );
-    } else {
-      await this.page.clipboard.copy();
     }
   }
   async cut() {
-    if (this.page.editing.react.editor != null) {
+    if (this.page.editing.react.editor == null) {
+      await this.page.clipboard.cut();
+    } else {
       await this.copy();
 
       this.page.editing.react.editor.commands.deleteSelection();
-    } else {
-      await this.page.clipboard.cut();
     }
   }
   async paste() {
-    if (this.page.editing.react.editor != null) {
+    if (this.page.editing.react.editor == null) {
+      await this.page.clipboard.paste();
+    } else {
       const text = await getClipboardText();
 
       if (text != null) {
@@ -281,8 +284,6 @@ export class PageSelection {
           .insertContent(text)
           .run();
       }
-    } else {
-      await this.page.clipboard.paste();
     }
   }
 

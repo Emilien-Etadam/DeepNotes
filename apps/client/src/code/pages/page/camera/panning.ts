@@ -26,7 +26,7 @@ export class PagePanning {
     });
   }
 
-  private _update = (event: PointerEvent) => {
+  private readonly _update = (event: PointerEvent) => {
     this.react.active = true;
 
     const clientPos = this.page.pos.eventToClient(event);
@@ -40,7 +40,7 @@ export class PagePanning {
     this.page.fixDisplay();
   };
 
-  private _finish = () => {
+  private readonly _finish = () => {
     // setTimeout necessary to prevent middle-click link opening
 
     setTimeout(() => {

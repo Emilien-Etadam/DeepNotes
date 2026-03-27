@@ -97,11 +97,11 @@ export async function login(input: {
     type: 'positive',
   });
 
-  if (route().value.query.redirect != null) {
+  if (route().value.query.redirect == null) {
+    location.href = multiModePath('/pages');
+  } else {
     location.href = multiModePath(
       decodeURIComponent(route().value.query.redirect as string),
     );
-  } else {
-    location.href = multiModePath('/pages');
   }
 }

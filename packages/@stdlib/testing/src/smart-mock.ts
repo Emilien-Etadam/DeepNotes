@@ -19,10 +19,10 @@ export function createSmartMock(arg?: (() => any) | object): any {
 
   const proxy = new Proxy(obj, {
     apply(_target, thisArg, args) {
-      return obj.apply(thisArg, args as any);
+      return obj.apply(thisArg, args);
     },
     construct(target, args) {
-      return obj.apply(target, args as any);
+      return obj.apply(target, args);
     },
     defineProperty(target, propertyKey, attributes) {
       return Reflect.defineProperty(target, propertyKey, attributes);
@@ -33,10 +33,11 @@ export function createSmartMock(arg?: (() => any) | object): any {
     get(target, propertyKey, receiver) {
       if (!(propertyKey in target)) {
         if (propertyKey === 'then') {
-          (target as any)[propertyKey] = (onfulfilled: any) =>
-            Promise.resolve().then(onfulfilled);
+          Reflect.set(target, propertyKey, (onfulfilled: any) =>
+            Promise.resolve().then(onfulfilled),
+          );
         } else {
-          (target as any)[propertyKey] = createSmartMock();
+          Reflect.set(target, propertyKey, createSmartMock());
         }
       }
 

@@ -17,10 +17,11 @@ export function createSmartComputedDict<K = string, V = any>(params: {
 
         get: () => params.get(key),
         set: (value, valueRef) => {
-          if (params.set != null) {
-            return params.set(key, value);
+          if (params.set == null) {
+            valueRef.value = value;
+            return valueRef.value;
           } else {
-            return (valueRef.value = value);
+            return params.set(key, value);
           }
         },
       });

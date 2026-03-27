@@ -36,7 +36,8 @@ export class PageEditing {
 
       editor: computed(() => {
         if (this.react.elem?.type === 'note') {
-          return this.react.elem.react[this.react.section!].editor;
+          const section = this.react.section;
+          return section == null ? null : this.react.elem.react[section].editor;
         } else if (this.react.elem?.type === 'arrow') {
           return this.react.elem.react.editor;
         } else {

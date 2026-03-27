@@ -5,7 +5,6 @@ import type {
 import {
   createSymmetricKeyring,
   DataLayer,
-  type Keyring,
   type SymmetricKeyring,
   wrapSymmetricKey,
 } from '@stdlib/crypto';
@@ -21,6 +20,8 @@ import { createPageDoc } from 'src/code/pages/utils';
 import { asyncDialog } from 'src/code/utils/misc';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 import { zxcvbnAsync } from 'src/code/utils/zxcvbn';
+
+function noopStep3(_input: unknown) {}
 
 export async function movePage(input: {
   pageId: string;
@@ -48,7 +49,7 @@ export async function movePage(input: {
   const { promise } = createWebsocketRequest({
     url: `${process.env.APP_SERVER_URL.replaceAll('http', 'ws')}/pages.move`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   let destGroupContentKeyring: SymmetricKeyring | undefined;
@@ -60,7 +61,34 @@ export async function movePage(input: {
 
     let groupCreation: (typeof moveProcedureStep1)['_def']['_input_in']['groupCreation'];
 
-    if (input.groupCreation != null) {
+    if (input.groupCreation == null) {
+      destGroupId = input.destGroupId;
+
+      destGroupContentKeyring =
+        await groupContentKeyrings()(destGroupId).getAsync();
+
+      if (destGroupContentKeyring?.topLayer === DataLayer.Symmetric) {
+        const destGroupPassword = await asyncDialog<string>({
+          title: 'Destination group password',
+          message: 'Enter the destination group password:',
+          color: 'primary',
+          prompt: {
+            type: 'password',
+            model: '',
+            filled: true,
+          },
+          style: {
+            maxWidth: '350px',
+          },
+          cancel: true,
+        });
+
+        destGroupContentKeyring = await unlockGroupContentKeyring(
+          destGroupId,
+          destGroupPassword,
+        );
+      }
+    } else {
       if (input.groupCreation.groupName === '') {
         throw new Error('Please enter a group name.');
       }
@@ -118,8 +146,7 @@ export async function movePage(input: {
       const groupEncryptedContentKeyring =
         groupValues.encryptedContentKeyring.wrappedValue;
 
-      const groupPublicKeyring = (groupValues.keyPair.publicKey as Keyring)
-        .wrappedValue;
+      const groupPublicKeyring = groupValues.keyPair.publicKey.wrappedValue;
       const groupEncryptedPrivateKeyring =
         groupValues.encryptedPrivateKeyring.wrappedValue;
 
@@ -143,39 +170,11 @@ export async function movePage(input: {
 
         groupOwnerEncryptedName,
       };
-    } else {
-      destGroupId = input.destGroupId;
-
-      destGroupContentKeyring =
-        await groupContentKeyrings()(destGroupId).getAsync();
-
-      if (destGroupContentKeyring?.topLayer === DataLayer.Symmetric) {
-        const destGroupPassword = await asyncDialog<string>({
-          title: 'Destination group password',
-          message: 'Enter the destination group password:',
-          color: 'primary',
-          prompt: {
-            type: 'password',
-            model: '',
-            filled: true,
-          },
-          style: {
-            maxWidth: '350px',
-          },
-          cancel: true,
-        });
-
-        destGroupContentKeyring = await unlockGroupContentKeyring(
-          destGroupId,
-          destGroupPassword,
-        );
-      }
     }
 
     if (destGroupContentKeyring?.topLayer !== DataLayer.Raw) {
       throw new Error('Invalid group content keyring.');
     }
-
     return {
       pageId: input.pageId,
 
@@ -189,6 +188,11 @@ export async function movePage(input: {
   async function step2(
     input_: (typeof moveProcedureStep1)['_def']['_output_out'],
   ): Promise<(typeof moveProcedureStep2)['_def']['_input_in']> {
+    if (destGroupContentKeyring?.topLayer !== DataLayer.Raw) {
+      throw new Error('Invalid group content keyring.');
+    }
+    const validDestGroupContentKeyring = destGroupContentKeyring;
+
     const sourceGroupId = await internals.realtime.hget(
       'page',
       input.pageId,
@@ -206,7 +210,7 @@ export async function movePage(input: {
     const newPageKeyring = createSymmetricKeyring();
 
     const pageEncryptedSymmetricKeyring = newPageKeyring.wrapSymmetric(
-      destGroupContentKeyring!,
+      validDestGroupContentKeyring,
       {
         associatedData: {
           context: 'PageKeyring',
@@ -336,12 +340,6 @@ export async function movePage(input: {
       pageEncryptedUpdate,
       pageEncryptedSnapshots,
     };
-  }
-
-  async function step3(
-    _input: (typeof moveProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

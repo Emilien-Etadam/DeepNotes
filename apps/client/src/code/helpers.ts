@@ -13,16 +13,10 @@ function makeHelper<T>(
       return _value;
     }
 
-    if (value == null) {
-      value = helperFunc();
-    }
+    value ??= helperFunc();
 
-    if (value == null) {
-      value =
-        getCurrentInstance()?.appContext.app.config.globalProperties[
-          globalPropKey
-        ];
-    }
+    value ??=
+      getCurrentInstance()?.appContext.app.config.globalProperties[globalPropKey];
 
     if (value == null) {
       throw new Error(`Unable to load ${name}.`);
@@ -50,9 +44,7 @@ export function route(router_?: Router) {
 
   let route: Ref<RouteLocationNormalized> | undefined;
 
-  if (route == null) {
-    route = router(router_).currentRoute;
-  }
+  route ??= router(router_).currentRoute;
 
   if (route == null) {
     throw new Error('Unable to load route.');

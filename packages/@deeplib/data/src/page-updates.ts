@@ -44,7 +44,7 @@ export async function getAllPageUpdates(
       .select(['index', 'encrypted_data'])
       .execute()
   ).map<[number, Uint8Array]>((pageUpdate) => [
-    Number.parseInt(pageUpdate.index as any),
+    Number.parseInt(String(pageUpdate.index)),
     pageUpdate.encrypted_data,
   ]);
 

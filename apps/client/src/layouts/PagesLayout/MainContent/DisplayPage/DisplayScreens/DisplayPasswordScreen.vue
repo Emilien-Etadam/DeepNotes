@@ -15,7 +15,6 @@
   <q-form style="display: flex; flex-direction: column; width: 240px">
     <PasswordField
       placeholder="Password"
-      autocomplete="current-password"
       v-model="password"
     />
 

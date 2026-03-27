@@ -42,17 +42,16 @@ function createDefaultWrapSlimAux<T extends object>(root: T): WrapSlimAux {
   return { value: root };
 }
 
-function handleSetDefaultValue(
-  aux: WrapSlimAux,
-  key: string,
-): void {
+function handleSetDefaultValue(aux: WrapSlimAux, key: string): void {
   if (aux.value == null) return;
   if (!(key in aux.value)) return;
   delete aux.value[key];
   let curr: WrapSlimAux = aux;
   while (curr.prev != null && Object.keys(curr.value).length === 0) {
     curr.value = null;
-    delete curr.prev.value[curr.key!];
+    if (curr.key != null) {
+      delete curr.prev.value[curr.key];
+    }
     curr = curr.prev;
   }
 }
@@ -62,9 +61,10 @@ function restoreAuxPath(aux: WrapSlimAux, key: string, value: any) {
   let curr: WrapSlimAux = aux;
   while (true) {
     const prev = curr?.prev;
+    const currKey = curr.key;
     if (
       prev == null ||
-      (prev.value != null && curr.key! in prev.value)
+      (prev.value != null && currKey != null && currKey in prev.value)
     ) {
       break;
     }
@@ -74,8 +74,11 @@ function restoreAuxPath(aux: WrapSlimAux, key: string, value: any) {
   for (let i = path.length - 2; i >= 0; i--) {
     const prev = path[i + 1];
     const curr = path[i];
-    prev.value[curr.key!] = {};
-    curr.value = prev.value[curr.key!];
+    if (curr.key == null) {
+      continue;
+    }
+    prev.value[curr.key] = {};
+    curr.value = prev.value[curr.key];
   }
   aux.value[key] = value;
 }

@@ -74,8 +74,8 @@ export function usePageNavigationInterception() {
       event.preventDefault(); // Prevent default
 
       const matches =
-        href.match(
-          /\/(?:pages|groups)\/([\w-]{21})(?:\?(?:note|elem)=([\w-]{21}))?/,
+        /\/(?:pages|groups)\/([\w-]{21})(?:\?(?:note|elem)=([\w-]{21}))?/.exec(
+          href,
         ) ?? [];
 
       const id = matches[1];

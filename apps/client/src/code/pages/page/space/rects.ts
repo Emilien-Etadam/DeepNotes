@@ -17,7 +17,7 @@ export class PageRects {
     const elem = document.querySelector('.display-page');
 
     if (elem == null) {
-      throw 'No active display';
+      throw new Error('No active display');
     }
 
     const domClientRect = elem.getBoundingClientRect();

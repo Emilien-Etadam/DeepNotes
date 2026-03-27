@@ -8,6 +8,8 @@ import { groupNames } from 'src/code/pages/computed/group-names';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function changeUserRole(input: {
   groupId: string;
   patientId: string;
@@ -19,7 +21,7 @@ export async function changeUserRole(input: {
       'ws',
     )}/groups.changeUserRole`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   async function step1(): Promise<
@@ -84,12 +86,6 @@ export async function changeUserRole(input: {
         },
       }),
     };
-  }
-
-  async function step3(
-    _input: (typeof changeUserRoleProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

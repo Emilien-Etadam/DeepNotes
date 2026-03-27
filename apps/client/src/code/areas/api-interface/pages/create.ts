@@ -38,7 +38,33 @@ export async function createPage(input: {
     typeof trpcClient.pages.create.mutate
   >[0]['groupCreation'];
 
-  if (input.createGroup != null) {
+  if (input.createGroup == null) {
+    groupId = input.destGroupId;
+
+    groupContentKeyring = await groupContentKeyrings()(groupId).getAsync();
+
+    if (groupContentKeyring?.topLayer === DataLayer.Symmetric) {
+      const destGroupPassword = await asyncDialog<string>({
+        title: 'Destination group password',
+        message: 'Enter the destination group password:',
+        color: 'primary',
+        prompt: {
+          type: 'password',
+          model: '',
+          filled: true,
+        },
+        style: {
+          maxWidth: '350px',
+        },
+        cancel: true,
+      });
+
+      groupContentKeyring = await unlockGroupContentKeyring(
+        groupId,
+        destGroupPassword,
+      );
+    }
+  } else {
     if (input.createGroup.groupName === '') {
       throw new Error('Please enter a group name.');
     }
@@ -108,32 +134,6 @@ export async function createPage(input: {
         { padding: true },
       ),
     };
-  } else {
-    groupId = input.destGroupId;
-
-    groupContentKeyring = await groupContentKeyrings()(groupId).getAsync();
-
-    if (groupContentKeyring?.topLayer === DataLayer.Symmetric) {
-      const destGroupPassword = await asyncDialog<string>({
-        title: 'Destination group password',
-        message: 'Enter the destination group password:',
-        color: 'primary',
-        prompt: {
-          type: 'password',
-          model: '',
-          filled: true,
-        },
-        style: {
-          maxWidth: '350px',
-        },
-        cancel: true,
-      });
-
-      groupContentKeyring = await unlockGroupContentKeyring(
-        groupId,
-        destGroupPassword,
-      );
-    }
   }
 
   if (groupContentKeyring?.topLayer !== DataLayer.Raw) {

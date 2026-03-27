@@ -13,7 +13,10 @@
 
         <br />
 
-        <img src="/help/joining-group/request-access-screen.webp" />
+        <img
+          src="/help/joining-group/request-access-screen.webp"
+          alt="Request access screen"
+        />
       </li>
 
       <li>
@@ -21,7 +24,10 @@
 
         <br />
 
-        <img src="/help/joining-group/request-access-dialog.webp" />
+        <img
+          src="/help/joining-group/request-access-dialog.webp"
+          alt="Request access dialog"
+        />
       </li>
 
       <li>

@@ -24,6 +24,7 @@
               border: 1px solid rgba(255, 255, 255, 0.3);
             "
             src="/help/creating-group/create-new-page.webp"
+            alt="Create new page button"
           />
 
           <InlineGap style="width: 24px" />
@@ -34,6 +35,7 @@
               border: 1px solid rgba(255, 255, 255, 0.3);
             "
             src="/help/creating-group/create-with-options.webp"
+            alt="Create with options button"
           />
         </div>
 
@@ -52,6 +54,7 @@
               border: 1px solid rgba(255, 255, 255, 0.3);
             "
             src="/help/creating-group/new-page-dialog.webp"
+            alt="New page dialog"
           />
 
           <InlineGap style="width: 24px" />
@@ -62,6 +65,7 @@
               border: 1px solid rgba(255, 255, 255, 0.3);
             "
             src="/help/creating-group/new-page-dialog-group.webp"
+            alt="New group section in new page dialog"
           />
         </div>
 
@@ -79,6 +83,7 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
           "
           src="/help/creating-group/new-group.webp"
+          alt="Filled new group form"
         />
       </li>
     </ol>

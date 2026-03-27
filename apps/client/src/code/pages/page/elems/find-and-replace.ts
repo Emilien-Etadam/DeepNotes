@@ -53,16 +53,16 @@ export class PageFindAndReplace {
       const elemsWithRects = [...notes, ...arrows]
         .map((elem) => ({
           elem,
-          clientRect: elem.getClientRect()!,
+          clientRect: elem.getClientRect(),
         }))
         .filter((item) => item.clientRect != null);
 
       if (spatial) {
         elemsWithRects.sort((a, b) => {
-          if (a.clientRect.center.y !== b.clientRect.center.y) {
-            return a.clientRect.center.y - b.clientRect.center.y;
-          } else {
+          if (a.clientRect.center.y === b.clientRect.center.y) {
             return a.clientRect.center.x - b.clientRect.center.x;
+          } else {
+            return a.clientRect.center.y - b.clientRect.center.y;
           }
         });
       }
@@ -294,9 +294,9 @@ export class PageFindAndReplace {
 }
 
 function replaceText(editor: Editor, range: Range, replacement: string) {
-  if (replacement !== '') {
-    editor.commands.insertContentAt(range, replacement);
-  } else {
+  if (replacement === '') {
     editor.commands.deleteRange(range);
+  } else {
+    editor.commands.insertContentAt(range, replacement);
   }
 }

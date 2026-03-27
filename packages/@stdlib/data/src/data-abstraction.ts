@@ -260,7 +260,7 @@ export class DataAbstraction<
     field: DataField_,
     params?: HMGetParams,
   ) {
-    return (await this.hmget(prefix, suffix, [field], params))[0] as any;
+    return (await this.hmget(prefix, suffix, [field], params))[0];
   }
   async hmget<
     DataPrefix_ extends DataPrefix,
@@ -397,14 +397,14 @@ export class DataAbstraction<
       for (let i = 0; i < remainingFields.length; i++) {
         const field = remainingFields[i];
 
-        if (!field.infos?.dontCache && valueBuffers[i] != null) {
+        if (field.infos?.dontCache || valueBuffers[i] == null) {
+          missedFields.push(field);
+        } else {
           field.value = unpack(valueBuffers[i]!);
 
           classLogger
             .sub('hmget')
             .info(`${field.fullKey}: Found on remote cache (%o)`, field.value);
-        } else {
-          missedFields.push(field);
         }
       }
     } else {
@@ -470,14 +470,14 @@ export class DataAbstraction<
 
     await Promise.allSettled(
       remainingFields.map(async (field) => {
-        if (model != null) {
-          classLogger
-            .sub('hmget')
-            .info(`${field.fullKey}: Loaded from database`);
-        } else {
+        if (model == null) {
           classLogger
             .sub('hmget')
             .info(`${field.fullKey}: Not found on database`);
+        } else {
+          classLogger
+            .sub('hmget')
+            .info(`${field.fullKey}: Loaded from database`);
         }
 
         field.value =
@@ -749,7 +749,7 @@ export class DataAbstraction<
         infos: dataHash?.fields[field],
 
         value: value,
-        valueBuffer: Buffer.from(pack(value as any)),
+        valueBuffer: Buffer.from(pack(value)),
       }),
     );
 
@@ -859,7 +859,7 @@ export class DataAbstraction<
     this.addToTransaction(dtrx, () =>
       this.redis.hsetxx(
         key,
-        ...fields.map((field) => [field.name, field.valueBuffer]).flat(),
+        ...fields.flatMap((field) => [field.name, field.valueBuffer]),
       ),
     );
   }

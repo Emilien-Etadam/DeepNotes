@@ -4,7 +4,7 @@ export const YOUTUBE_REGEX_GLOBAL =
   /^(https?:\/\/)?(www\.|music\.)?(youtube\.com|youtu\.be)(?!.*\/channel\/)(?!\/@)(.+)?$/g;
 
 export const isValidYoutubeUrl = (url: string) => {
-  return url.match(YOUTUBE_REGEX);
+  return YOUTUBE_REGEX.exec(url);
 };
 
 export interface GetEmbedUrlOptions {
@@ -131,7 +131,8 @@ function buildPlayerParams(options: EmbedParamsOptions): string[] {
   if (options.enableIFrameApi) params.push('enablejsapi=1');
   if (options.loop) params.push('loop=1');
   if (options.modestBranding) params.push('modestbranding=1');
-  if (options.progressBarColor) params.push(`color=${options.progressBarColor}`);
+  if (options.progressBarColor)
+    params.push(`color=${options.progressBarColor}`);
   return params;
 }
 
@@ -141,7 +142,8 @@ function buildContentParams(options: EmbedParamsOptions): string[] {
   if (options.ccLoadPolicy) params.push('cc_load_policy=1');
   if (options.endTime) params.push(`end=${options.endTime}`);
   if (options.interfaceLanguage) params.push(`hl=${options.interfaceLanguage}`);
-  if (options.ivLoadPolicy) params.push(`iv_load_policy=${options.ivLoadPolicy}`);
+  if (options.ivLoadPolicy)
+    params.push(`iv_load_policy=${options.ivLoadPolicy}`);
   if (options.origin) params.push(`origin=${options.origin}`);
   if (options.playlist) params.push(`playlist=${options.playlist}`);
   if (options.startAt) params.push(`start=${options.startAt}`);

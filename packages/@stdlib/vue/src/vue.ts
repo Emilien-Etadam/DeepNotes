@@ -9,7 +9,8 @@ export function refProp<T>(obj: object, key: string, value: T): UnwrapRef<T> {
       return aux.value;
     },
     set(value) {
-      return (aux.value = value);
+      aux.value = value;
+      return aux.value;
     },
   });
 
@@ -24,7 +25,8 @@ export function shallowRefProp<T>(obj: object, key: string, value: T): T {
       return aux.value;
     },
     set(value) {
-      return (aux.value = value);
+      aux.value = value;
+      return aux.value;
     },
   });
 
@@ -32,8 +34,14 @@ export function shallowRefProp<T>(obj: object, key: string, value: T): T {
 }
 
 export class RawObject {
+  readonly isRawObject = true;
+
   constructor() {
-    return markRaw(this);
+    markRaw(this);
+  }
+
+  asRawObject() {
+    return this;
   }
 }
 

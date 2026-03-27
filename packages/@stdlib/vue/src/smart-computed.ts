@@ -54,10 +54,11 @@ export function createSmartComputed<T>(params: {
       return valueRef.value;
     },
     set: (value: T) => {
-      if (params.set != null) {
-        return params.set?.(value, valueRef);
+      if (params.set == null) {
+        valueRef.value = value;
+        return valueRef.value;
       } else {
-        return (valueRef.value = value);
+        return params.set?.(value, valueRef);
       }
     },
   };

@@ -132,19 +132,14 @@
 <script setup lang="ts">
 import { rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
-import { deletePage } from 'src/code/areas/api-interface/pages/deletion/delete';
-import { deletePagePermanently } from 'src/code/areas/api-interface/pages/deletion/delete-permanently';
-import { movePage } from 'src/code/areas/api-interface/pages/move';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
 import { getPageTitle } from 'src/code/pages/utils';
-import { asyncDialog, handleError } from 'src/code/utils/misc';
+import { handleError } from 'src/code/utils/misc';
 import CustomInfiniteScroll from 'src/components/CustomInfiniteScroll.vue';
-import DeletionDialog from 'src/components/DeletionDialog.vue';
 import { pageSelectionStore } from 'src/stores/page-selection';
 import type { Ref } from 'vue';
 
-import MovePageDialog from '../../MovePageDialog.vue';
+import { usePageList } from '../../../../usePageList';
 
 const dialog = inject<Ref<InstanceType<typeof CustomDialog>>>('dialog')!;
 
@@ -209,140 +204,10 @@ async function goToPage(pageId: string) {
   dialog.value.onDialogOK();
 }
 
-async function movePages() {
-  try {
-    const movePageParams: Parameters<typeof movePage>[0] = await asyncDialog({
-      component: MovePageDialog,
-
-      componentProps: {
-        groupId,
-      },
-    });
-
-    const notif = $quasar().notify({
-      group: false,
-      timeout: 0,
-      message: 'Moving pages...',
-    });
-
-    const selectedPageIds = finalSelectedPageIds.value.slice();
-
-    let numSuccess = 0;
-    let numFailed = 0;
-
-    for (const [index, pageId] of selectedPageIds.entries()) {
-      try {
-        notif({
-          caption: `${index} of ${selectedPageIds.length}`,
-        });
-
-        await movePage({
-          ...movePageParams,
-
-          pageId,
-        });
-
-        numSuccess++;
-      } catch (_error) {
-        numFailed++;
-      }
-    }
-
-    let notifUpdateOptions: QNotifyUpdateOptions = {
-      timeout: undefined,
-      caption: undefined,
-    };
-
-    if (numFailed === 0) {
-      notifUpdateOptions = {
-        ...notifUpdateOptions,
-        message: `Page${pluralS(numSuccess)} moved successfully.`,
-        color: 'positive',
-      };
-    } else {
-      notifUpdateOptions = {
-        ...notifUpdateOptions,
-        message: `${numSuccess > 0 ? numSuccess : 'No'} page${
-          numSuccess === 1 ? ' was' : 's were'
-        } moved successfully.<br/>Failed to move ${numFailed} page${pluralS(
-          numFailed,
-        )}.`,
-        color: 'negative',
-        html: true,
-      };
-    }
-
-    notif(notifUpdateOptions);
-  } catch (_error) {
-    handleError(_error);
-  }
-}
-
-async function deletePages() {
-  try {
-    const { deletePermanently } = await asyncDialog({
-      component: DeletionDialog,
-      componentProps: { subject: 'pages' },
-    });
-
-    const notif = $quasar().notify({
-      group: false,
-      timeout: 0,
-      message: 'Deleting pages...',
-    });
-
-    const selectedPageIds = finalSelectedPageIds.value.slice();
-
-    let numSuccess = 0;
-    let numFailed = 0;
-
-    for (const [index, pageId] of selectedPageIds.entries()) {
-      try {
-        notif({
-          caption: `${index} of ${selectedPageIds.length}`,
-        });
-
-        if (deletePermanently) {
-          await deletePagePermanently(pageId);
-        } else {
-          await deletePage(pageId);
-        }
-
-        numSuccess++;
-      } catch (_error) {
-        numFailed++;
-      }
-    }
-
-    let notifUpdateOptions: QNotifyUpdateOptions = {
-      timeout: undefined,
-      caption: undefined,
-    };
-
-    if (numFailed === 0) {
-      notifUpdateOptions = {
-        ...notifUpdateOptions,
-        message: `Page${pluralS(numSuccess)} deleted successfully.`,
-        color: 'positive',
-      };
-    } else {
-      notifUpdateOptions = {
-        ...notifUpdateOptions,
-        message: `${numSuccess > 0 ? numSuccess : 'No'} page${
-          numSuccess === 1 ? ' was' : 's were'
-        } deleted successfully.<br/>Failed to delete ${numFailed} page${pluralS(
-          numFailed,
-        )}.`,
-        color: 'negative',
-        html: true,
-      };
-    }
-
-    notif(notifUpdateOptions);
-  } catch (_error) {
-    handleError(_error);
-  }
-}
+const { movePages, deletePages } = usePageList({
+  getSelectedPageIds: () => finalSelectedPageIds.value,
+  getGroupId: () => groupId,
+});
 
 function addToSelection() {
   for (const selectedPageId of finalSelectedPageIds.value) {

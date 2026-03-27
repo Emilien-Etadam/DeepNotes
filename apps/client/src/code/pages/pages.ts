@@ -24,7 +24,7 @@ export interface IAppReact {
   favoritePageIdsOverride?: string[];
   favoritePageIds: ComputedRef<string[]>;
 
-  page: ShallowRef<Page>;
+  page: ShallowRef<Page | null>;
   pageId: ComputedRef<string | undefined>;
   pageIndex: ComputedRef<number>;
 
@@ -94,7 +94,7 @@ export class Pages {
         return this.react.favoritePageIdsOverride ?? favoritePageIds ?? [];
       }),
 
-      page: shallowRef(null) as any,
+      page: shallowRef<Page | null>(null),
       pageId: computed(() => this.react.page?.id),
       pageIndex: computed(() =>
         this.react.pathPageIds.indexOf(this.react.pageId ?? ''),
@@ -194,16 +194,15 @@ export class Pages {
   }
 
   async updateCurrentPath(pageId: string, parentPageId?: string) {
-    if (this.react.pathPageIds.find((pathPageId) => pathPageId === pageId)) {
+    if (this.react.pathPageIds.includes(pageId)) {
       // New page exists in path
       // Do nothing
 
       return;
     }
 
-    const parentPageIndex = this.react.pathPageIds.findIndex(
-      (pagePageId) => pagePageId === parentPageId,
-    );
+    const parentPageIndex =
+      parentPageId == null ? -1 : this.react.pathPageIds.indexOf(parentPageId);
 
     if (parentPageIndex >= 0) {
       // Parent page exists in path
@@ -257,10 +256,9 @@ export class Pages {
     // Open in a new tab
 
     if (params?.openInNewTab) {
+      const elemQuery = params?.elemId == null ? '' : `?elem=${params.elemId}`;
       globalThis.open(
-        multiModePath(
-          `/pages/${pageId}${params?.elemId ? `?elem=${params?.elemId}` : ''}`,
-        ),
+        multiModePath(`/pages/${pageId}${elemQuery}`),
         '_blank',
       );
       return;
@@ -322,24 +320,32 @@ export class Pages {
   }
 
   async goBackward() {
-    const pageIndex = this.react.pathPageIds.indexOf(this.react.pageId!);
+    const currentPageId = this.react.pageId;
+    if (currentPageId == null) {
+      return;
+    }
+    const pageIndex = this.react.pathPageIds.indexOf(currentPageId);
 
     if (pageIndex > 0) {
       await this.goToPage(
         this.react.pathPageIds[
-          this.react.pathPageIds.indexOf(this.react.pageId!) - 1
+          this.react.pathPageIds.indexOf(currentPageId) - 1
         ],
       );
     }
   }
 
   async goForward() {
-    const pageIndex = this.react.pathPageIds.indexOf(this.react.pageId!);
+    const currentPageId = this.react.pageId;
+    if (currentPageId == null) {
+      return;
+    }
+    const pageIndex = this.react.pathPageIds.indexOf(currentPageId);
 
     if (pageIndex < this.react.pathPageIds.length - 1) {
       await this.goToPage(
         this.react.pathPageIds[
-          this.react.pathPageIds.indexOf(this.react.pageId!) + 1
+          this.react.pathPageIds.indexOf(currentPageId) + 1
         ],
       );
     }

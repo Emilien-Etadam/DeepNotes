@@ -15,7 +15,7 @@ export const list: DataField<PageLinkModel[]> = {
     ),
 
   get: ({ model }) =>
-    model != null
-      ? model.map((backlinkPage) => backlinkPage.source_page_id)
-      : undefined,
+    model == null
+      ? undefined
+      : model.map((backlinkPage) => backlinkPage.source_page_id),
 };

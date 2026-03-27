@@ -6,6 +6,8 @@ import { createPrivateKeyring, createSymmetricKeyring } from '@stdlib/crypto';
 import { deriveUserValues } from 'src/code/crypto';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function changeEmail(input: {
   newEmail: string;
   password: string;
@@ -18,7 +20,7 @@ export async function changeEmail(input: {
       'ws',
     )}/users.account.emailChange.finish`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   function step1(): (typeof finishProcedureStep1)['_def']['_input_in'] {
@@ -74,12 +76,6 @@ export async function changeEmail(input: {
       newEncryptedSymmetricKeyring,
       newEncryptedPrivateKeyring,
     };
-  }
-
-  async function step3(
-    _input: (typeof finishProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

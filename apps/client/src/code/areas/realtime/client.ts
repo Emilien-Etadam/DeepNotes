@@ -223,7 +223,7 @@ export const RealtimeClient = once(
         }
       }
 
-      private _flushHSetBuffer = throttle(
+      private readonly _flushHSetBuffer = throttle(
         () => {
           this._logger.sub('_flushHSetBuffer').info(this._hsetBuffer.entries());
 
@@ -378,17 +378,16 @@ export const RealtimeClient = once(
             .info(`${fullKey}: %o`, value);
         }
       }
-      private _resubscribeAfterGroupMemberRoleChange(groupId: string, suffix: string) {
+      private _resubscribeAfterGroupMemberRoleChange(
+        groupId: string,
+        suffix: string,
+      ) {
         this._resubscribe('group', groupId, 'encrypted-content-keyring');
         this._resubscribe('group', groupId, 'encrypted-name');
         this._resubscribe('group', groupId, 'encrypted-private-keyring');
         this._resubscribe('group', groupId, 'permanent-deletion-date');
 
-        this._resubscribe(
-          'group-join-invitation',
-          suffix,
-          'encrypted-name',
-        );
+        this._resubscribe('group-join-invitation', suffix, 'encrypted-name');
         this._resubscribe('group-join-invitation', suffix, 'exists');
         this._resubscribe('group-join-invitation', suffix, 'role');
 
@@ -411,11 +410,7 @@ export const RealtimeClient = once(
 
             this._resubscribe('page', pageId, 'encrypted-absolute-title');
             this._resubscribe('page', pageId, 'encrypted-relative-title');
-            this._resubscribe(
-              'page',
-              pageId,
-              'encrypted-symmetric-keyring',
-            );
+            this._resubscribe('page', pageId, 'encrypted-symmetric-keyring');
 
             this._resubscribe('page', pageId, 'permanent-deletion-date');
 

@@ -32,7 +32,7 @@ export const PageWebsocket = once(
       private readonly _updateBuffer: Uint8Array[] = [];
 
       private _updateId = 0;
-      private _unackedUpdates = new Map<number, Uint8Array>();
+      private readonly _unackedUpdates = new Map<number, Uint8Array>();
 
       private _localAwarenessEnabled = false;
 
@@ -149,7 +149,7 @@ export const PageWebsocket = once(
 
       // Document update handling
 
-      private _handleDocUpdate = (update: Uint8Array, origin: any) => {
+      private readonly _handleDocUpdate = (update: Uint8Array, origin: any) => {
         if (origin === this) {
           return;
         }
@@ -172,7 +172,7 @@ export const PageWebsocket = once(
       }) {
         let pageKeyring = pageKeyrings()(
           `${this.page.react.groupId}:${this.page.id}`,
-        ).get()!;
+        ).get();
 
         if (pageKeyring == null) {
           return;
@@ -205,7 +205,11 @@ export const PageWebsocket = once(
 
           const groupContentKeyring = groupContentKeyrings()(
             this.page.react.groupId,
-          ).get()!;
+          ).get();
+
+          if (groupContentKeyring == null) {
+            return;
+          }
 
           encoding.writeVarUint8Array(
             encoder,
@@ -360,7 +364,7 @@ export const PageWebsocket = once(
 
         const pageKeyring = pageKeyrings()(
           `${this.page.react.groupId}:${this.page.id}`,
-        ).get()!;
+        ).get();
 
         if (pageKeyring == null) {
           return;
@@ -385,7 +389,7 @@ export const PageWebsocket = once(
 
         ++this._updateId;
       }
-      private _sendDocSingleUpdateMessageThrottled = throttle(
+      private readonly _sendDocSingleUpdateMessageThrottled = throttle(
         () => this._sendDocSingleUpdateMessageImmediate(),
         200,
         { leading: false },
@@ -393,7 +397,7 @@ export const PageWebsocket = once(
 
       // Awareness update handling
 
-      private _handleAwarenessUpdate = ({
+      private readonly _handleAwarenessUpdate = ({
         added,
         updated,
         removed,
@@ -411,10 +415,10 @@ export const PageWebsocket = once(
         }
       };
 
-      private _sendAwarenessMessageImmediate = () => {
+      private readonly _sendAwarenessMessageImmediate = () => {
         const pageKeyring = pageKeyrings()(
           `${this.page.react.groupId}:${this.page.id}`,
-        ).get()!;
+        ).get();
 
         if (pageKeyring == null) {
           return;
@@ -445,7 +449,7 @@ export const PageWebsocket = once(
           );
         });
       };
-      private _sendAwarenessMessageThrottled = throttle(
+      private readonly _sendAwarenessMessageThrottled = throttle(
         this._sendAwarenessMessageImmediate,
         200,
         { leading: false },
@@ -473,7 +477,7 @@ export const PageWebsocket = once(
 
         const pageKeyring = pageKeyrings()(
           `${this.page.react.groupId}:${this.page.id}`,
-        ).get()!;
+        ).get();
 
         if (pageKeyring == null) {
           return;
@@ -522,7 +526,7 @@ export const PageWebsocket = once(
 
         const pageKeyring = pageKeyrings()(
           `${this.page.react.groupId}:${this.page.id}`,
-        ).get()!;
+        ).get();
 
         if (pageKeyring == null) {
           return;
@@ -592,8 +596,16 @@ export const PageWebsocket = once(
             requestIdBytes,
 
             rotatePageKey,
-            encryptedPageRelativeTitle: encryptedPageRelativeTitle!,
-            encryptedPageAbsoluteTitle: encryptedPageAbsoluteTitle!,
+            encryptedPageRelativeTitle:
+              encryptedPageRelativeTitle ??
+              (() => {
+                throw new Error('Missing encrypted page relative title.');
+              })(),
+            encryptedPageAbsoluteTitle:
+              encryptedPageAbsoluteTitle ??
+              (() => {
+                throw new Error('Missing encrypted page absolute title.');
+              })(),
             encryptedSnapshotSymmetricKeys,
 
             createSnapshot,
@@ -605,7 +617,7 @@ export const PageWebsocket = once(
       private _handleDocSingleUpdateMessage(decoder: decoding.Decoder) {
         const pageKeyring = pageKeyrings()(
           `${this.page.react.groupId}:${this.page.id}`,
-        ).get()!;
+        ).get();
 
         if (pageKeyring == null) {
           return;

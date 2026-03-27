@@ -37,35 +37,13 @@
 
 <script setup lang="ts">
 import { type NodeViewProps, NodeViewWrapper } from '@tiptap/vue-3';
-import DOMPurify from 'dompurify';
-import katex from 'katex';
+
+import { useMathNodeView } from '../useMathNodeView';
 
 type Props = NodeViewProps;
 
 const props = defineProps<Props>();
-
-const showFormulaEditor = ref(false);
-
-watch(showFormulaEditor, () => {
-  if (!props.editor.isEditable) {
-    showFormulaEditor.value = false;
-  }
-});
-
-const renderedFormula = computed(() => {
-  if (!props.node.attrs.input) {
-    return '[Enter formula]';
-  }
-
-  return DOMPurify.sanitize(
-    katex.renderToString(props.node.attrs.input, {
-      throwOnError: false,
-      strict: false,
-      displayMode: true,
-      output: 'html',
-    }),
-  );
-});
+const { showFormulaEditor, renderedFormula } = useMathNodeView(props, true);
 </script>
 
 <style scoped lang="scss">

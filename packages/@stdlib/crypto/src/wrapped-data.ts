@@ -55,23 +55,22 @@ export class WrappedData implements Wrappable {
       this.layers.push(DataLayer.Raw);
 
       this.content = value;
+    } else if (value[0] >= 3) {
+      // New format
+
+      const obj = unpack(value.slice(1)) as {
+        layers: DataLayer[];
+        metadata: any;
+        content: Uint8Array;
+      };
+
+      this.layers = obj.layers;
+      this.metadata = obj.metadata;
+      this.content = obj.content;
     } else {
-      if (value[0] >= 3) {
-        // New format
+      // Old format
 
-        const obj = unpack(value.slice(1)) as {
-          layers: DataLayer[];
-          metadata: any;
-          content: Uint8Array;
-        };
-
-        this.layers = obj.layers;
-        this.metadata = obj.metadata;
-        this.content = obj.content;
-      } else {
-        // Old format
-
-        let index = 0;
+      let index = 0;
 
         while (value[index] !== DataLayer.Raw) {
           this.layers.push(value[index++]);
@@ -80,7 +79,6 @@ export class WrappedData implements Wrappable {
         this.layers.push(value[index++]);
 
         this.content = value.slice(index);
-      }
     }
   }
 

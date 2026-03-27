@@ -49,6 +49,7 @@
             <img
               src="~assets/white-logo-outline.webp"
               style="width: 39px; height: 39px; opacity: 95%"
+              alt="DeepNotes logo"
             />
 
             <div style="width: 8px"></div>

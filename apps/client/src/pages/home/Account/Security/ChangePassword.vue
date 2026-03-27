@@ -3,7 +3,6 @@
     <PasswordField
       label="Old password"
       dense
-      autocomplete="current-password"
       v-model="oldPassword"
     />
 
@@ -12,7 +11,6 @@
     <EvaluatedPasswordField
       label="New password"
       dense
-      autocomplete="new-password"
       v-model="newPassword"
     />
 
@@ -21,7 +19,6 @@
     <PasswordField
       label="Confirm new password"
       dense
-      autocomplete="new-password"
       v-model="confirmNewPassword"
     />
 

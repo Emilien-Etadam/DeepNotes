@@ -49,11 +49,7 @@ function processArrowsInBox(
     const arrowClientRect = arrow.getClientRect();
     if (arrowClientRect == null) continue;
     if (!boxClientRect.containsVec2(arrowClientRect.center)) continue;
-    if (
-      arrow.react.selected &&
-      !event.shiftKey &&
-      !internals.mobileAltKey
-    ) {
+    if (arrow.react.selected && !event.shiftKey && !internals.mobileAltKey) {
       page.selection.remove(arrow);
     } else {
       page.selection.add(arrow);
@@ -86,7 +82,7 @@ export class PageBoxSelection {
     this.react = reactive({
       active: false,
 
-      region: computed(() => this.page.regions.fromId(this.react.regionId!)),
+      region: computed(() => this.page.regions.fromId(this.react.regionId ?? '')),
 
       clientStartPos: new Vec2(),
       clientEndPos: new Vec2(),

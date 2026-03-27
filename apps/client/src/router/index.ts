@@ -53,14 +53,14 @@ export default route(async function ({ store }) {
       });
     }
 
-    if (redirectDest != null) {
+    if (redirectDest == null) {
+      next();
+    } else {
       moduleLogger.info(
         'beforeEach redirect: %s',
         JSON.stringify(redirectDest),
       );
       next(redirectDest);
-    } else {
-      next();
     }
   });
 

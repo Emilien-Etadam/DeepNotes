@@ -1,7 +1,7 @@
 import { isString } from 'lodash';
-import { APP_URL } from 'src/code/utils/app-url';
 import { useMeta as _useMeta } from 'quasar';
 import type { MetaOptions } from 'quasar/dist/types/meta';
+import { APP_URL } from 'src/code/utils/app-url';
 
 export function useMeta(options: MetaOptions | (() => MetaOptions)) {
   const optionsFunc = typeof options === 'function' ? options : () => options;

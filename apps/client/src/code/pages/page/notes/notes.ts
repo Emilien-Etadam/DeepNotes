@@ -14,7 +14,7 @@ export class PageNotes {
   readonly page: Page;
 
   readonly react = reactive({
-    map: shallowReactive({} as Record<string, PageNote>),
+    map: shallowReactive<Record<string, PageNote>>({}),
 
     collab: computed(() => this.page.collab.store.notes),
   });
@@ -26,7 +26,10 @@ export class PageNotes {
   }
 
   fromId(noteId: string | null, regionId?: string | null): PageNote | null {
-    const note = this.react.map[noteId!];
+    if (noteId == null) {
+      return null;
+    }
+    const note = this.react.map[noteId];
 
     if (
       note != null &&
@@ -84,7 +87,8 @@ export class PageNotes {
       this.createAndObserveChildren(noteIds[index], index);
     }
 
-    (getYjsValue(noteIds) as Y.Array<string>).observe((event) => {
+    const yNoteIds: Y.Array<string> = getYjsValue(noteIds);
+    yNoteIds.observe((event) => {
       let index = 0;
 
       for (const delta of event.changes.delta) {
@@ -102,15 +106,14 @@ export class PageNotes {
   }
 
   observeMap() {
-    (getYjsValue(this.react.collab) as Y.Map<INoteCollabComplete>).observe(
-      (event) => {
+    const yNoteMap: Y.Map<INoteCollabComplete> = getYjsValue(this.react.collab);
+    yNoteMap.observe((event) => {
         for (const [noteId, change] of event.changes.keys) {
           if (change.action === 'delete') {
             delete this.react.map[noteId];
           }
         }
-      },
-    );
+      });
   }
 
   async create(params: {

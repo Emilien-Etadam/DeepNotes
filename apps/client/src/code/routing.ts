@@ -95,10 +95,12 @@ async function getStartingPageRedirect(input: {
 }): Promise<{ name: string; params?: { pageId: string } } | undefined> {
   if (!input.loggedIn || input.route.name !== 'pages') return undefined;
   try {
-    const startingPageId =
-      await trpcClient.users.pages.getStartingPageId.query(undefined, {
+    const startingPageId = await trpcClient.users.pages.getStartingPageId.query(
+      undefined,
+      {
         context: getRequestConfig(input.cookies),
-      });
+      },
+    );
     return { name: 'page', params: { pageId: startingPageId } };
   } catch (error) {
     moduleLogger.error('getRedirectDest error: %o', error);

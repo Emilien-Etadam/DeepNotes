@@ -7,7 +7,9 @@
     </template>
 
     <template #body>
-      <q-card-section style="padding: 20px; display: flex; flex-direction: column">
+      <q-card-section
+        style="padding: 20px; display: flex; flex-direction: column"
+      >
         <q-input
           :model-value="markdown"
           type="textarea"
@@ -53,9 +55,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Ref } from 'vue';
 import download from 'downloadjs';
 import { getPageTitle } from 'src/code/pages/utils';
+import type { Ref } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -68,7 +70,7 @@ const dialogRef = ref() as Ref<InstanceType<typeof CustomDialog>>;
 
 function copyToClipboard() {
   navigator.clipboard.writeText(props.markdown).then(() => {
-    $q.notify({
+    $quasar().notify({
       message: 'Copied to clipboard',
       color: 'positive',
       position: 'bottom',
@@ -78,7 +80,9 @@ function copyToClipboard() {
 
 function downloadAsMd() {
   const page = internals.pages.react.page;
-  const titleResult = page ? getPageTitle(page.id, { prefer: 'relative' }) : null;
+  const titleResult = page
+    ? getPageTitle(page.id, { prefer: 'relative' })
+    : null;
   const name =
     titleResult?.status === 'success' && titleResult?.text
       ? titleResult.text.replaceAll(/[/\\?%*:|"<>]/g, '-')

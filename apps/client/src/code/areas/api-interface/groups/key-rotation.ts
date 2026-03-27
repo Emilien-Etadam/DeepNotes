@@ -14,6 +14,8 @@ import { computeGroupPasswordValues } from 'src/code/crypto';
 import { asyncDialog } from 'src/code/utils/misc';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function rotateGroupKeys(input: { groupId: string }) {
   const { promise } = createWebsocketRequest({
     url: `${process.env.APP_SERVER_URL.replaceAll(
@@ -21,7 +23,7 @@ export async function rotateGroupKeys(input: { groupId: string }) {
       'ws',
     )}/groups.rotateKeys`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   async function step1(): Promise<
@@ -42,12 +44,6 @@ export async function rotateGroupKeys(input: { groupId: string }) {
     });
   }
 
-  async function step3(
-    _input: (typeof rotateKeysProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
-  }
-
   return promise;
 }
 
@@ -61,11 +57,14 @@ export async function processGroupKeyRotationValues(
   input.groupIsPublic ??= input.groupAccessKeyring != null;
 
   const oldGroupAccessKeyring =
-    input.groupAccessKeyring != null
-      ? createSymmetricKeyring(input.groupAccessKeyring)
-      : createSymmetricKeyring(
-          input.groupEncryptedAccessKeyring!,
-        ).unwrapAsymmetric(internals.keyPair.privateKey);
+    input.groupAccessKeyring == null
+      ? createSymmetricKeyring(
+          input.groupEncryptedAccessKeyring ??
+            (() => {
+              throw new Error('Missing encrypted group access keyring.');
+            })(),
+        ).unwrapAsymmetric(internals.keyPair.privateKey)
+      : createSymmetricKeyring(input.groupAccessKeyring);
   const oldGroupInternalKeyring = createSymmetricKeyring(
     input.groupEncryptedInternalKeyring,
   ).unwrapAsymmetric(internals.keyPair.privateKey);
@@ -170,14 +169,21 @@ export async function processGroupKeyRotationValues(
               },
             },
           ),
-    groupEncryptedContentKeyring: (passwordProtected
-      ? newGroupContentKeyring.wrapSymmetric(groupPasswordValues!.passwordKey, {
-          associatedData: {
-            context: 'GroupContentKeyringPasswordProtection',
-            groupId: input.groupId,
-          },
-        })
-      : newGroupContentKeyring
+    groupEncryptedContentKeyring: (
+      passwordProtected
+        ? newGroupContentKeyring.wrapSymmetric(
+            groupPasswordValues?.passwordKey ??
+              (() => {
+                throw new Error('Missing group password values.');
+              })(),
+            {
+              associatedData: {
+                context: 'GroupContentKeyringPasswordProtection',
+                groupId: input.groupId,
+              },
+            },
+          )
+        : newGroupContentKeyring
     ).wrapSymmetric(newGroupAccessKeyring, {
       associatedData: {
         context: 'GroupContentKeyring',
@@ -199,14 +205,14 @@ export async function processGroupKeyRotationValues(
       objEntries(input.groupMembers).map(([userId, groupMember]) => [
         userId,
         {
-          ...(!input.groupIsPublic
-            ? {
+          ...(input.groupIsPublic
+            ? {}
+            : {
                 encryptedAccessKeyring: newGroupAccessKeyring.wrapAsymmetric(
                   internals.keyPair,
                   createKeyring(groupMember.publicKeyring),
                 ).wrappedValue,
-              }
-            : {}),
+              }),
           encryptedInternalKeyring: newGroupInternalKeyring.wrapAsymmetric(
             internals.keyPair,
             createKeyring(groupMember.publicKeyring),
@@ -231,14 +237,14 @@ export async function processGroupKeyRotationValues(
         ([userId, groupJoinInvitation]) => [
           userId,
           {
-            ...(!input.groupIsPublic
-              ? {
+            ...(input.groupIsPublic
+              ? {}
+              : {
                   encryptedAccessKeyring: newGroupAccessKeyring.wrapAsymmetric(
                     internals.keyPair,
                     createKeyring(groupJoinInvitation.publicKeyring),
                   ).wrappedValue,
-                }
-              : {}),
+                }),
             encryptedInternalKeyring: newGroupInternalKeyring.wrapAsymmetric(
               internals.keyPair,
               createKeyring(groupJoinInvitation.publicKeyring),

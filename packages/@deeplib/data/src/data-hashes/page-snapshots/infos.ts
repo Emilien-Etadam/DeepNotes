@@ -15,12 +15,12 @@ export const infos: DataField<PageSnapshotModel[]> = {
     ),
 
   get: ({ model }) =>
-    model != null
-      ? model.map((pageSnapshot) => ({
+    model == null
+      ? undefined
+      : model.map((pageSnapshot) => ({
           id: pageSnapshot.id,
           creationDate: pageSnapshot.creation_date,
           authorId: pageSnapshot.author_id,
           type: pageSnapshot.type,
-        }))
-      : undefined,
+        })),
 };

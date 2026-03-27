@@ -12,6 +12,8 @@ import { groupNames } from 'src/code/pages/computed/group-names';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function sendJoinInvitation(input: {
   groupId: string;
   inviteeUserId: string;
@@ -54,7 +56,7 @@ export async function sendJoinInvitation(input: {
       'ws',
     )}/groups.joinInvitations.send`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   async function step1(): Promise<
@@ -132,12 +134,6 @@ export async function sendJoinInvitation(input: {
         },
       }),
     };
-  }
-
-  async function step3(
-    _input: (typeof sendProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

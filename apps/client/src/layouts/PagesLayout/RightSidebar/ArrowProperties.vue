@@ -256,9 +256,7 @@
         color="primary"
         @click="
           async () => {
-            await setClipboardText(
-              appPageUrl(page.id, `elem=${arrow.id}`),
-            );
+            await setClipboardText(appPageUrl(page.id, `elem=${arrow.id}`));
 
             $q.notify({
               message: 'Copied to clipboard.',

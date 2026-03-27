@@ -6,6 +6,8 @@ import { createPrivateKeyring, createSymmetricKeyring } from '@stdlib/crypto';
 import { deriveUserValues } from 'src/code/crypto';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function changePassword(input: {
   oldPassword: string;
   newPassword: string;
@@ -31,7 +33,7 @@ export async function changePassword(input: {
       'ws',
     )}/users.account.changePassword`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   function step1(): (typeof changePasswordProcedureStep1)['_def']['_input_in'] {
@@ -87,12 +89,6 @@ export async function changePassword(input: {
       newEncryptedPrivateKeyring,
       newEncryptedSymmetricKeyring,
     };
-  }
-
-  async function step3(
-    _input: (typeof changePasswordProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

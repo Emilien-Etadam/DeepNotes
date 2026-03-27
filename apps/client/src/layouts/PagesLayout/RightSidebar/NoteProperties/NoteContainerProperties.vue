@@ -200,10 +200,7 @@ function changeProp(value: any, func: (note: PageNote, value: any) => void) {
 }
 
 async function createChildFromFile(file: File) {
-  const fileReader = new FileReader();
-
-  fileReader.onload = async (event) => {
-    const content = String(event.target?.result ?? '');
+  const content = await file.text();
 
     const childNote = await page.value.notes.create({
       region: note.value,
@@ -275,9 +272,6 @@ async function createChildFromFile(file: File) {
     } else {
       childNote.react.editors[0]?.commands.insertContent(content);
     }
-  };
-
-  fileReader.readAsText(file);
 }
 
 async function importChildrenFromFilesAux(files: File[]) {

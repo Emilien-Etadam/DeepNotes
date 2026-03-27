@@ -198,7 +198,8 @@ async function rejectSelectedRequests() {
         });
 
         numSuccess++;
-      } catch (_error) {
+      } catch (error) {
+        console.error(error);
         numFailed++;
       }
     }

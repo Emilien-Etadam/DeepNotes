@@ -1,23 +1,22 @@
+function onWindowResize() {
+  if (
+    globalThis.innerWidth < 1080 &&
+    uiStore().leftSidebarExpanded &&
+    uiStore().rightSidebarExpanded
+  ) {
+    mainLogger.sub('useWindowResizeListener').info('Collapse right sidebar');
+    uiStore().rightSidebarExpanded = false;
+  }
+}
+
 export function useWindowResizeListener() {
   onMounted(() => {
-    onResize();
+    onWindowResize();
 
-    globalThis.addEventListener('resize', onResize);
+    globalThis.addEventListener('resize', onWindowResize);
   });
 
-  function onResize() {
-    if (
-      globalThis.innerWidth < 1080 &&
-      uiStore().leftSidebarExpanded &&
-      uiStore().rightSidebarExpanded
-    ) {
-      mainLogger.sub('useWindowResizeListener').info('Collapse right sidebar');
-
-      uiStore().rightSidebarExpanded = false;
-    }
-  }
-
   onBeforeUnmount(() => {
-    globalThis.removeEventListener('resize', onResize);
+    globalThis.removeEventListener('resize', onWindowResize);
   });
 }

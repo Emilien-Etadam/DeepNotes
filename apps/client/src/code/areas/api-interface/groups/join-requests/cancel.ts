@@ -6,6 +6,8 @@ import { groupRequestNames } from 'src/code/pages/computed/group-request-names';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function cancelJoinRequest(input: { groupId: string }) {
   const agentName = await groupRequestNames()(
     `${input.groupId}:${authStore().userId}`,
@@ -17,7 +19,7 @@ export async function cancelJoinRequest(input: { groupId: string }) {
       'ws',
     )}/groups.joinRequests.cancel`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   async function step1(): Promise<
@@ -52,12 +54,6 @@ export async function cancelJoinRequest(input: { groupId: string }) {
         },
       }),
     };
-  }
-
-  async function step3(
-    _input: (typeof cancelProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

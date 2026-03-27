@@ -13,7 +13,8 @@
   "devDependencies": {
     "@types/crypto-js": "^4.2.0",
     "@types/libsodium-wrappers-sumo": "^0.7.7",
-    "@types/node": "^20.8.10"
+    "@types/node": "^20.8.10",
+    "@vitest/coverage-v8": "4.0.18"
   },
   "keywords": [],
   "license": "ISC",
@@ -27,6 +28,7 @@
     "npkill": "rimraf --glob ./node_modules",
     "preinstall": "npx only-allow pnpm",
     "repo:build": "tsc-alias -p tsconfig.json",
-    "repo:build:watch": "tsc-alias -p tsconfig.json --watch"
+    "repo:build:watch": "tsc-alias -p tsconfig.json --watch",
+    "test": "vitest run --coverage"
   }
 }

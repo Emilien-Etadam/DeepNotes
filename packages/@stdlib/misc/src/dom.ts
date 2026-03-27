@@ -115,7 +115,9 @@ export function listenPointerEvents(
   const downClientPos = new Vec2(downEvent.clientX, downEvent.clientY);
 
   function handleDragThresholdCheck(moveEvent: PointerEvent) {
-    if (!dragging) {
+    if (dragging) {
+      options.dragUpdate?.(moveEvent, downEvent);
+    } else {
       const moveClientPos = new Vec2(moveEvent.clientX, moveEvent.clientY);
       const distance = downClientPos.dist(moveClientPos);
 
@@ -127,8 +129,6 @@ export function listenPointerEvents(
         dragging = true;
         options.dragStart?.(moveEvent, downEvent);
       }
-    } else {
-      options.dragUpdate?.(moveEvent, downEvent);
     }
   }
 

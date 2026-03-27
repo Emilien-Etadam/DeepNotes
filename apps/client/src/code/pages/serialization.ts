@@ -1,6 +1,6 @@
+import type { Y } from '@syncedstore/core';
 import { once } from 'lodash';
 import { nanoid } from 'nanoid';
-import type { Y } from '@syncedstore/core';
 import {
   prosemirrorJSONToYXmlFragment,
   yXmlFragmentToProseMirrorRootNode,
@@ -10,7 +10,6 @@ import { z } from 'zod';
 import {
   IArrowCollab,
   IArrowCollabDefault,
-  type IArrowCollabInput,
   type PageArrow,
 } from './page/arrows/arrow';
 import { roundTimeToMinutes } from './page/notes/date';
@@ -18,7 +17,6 @@ import type { PageNote } from './page/notes/note';
 import {
   INoteCollab,
   INoteCollabDefault,
-  type INoteCollabPartial,
 } from './page/notes/note-collab';
 import {
   IRegionCollab,
@@ -225,9 +223,13 @@ export class Serialization {
     }
 
     for (const note of region.notes) {
+      const noteSerial = aux.serialObj.notes[aux.noteMap.get(note.id) ?? -1];
+      if (noteSerial == null) {
+        continue;
+      }
       this._serializeRegionArrows(
         note.react,
-        aux.serialObj.notes[aux.noteMap.get(note.id)!],
+        noteSerial,
         aux,
         note,
       );
@@ -374,7 +376,7 @@ export class Serialization {
         },
 
         zIndex: destRegionCollab.nextZIndex++,
-      } as INoteCollabPartial),
+      }),
       INoteCollabDefault(),
     );
 
@@ -418,7 +420,10 @@ export class Serialization {
     }
 
     for (const noteIndex of serialRegion.noteIdxs) {
-      const noteId = noteMap.get(noteIndex)!;
+      const noteId = noteMap.get(noteIndex);
+      if (noteId == null) {
+        continue;
+      }
       const noteCollab = internals.pages.react.page.notes.react.collab[noteId];
 
       this._deserializeRegionArrows(
@@ -436,20 +441,29 @@ export class Serialization {
     destRegionId: string,
     destRegionCollab: IRegionCollabOutput,
   ) {
+    const source =
+      typeof serialArrow.source === 'number'
+        ? noteMap.get(serialArrow.source)
+        : undefined;
+    const target =
+      typeof serialArrow.target === 'number'
+        ? noteMap.get(serialArrow.target)
+        : undefined;
+
     const arrowCollab = makeSlim(
       IArrowCollab().parse({
         ...serialArrow,
 
         regionId: destRegionId,
 
-        source: noteMap.get(serialArrow.source as any),
-        target: noteMap.get(serialArrow.target as any),
+        source,
+        target,
 
         label: prosemirrorJSONToYXmlFragment(
           internals.tiptap().schema,
           serialArrow.label,
         ),
-      } as IArrowCollabInput),
+      }),
       IArrowCollabDefault(),
     );
 

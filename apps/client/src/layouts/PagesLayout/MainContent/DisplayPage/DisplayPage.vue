@@ -38,25 +38,22 @@ const componentLogger = mainLogger.sub('DisplayPage').sub(props.page.id);
 
 const realtimeCtx = useRealtimeContext();
 
-function getPageWatchDeps(
-  pageId: string,
-  groupId: string | null,
-) {
+function getPageWatchDeps(pageId: string, groupId: string | null) {
   const pageIsDeleted = !!realtimeCtx.hget(
     'page',
     pageId,
     'permanent-deletion-date',
   );
-  const pageIsPermanentlyDeleted = !pageIsDeleted
-    ? false
-    : new Date() > realtimeCtx.hget('page', pageId, 'permanent-deletion-date');
+  const pageIsPermanentlyDeleted = pageIsDeleted
+    ? new Date() > realtimeCtx.hget('page', pageId, 'permanent-deletion-date')
+    : false;
 
   const groupIsDeleted =
     groupId == null
       ? false
       : !!realtimeCtx.hget('group', groupId, 'permanent-deletion-date');
   const groupIsPermanentlyDeleted =
-    groupId == null || !groupIsDeleted
+    groupId == null || groupIsDeleted === false
       ? false
       : new Date() >
         realtimeCtx.hget('group', groupId, 'permanent-deletion-date');
@@ -90,9 +87,7 @@ function getPageWatchDeps(
   const groupContentKeyring =
     groupId == null ? null : groupContentKeyrings()(groupId).get();
   const pageKeyring =
-    groupId == null
-      ? null
-      : pageKeyrings()(`${groupId}:${pageId}`).get();
+    groupId == null ? null : pageKeyrings()(`${groupId}:${pageId}`).get();
 
   return {
     groupId,
@@ -109,7 +104,10 @@ function getPageWatchDeps(
   };
 }
 
-function applyPageStatusFromDeps(page: Page, deps: ReturnType<typeof getPageWatchDeps>) {
+function applyPageStatusFromDeps(
+  page: Page,
+  deps: ReturnType<typeof getPageWatchDeps>,
+) {
   if (
     deps.groupId == null ||
     deps.pageIsPermanentlyDeleted ||

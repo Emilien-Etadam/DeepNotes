@@ -8,8 +8,8 @@
     </p>
     <p>
       Double-click a note that contains a nested page to navigate into it. Use
-      the back and forward arrows in the bottom-left toolbar to move through your
-      navigation history.
+      the back and forward arrows in the bottom-left toolbar to move through
+      your navigation history.
     </p>
     <p>
       The horizontal breadcrumb bar at the top of the canvas shows your current

@@ -17,7 +17,7 @@ export function makeStoreFunc<T extends (...args: any[]) => any>(
     let store: ReturnType<T> | undefined;
 
     if (pinia != null) {
-      store = storeDefinition(pinia) as any;
+      store = storeDefinition(pinia);
     }
 
     if (store == null) {
@@ -25,13 +25,11 @@ export function makeStoreFunc<T extends (...args: any[]) => any>(
         getCurrentInstance()?.appContext.app.config.globalProperties.$pinia;
 
       if (pinia != null) {
-        store = storeDefinition(pinia) as any;
+        store = storeDefinition(pinia);
       }
     }
 
-    if (store == null) {
-      store = storeDefinition() as any;
-    }
+    store ??= storeDefinition();
 
     if (store == null) {
       throw new Error(

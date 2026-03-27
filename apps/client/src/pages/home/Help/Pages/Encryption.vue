@@ -3,9 +3,9 @@
   <Gap style="height: 36px" />
   <div style="max-width: 600px">
     <p>
-      DeepNotes encrypts all page content on your device before sending it to the
-      server. The server stores only ciphertext and has no access to your notes,
-      arrows, or page titles.
+      DeepNotes encrypts all page content on your device before sending it to
+      the server. The server stores only ciphertext and has no access to your
+      notes, arrows, or page titles.
     </p>
     <p>
       Encryption uses libsodium (XChaCha20-Poly1305 for symmetric encryption,

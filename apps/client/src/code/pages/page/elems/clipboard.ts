@@ -8,7 +8,6 @@ import { getClipboardText, setClipboardText } from 'src/code/utils/clipboard';
 
 import { ISerialObject } from '../../serialization';
 import type { Page } from '../page';
-import type { PageElem } from './elem';
 
 export class PageClipboard {
   static readonly encryptionKey = new Uint8Array([
@@ -98,16 +97,19 @@ export class PageClipboard {
 
       let destCenter: Vec2;
 
-      if (selectionWorldRect != null) {
-        destCenter = selectionWorldRect.center.addScalar(8);
-      } else {
-        if (this.page.activeRegion.react.value.type === 'page') {
+      if (selectionWorldRect == null) {
+        const activeRegion = this.page.activeRegion.react.value;
+        if (activeRegion.type === 'page') {
           destCenter = this.page.camera.react.pos;
         } else {
-          destCenter =
-            this.page.activeRegion.react.value.getContainerWorldRect()!
-              .halfSize;
+          const containerWorldRect = activeRegion.getContainerWorldRect();
+          if (containerWorldRect == null) {
+            return;
+          }
+          destCenter = containerWorldRect.halfSize;
         }
+      } else {
+        destCenter = selectionWorldRect.center.addScalar(8);
       }
 
       // Center notes around destination center
@@ -122,8 +124,9 @@ export class PageClipboard {
       // Deserialize into structure
 
       let destIndex;
-      if (this.page.selection.react.notes.length > 0) {
-        destIndex = this.page.selection.react.notes.at(-1)!.react.index + 1;
+      const lastSelectedNote = this.page.selection.react.notes.at(-1);
+      if (lastSelectedNote != null) {
+        destIndex = lastSelectedNote.react.index + 1;
       }
 
       const destRegion = this.page.activeRegion.react.value;
@@ -157,7 +160,7 @@ export class PageClipboard {
 
       // Select notes
 
-      this.page.selection.set(...(notes as PageElem[]).concat(arrows));
+      this.page.selection.set(...notes.concat(arrows));
     } catch (error) {
       $quasar().notify({
         message: 'Failed to paste from clipboard.',

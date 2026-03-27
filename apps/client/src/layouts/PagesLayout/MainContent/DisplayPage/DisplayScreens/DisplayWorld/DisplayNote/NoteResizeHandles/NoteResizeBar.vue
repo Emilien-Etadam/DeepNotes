@@ -55,13 +55,18 @@ const page = inject<Page>('page')!;
 const note = inject<PageNote>('note')!;
 
 const section = computed(
-  () =>
-    props.section ??
-    (props.side.includes('n')
-      ? note.react.topSection
-      : props.side.includes('s')
-        ? note.react.bottomSection
-        : undefined),
+  () => {
+    if (props.section != null) {
+      return props.section;
+    }
+    if (props.side.includes('n')) {
+      return note.react.topSection;
+    }
+    if (props.side.includes('s')) {
+      return note.react.bottomSection;
+    }
+    return undefined;
+  },
 );
 
 async function onLeftPointerDown(event: PointerEvent) {

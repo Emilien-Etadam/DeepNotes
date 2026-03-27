@@ -5,155 +5,21 @@ import { once } from 'lodash';
 
 import { pageGroupIds } from './page-group-id';
 import { pageKeyrings } from './page-keyrings';
+import { createPageTitles } from './page-titles-factory';
 
-const _getLogger = mainLogger.sub('pageRelativeTitles.get');
-const _setLogger = mainLogger.sub('pageRelativeTitles.set');
-
-export const pageRelativeTitles = once(() =>
-  createSmartComputedDict<
-    string,
-    {
-      text: string;
-      status: 'unknown' | 'encrypted' | 'success';
-    }
-  >({
-    get: (pageId) => {
-      if (pageId == null) {
-        _getLogger.info('No valid page ID');
-
-        return { text: '[Unknown page]', status: 'unknown' };
-      }
-
-      const pageEncryptedRelativeTitle = internals.realtime.globalCtx.hget(
-        'page',
-        pageId,
-        'encrypted-relative-title',
-      );
-
-      const pagePermanentDeletionDate = internals.realtime.globalCtx.hget(
-        'page',
-        pageId,
-        'permanent-deletion-date',
-      );
-
-      const groupId = pageGroupIds()(pageId).get();
-
-      const groupPermanentDeletionDate = internals.realtime.globalCtx.hget(
-        'group',
-        groupId,
-        'permanent-deletion-date',
-      );
-
-      if (pageEncryptedRelativeTitle == null) {
-        _getLogger.info(`${pageId}: No encrypted page title found`);
-
-        return { text: `[Page ${pageId}]`, status: 'unknown' };
-      }
-
-      if (
-        pagePermanentDeletionDate != null &&
-        pagePermanentDeletionDate < new Date()
-      ) {
-        _getLogger.info(`${pageId}: Page is permanently deleted`);
-
-        return { text: `[Page ${pageId}]`, status: 'unknown' };
-      }
-
-      if (groupId == null) {
-        mainLogger.info(`${pageId}: No group ID found`);
-
-        return { text: `[Page ${pageId}]`, status: 'unknown' };
-      }
-
-      if (
-        groupPermanentDeletionDate != null &&
-        groupPermanentDeletionDate < new Date()
-      ) {
-        _getLogger.info(`${pageId}: Group is permanently deleted`);
-
-        return { text: `[Page ${pageId}]`, status: 'unknown' };
-      }
-
-      const pageKeyring = pageKeyrings()(`${groupId}:${pageId}`).get();
-
-      if (pageKeyring?.topLayer !== DataLayer.Raw) {
-        _getLogger.info(`${pageId}: No valid page keyring found`);
-
-        return { text: '[Encrypted page]', status: 'encrypted' };
-      }
-
-      try {
-        const result = bytesToText(
-          pageKeyring.decrypt(pageEncryptedRelativeTitle, {
-            padding: true,
-            associatedData: {
-              context: 'PageRelativeTitle',
-              pageId,
-            },
-          }),
-        );
-
-        _getLogger.info(`${pageId}: ${result}`);
-
-        return { text: result, status: 'success' };
-      } catch (_error) {
-        _getLogger.info(`${pageId}: Failed to decrypt page title`);
-
-        return { text: '[Failed to decrypt]', status: 'success' };
-      }
-    },
-    set: (pageId, value: any) => {
-      (async () => {
-        if (pageId == null) {
-          _setLogger.info(`${pageId}: No valid page ID`);
-
-          return;
-        }
-
-        const groupId = await internals.realtime.globalCtx.hgetAsync(
-          'page',
-          pageId,
-          'group-id',
-        );
-
-        if (groupId == null) {
-          _setLogger.info(`${pageId}: No group ID found`);
-
-          return;
-        }
-
-        const pageKeyring = await pageKeyrings()(
-          `${groupId}:${pageId}`,
-        ).getAsync();
-
-        if (pageKeyring == null) {
-          _setLogger.info(`${pageId}: No valid page keyring found`);
-
-          return;
-        }
-
-        const pageEncryptedRelativeTitle = pageKeyring.encrypt(
-          textToBytes(value),
-          {
-            padding: true,
-            associatedData: {
-              context: 'PageRelativeTitle',
-              pageId,
-            },
-          },
-        );
-
-        internals.realtime.hset(
-          'page',
-          pageId,
-          'encrypted-relative-title',
-          pageEncryptedRelativeTitle,
-        );
-
-        _setLogger.info(`${pageId}: ${value}`);
-      })().catch((err) => _setLogger.error(err));
-    },
-
-    initialValue: { text: '[Unknown page]', status: 'unknown' },
-  }),
+export const pageRelativeTitles = createPageTitles(
+  {
+    DataLayer,
+    bytesToText,
+    textToBytes,
+    createSmartComputedDict,
+    once,
+    pageGroupIds,
+    pageKeyrings,
+  },
+  {
+    loggerKey: 'pageRelativeTitles',
+    encryptedField: 'encrypted-relative-title',
+    associatedDataContext: 'PageRelativeTitle',
+  },
 );

@@ -354,8 +354,11 @@ export class Page implements IPageRegion {
     internals.pages.recentPageIdsKeepOverride = true;
     internals.pages.react.recentPageIdsOverride =
       internals.pages.react.recentPageIds.slice();
-    pull(this.app.react.recentPageIdsOverride!, this.id);
-    this.app.react.recentPageIdsOverride!.unshift(this.id);
+    const recentPageIdsOverride = this.app.react.recentPageIdsOverride;
+    if (recentPageIdsOverride != null) {
+      pull(recentPageIdsOverride, this.id);
+      recentPageIdsOverride.unshift(this.id);
+    }
 
     // Bump on server
 
@@ -368,12 +371,12 @@ export class Page implements IPageRegion {
   }
 
   fixDisplay() {
-    const pageElem = document.querySelector(
+    const pageElem = document.querySelector<HTMLElement>(
       `.display-screens[data-page-id="${this.id}"]`,
-    ) as HTMLElement;
-    const worldElem = document.querySelector(
+    );
+    const worldElem = document.querySelector<HTMLElement>(
       `.display-world[data-page-id="${this.id}"]`,
-    ) as HTMLElement;
+    );
 
     if (worldElem == null) {
       return;

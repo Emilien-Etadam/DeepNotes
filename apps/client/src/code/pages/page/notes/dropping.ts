@@ -54,7 +54,10 @@ export class NoteDropping {
 
     await nextTick();
 
-    const lastSelectedNote = this.page.selection.react.notes.at(-1)!;
+    const lastSelectedNote = this.page.selection.react.notes.at(-1);
+    if (lastSelectedNote == null) {
+      return;
+    }
 
     lastSelectedNote.scrollIntoView();
   }

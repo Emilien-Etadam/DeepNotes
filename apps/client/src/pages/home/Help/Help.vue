@@ -12,28 +12,68 @@
       <div class="help-section">
         <div class="help-section-title">Getting started</div>
         <ul class="help-list">
-          <li><router-link :to="{ name: 'help/what-is-deepnotes' }">What is DeepNotes?</router-link></li>
-          <li><router-link :to="{ name: 'help/canvas-navigation' }">Navigating the canvas</router-link></li>
-          <li><router-link :to="{ name: 'help/notes-and-arrows' }">Creating notes and arrows</router-link></li>
-          <li><router-link :to="{ name: 'help/export-for-ai' }">Exporting a page for AI</router-link></li>
-          <li><router-link :to="{ name: 'help/keyboard-shortcuts' }">Keyboard shortcuts</router-link></li>
+          <li>
+            <router-link :to="{ name: 'help/what-is-deepnotes' }"
+              >What is DeepNotes?</router-link
+            >
+          </li>
+          <li>
+            <router-link :to="{ name: 'help/canvas-navigation' }"
+              >Navigating the canvas</router-link
+            >
+          </li>
+          <li>
+            <router-link :to="{ name: 'help/notes-and-arrows' }"
+              >Creating notes and arrows</router-link
+            >
+          </li>
+          <li>
+            <router-link :to="{ name: 'help/export-for-ai' }"
+              >Exporting a page for AI</router-link
+            >
+          </li>
+          <li>
+            <router-link :to="{ name: 'help/keyboard-shortcuts' }"
+              >Keyboard shortcuts</router-link
+            >
+          </li>
         </ul>
       </div>
 
       <div class="help-section">
         <div class="help-section-title">Collaboration</div>
         <ul class="help-list">
-          <li><router-link :to="{ name: 'help/creating-group' }">Creating a group</router-link></li>
-          <li><router-link :to="{ name: 'help/inviting-users' }">Inviting users to a group</router-link></li>
-          <li><router-link :to="{ name: 'help/joining-group' }">Joining a group</router-link></li>
+          <li>
+            <router-link :to="{ name: 'help/creating-group' }"
+              >Creating a group</router-link
+            >
+          </li>
+          <li>
+            <router-link :to="{ name: 'help/inviting-users' }"
+              >Inviting users to a group</router-link
+            >
+          </li>
+          <li>
+            <router-link :to="{ name: 'help/joining-group' }"
+              >Joining a group</router-link
+            >
+          </li>
         </ul>
       </div>
 
       <div class="help-section">
         <div class="help-section-title">Security & data</div>
         <ul class="help-list">
-          <li><router-link :to="{ name: 'help/encryption' }">End-to-end encryption</router-link></li>
-          <li><router-link :to="{ name: 'help/forgot-password' }">Forgotten password</router-link></li>
+          <li>
+            <router-link :to="{ name: 'help/encryption' }"
+              >End-to-end encryption</router-link
+            >
+          </li>
+          <li>
+            <router-link :to="{ name: 'help/forgot-password' }"
+              >Forgotten password</router-link
+            >
+          </li>
         </ul>
       </div>
 

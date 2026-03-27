@@ -64,7 +64,7 @@ export const PageElem = once(
             const collab = this.page[`${this.type}s`].react.collab[this.id];
 
             if (collab == null) {
-              return undefined as any;
+              return undefined;
             }
 
             if (this.type === 'note') {
@@ -75,7 +75,7 @@ export const PageElem = once(
           }),
 
           region: computed(
-            () => this.page.regions.fromId(this.react.collab?.regionId!)!,
+            () => this.page.regions.fromId(this.react.collab?.regionId ?? null),
           ),
 
           visible: computed(() => {

@@ -15,7 +15,10 @@
 
         <br />
 
-        <img src="/help/inviting-users/group-settings-button.webp" />
+        <img
+          src="/help/inviting-users/group-settings-button.webp"
+          alt="Group settings button"
+        />
       </li>
 
       <li>
@@ -24,11 +27,17 @@
 
         <br />
 
-        <img src="/help/inviting-users/group-settings-tabs.webp" />
+        <img
+          src="/help/inviting-users/group-settings-tabs.webp"
+          alt="Group settings tabs"
+        />
 
         <InlineGap style="width: 24px" />
 
-        <img src="/help/inviting-users/invite-new-member-button.webp" />
+        <img
+          src="/help/inviting-users/invite-new-member-button.webp"
+          alt="Invite new member button"
+        />
       </li>
 
       <li>
@@ -36,7 +45,10 @@
 
         <br />
 
-        <img src="/help/inviting-users/invite-user-dialog.webp" />
+        <img
+          src="/help/inviting-users/invite-user-dialog.webp"
+          alt="Invite user dialog"
+        />
       </li>
 
       <li>
@@ -45,7 +57,10 @@
 
         <br />
 
-        <img src="/help/inviting-users/accept-reject-invitation.webp" />
+        <img
+          src="/help/inviting-users/accept-reject-invitation.webp"
+          alt="Accept or reject invitation screen"
+        />
       </li>
     </ol>
   </div>

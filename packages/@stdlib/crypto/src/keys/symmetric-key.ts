@@ -41,10 +41,10 @@ export function wrapSymmetricKey(
         value,
       );
 
-      if (params?.includeNonce === false) {
-        return ciphertext;
-      } else {
+      if (params?.includeNonce ?? true) {
         return concatUint8Arrays(nonce, ciphertext);
+      } else {
+        return ciphertext;
       }
     }
     decrypt(
@@ -58,10 +58,7 @@ export function wrapSymmetricKey(
       let nonce;
       let ciphertext;
 
-      if (params?.nonce != null) {
-        nonce = params.nonce;
-        ciphertext = nonceAndCiphertext;
-      } else {
+      if (params?.nonce == null) {
         nonce = nonceAndCiphertext.slice(
           0,
           sodium.crypto_aead_xchacha20poly1305_ietf_NPUBBYTES,
@@ -69,6 +66,9 @@ export function wrapSymmetricKey(
         ciphertext = nonceAndCiphertext.slice(
           sodium.crypto_aead_xchacha20poly1305_ietf_NPUBBYTES,
         );
+      } else {
+        nonce = params.nonce;
+        ciphertext = nonceAndCiphertext;
       }
 
       const associatedData = JSON.stringify({

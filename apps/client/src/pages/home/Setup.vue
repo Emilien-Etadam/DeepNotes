@@ -23,7 +23,6 @@
           label-color="grey-5"
           v-model="email"
           :maxlength="maxEmailLength"
-          autocomplete="email"
         />
 
         <Gap style="height: 12px" />
@@ -33,7 +32,6 @@
           label-color="grey-5"
           v-model="userName"
           :maxlength="maxNameLength"
-          autocomplete="name"
         />
 
         <Gap style="height: 12px" />
@@ -41,7 +39,6 @@
         <PasswordField
           label="Password"
           v-model="password"
-          autocomplete="new-password"
         />
 
         <Gap style="height: 12px" />
@@ -49,7 +46,6 @@
         <PasswordField
           label="Repeat password"
           v-model="repeatPassword"
-          autocomplete="new-password"
         />
 
         <Gap style="height: 28px" />

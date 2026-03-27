@@ -1,4 +1,3 @@
-import type { PageElem } from '../elems/elem';
 import type { Page } from '../page';
 
 export class NoteCloning {
@@ -33,8 +32,10 @@ export class NoteCloning {
     // Deserialize into structure
 
     let destIndex;
-    if (this.page.selection.react.notes.length > 0)
-      destIndex = this.page.selection.react.notes.at(-1)!.react.index + 1;
+    const lastSelectedNote = this.page.selection.react.notes.at(-1);
+    if (lastSelectedNote != null) {
+      destIndex = lastSelectedNote.react.index + 1;
+    }
 
     const destRegion = this.page.activeRegion.react.value;
 
@@ -46,16 +47,14 @@ export class NoteCloning {
 
     // Select clones
 
-    this.page.selection.set(...(notes as PageElem[]).concat(arrows));
+    this.page.selection.set(...notes.concat(arrows));
 
     // Scroll into view
 
     if (this.page.selection.react.notes.length > 0) {
       await nextTick();
 
-      const lastSelectedNote = this.page.selection.react.notes.at(-1)!;
-
-      lastSelectedNote.scrollIntoView();
+      this.page.selection.react.notes.at(-1)?.scrollIntoView();
     }
   }
 }

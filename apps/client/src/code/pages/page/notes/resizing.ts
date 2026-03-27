@@ -26,11 +26,7 @@ function applyResizeRectFromPointer(
   }
 }
 
-function applyCtrlResize(
-  activeNote: PageNote,
-  side: NoteSide,
-  worldPos: Vec2,
-) {
+function applyCtrlResize(activeNote: PageNote, side: NoteSide, worldPos: Vec2) {
   const resizing = activeNote.react.resizing;
   if (resizing == null) return;
   const old = resizing.oldResizeRect;
@@ -154,7 +150,7 @@ export class NoteResizing {
     });
   }
 
-  private _update = (event: PointerEvent) => {
+  private readonly _update = (event: PointerEvent) => {
     const activeNote = this.page.activeElem.react.value;
 
     if (activeNote?.type !== 'note' || activeNote.react.resizing == null) {
@@ -178,7 +174,7 @@ export class NoteResizing {
     applySizeAndWorldRectToSelection(this.page, this.side, posDiff, sizeDiff);
   };
 
-  private _finish = () => {
+  private readonly _finish = () => {
     for (const selectedNote of this.page.selection.react.notes) {
       if (selectedNote.react.resizing == null) {
         continue;

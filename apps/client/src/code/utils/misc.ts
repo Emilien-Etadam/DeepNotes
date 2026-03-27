@@ -17,7 +17,7 @@ export async function asyncDialog<T = any>(opts: QDialogOptions): Promise<T> {
         resolve(output);
       })
       .onCancel(() => {
-        reject();
+        reject(new Error('Dialog was cancelled.'));
       });
   });
 }
@@ -87,10 +87,11 @@ export function wrapStorage(storage: Storage) {
 
     set(target, prop, value) {
       if (prop in props) {
-        return (props[prop as keyof typeof props] = value);
+        props[prop as keyof typeof props] = value;
       } else {
-        return (target[prop as keyof typeof target] = value);
+        target[prop as keyof typeof target] = value;
       }
+      return true;
     },
   });
 }

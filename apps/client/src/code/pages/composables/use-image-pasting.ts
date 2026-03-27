@@ -2,7 +2,7 @@ import { useEventListener } from '@vueuse/core';
 
 export function useImagePasting() {
   useEventListener(
-    'paste' as any,
+    'paste',
     async (event: ClipboardEvent) => {
       const target = event.target as HTMLElement;
 
@@ -15,7 +15,12 @@ export function useImagePasting() {
 
       mainLogger.sub('useImagePasting').info('Perform');
 
-      for (const file of Array.from(event.clipboardData!.files)) {
+      const clipboardFiles = event.clipboardData?.files;
+      if (clipboardFiles == null) {
+        return;
+      }
+
+      for (const file of Array.from(clipboardFiles)) {
         if (!file.type.startsWith('image/')) {
           continue;
         }
@@ -31,9 +36,14 @@ export function useImagePasting() {
         const reader = new FileReader();
 
         reader.addEventListener('loadend', (event) => {
+          const src = event.target?.result;
+          if (typeof src !== 'string') {
+            return;
+          }
+
           internals.pages.react.page.selection.format((chain) =>
             chain.setImage({
-              src: event.target!.result as string,
+              src,
             }),
           );
         });

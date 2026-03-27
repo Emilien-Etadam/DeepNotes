@@ -23,7 +23,7 @@ export interface IAwarenessChanges {
 const oldSetLocalState = awarenessProtocol.Awareness.prototype.setLocalState;
 
 awarenessProtocol.Awareness.prototype.setLocalState = function (state) {
-  (this as any).localStateBackup = cloneDeep(state);
+  this.localStateBackup = cloneDeep(state);
 
   oldSetLocalState.call(this, state);
 };
@@ -65,7 +65,7 @@ export class PagePresence {
     this.collab = input.collab;
 
     this.awareness = new awarenessProtocol.Awareness(this.collab.doc);
-    (this.awareness as any).localStateBackup = null;
+    this.awareness.localStateBackup = null;
 
     this.awareness.on(
       'update',
@@ -73,7 +73,7 @@ export class PagePresence {
         for (const clientID of added.concat(updated)) {
           this.react.clientStates.set(
             clientID,
-            cloneDeep(this.awareness.getStates().get(clientID)) as any,
+            cloneDeep(this.awareness.getStates().get(clientID)),
           );
         }
 
@@ -98,21 +98,7 @@ export class PagePresence {
         'is-public',
       );
 
-      if (groupIsPublic !== false) {
-        this.mergeLocalState({
-          user: {
-            id: nanoid(),
-
-            name: uniqueNamesGenerator({
-              dictionaries: [adjectives, animals],
-              style: 'capital',
-              separator: ' ',
-            }),
-
-            color: Color(`hsl(${Math.random() * 360}, 100%, 45%)`).hex(),
-          },
-        });
-      } else {
+      if (groupIsPublic === false) {
         const groupMemberName = groupMemberNames()(
           `${this.page.react.groupId}:${authStore().userId}`,
         ).get();
@@ -129,6 +115,20 @@ export class PagePresence {
             ).hex(),
           },
         });
+      } else {
+        this.mergeLocalState({
+          user: {
+            id: nanoid(),
+
+            name: uniqueNamesGenerator({
+              dictionaries: [adjectives, animals],
+              style: 'capital',
+              separator: ' ',
+            }),
+
+            color: Color(`hsl(${Math.random() * 360}, 100%, 45%)`).hex(),
+          },
+        });
       }
     });
   }
@@ -138,19 +138,9 @@ export class PagePresence {
   }
 
   mergeLocalState(obj: object) {
-    if (this.awareness.states.get(this.awareness.doc.clientID) != null) {
-      this.awareness.setLocalState(
-        mergeWith(this.awareness.getLocalState(), obj, (_value, srcValue) => {
-          if (isArray(srcValue)) {
-            return srcValue;
-          } else {
-            return undefined;
-          }
-        }),
-      );
-    } else {
-      (this.awareness as any).localStateBackup = mergeWith(
-        (this.awareness as any).localStateBackup,
+    if (this.awareness.states.get(this.awareness.doc.clientID) == null) {
+      this.awareness.localStateBackup = mergeWith(
+        this.awareness.localStateBackup,
         obj,
         (_value, srcValue) => {
           if (isArray(srcValue)) {
@@ -159,6 +149,16 @@ export class PagePresence {
             return undefined;
           }
         },
+      );
+    } else {
+      this.awareness.setLocalState(
+        mergeWith(this.awareness.getLocalState(), obj, (_value, srcValue) => {
+          if (isArray(srcValue)) {
+            return srcValue;
+          } else {
+            return undefined;
+          }
+        }),
       );
     }
   }

@@ -236,8 +236,8 @@ export async function unlockGroupContentKeyring(
           },
         },
       );
-    } catch (_error) {
-      throw new Error('Password is incorrect.');
+    } catch (error) {
+      throw new Error('Password is incorrect.', { cause: error });
     }
   }
 

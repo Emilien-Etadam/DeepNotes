@@ -8,6 +8,8 @@ import { groupRequestNames } from 'src/code/pages/computed/group-request-names';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function rejectJoinRequest(input: {
   groupId: string;
   patientId: string;
@@ -24,7 +26,7 @@ export async function rejectJoinRequest(input: {
       'ws',
     )}/groups.joinRequests.reject`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   async function step1(): Promise<
@@ -76,12 +78,6 @@ export async function rejectJoinRequest(input: {
         },
       }),
     };
-  }
-
-  async function step3(
-    _input: (typeof rejectProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

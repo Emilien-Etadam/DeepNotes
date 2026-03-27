@@ -6,7 +6,7 @@ export interface DataAuthParams {
   suffix: string;
 }
 
-export interface DataField<T = any> {
+export interface DataField<T = unknown> {
   dontCache?: boolean;
   cacheLocally?: boolean;
   notifyUpdates?: boolean;
@@ -22,11 +22,11 @@ export interface DataField<T = any> {
     suffix: string;
 
     dataAbstraction: DataAbstraction;
-  }) => any | Promise<any>;
+  }) => unknown;
   set?: (params: {
     model: T;
 
     suffix: string;
-    value: any;
-  }) => any;
+    value: unknown;
+  }) => unknown;
 }

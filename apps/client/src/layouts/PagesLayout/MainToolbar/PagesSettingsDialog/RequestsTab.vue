@@ -160,7 +160,8 @@ async function cancelSelectedRequests() {
         });
 
         numSuccess++;
-      } catch (_error) {
+      } catch (error) {
+        console.error(error);
         numFailed++;
       }
     }

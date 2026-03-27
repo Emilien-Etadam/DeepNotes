@@ -79,7 +79,7 @@ export function isTokenExpiring(
   expirationDate: Date,
   tokenDuration: number,
 ): boolean {
-  const timeDifference = expirationDate.getTime() - new Date().getTime();
+  const timeDifference = expirationDate.getTime() - Date.now();
   const timeExpired = tokenDuration - timeDifference;
 
   return timeExpired / tokenDuration >= 0.75;

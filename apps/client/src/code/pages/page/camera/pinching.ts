@@ -85,7 +85,7 @@ export class PagePinching {
     delete this.react.pointers[upEvent.pointerId];
   };
 
-  private _update = (event: PointerEvent) => {
+  private readonly _update = (event: PointerEvent) => {
     if (!(event.pointerId in this.react.pointers)) {
       return;
     }

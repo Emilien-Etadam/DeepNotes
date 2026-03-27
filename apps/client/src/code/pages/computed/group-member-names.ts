@@ -69,7 +69,8 @@ export const groupMemberNames = once(() =>
         _getLogger.info(`${key}: ${result}`);
 
         return { text: result, status: 'success' };
-      } catch (_error) {
+      } catch (error) {
+        mainLogger.error(error);
         _getLogger.info(`${key}: Failed to decrypt page title`);
 
         return { text: '[Encrypted name]', status: 'success' };

@@ -7,6 +7,8 @@ import { textToBytes } from '@stdlib/misc';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function sendJoinRequest(input: {
   groupId: string;
   userName: string;
@@ -17,7 +19,7 @@ export async function sendJoinRequest(input: {
       'ws',
     )}/groups.joinRequests.send`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   async function step1(): Promise<
@@ -74,12 +76,6 @@ export async function sendJoinRequest(input: {
         },
       }),
     };
-  }
-
-  async function step3(
-    _input: (typeof sendProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

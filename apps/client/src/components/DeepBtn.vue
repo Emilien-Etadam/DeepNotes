@@ -12,44 +12,23 @@
 </template>
 
 <script lang="ts">
+import type { QBtnProps } from 'quasar';
+
+import type { DeepBtnBaseProps } from './useDeepBtnBase';
+
 export default {
   inheritAttrs: false,
 };
 
-export interface DeepBtnProps extends QBtnProps {
-  delay?: boolean;
-}
+export interface DeepBtnProps extends QBtnProps, DeepBtnBaseProps {}
 </script>
 
 <script setup lang="ts">
-import { sleep } from '@stdlib/misc';
-import type { QBtnProps } from 'quasar';
+import { useDeepBtnBase } from './useDeepBtnBase';
 
 const props = defineProps<DeepBtnProps>();
 
-const loading = ref(false);
-
-async function onClick(args: any[], attrs: any) {
-  if (attrs.onClick == null) {
-    return;
-  }
-
-  args[0].preventDefault();
-
-  loading.value = true;
-
-  if (props.delay) {
-    await sleep(500);
-  }
-
-  try {
-    await attrs.onClick(...args);
-  } catch (error) {
-    mainLogger.error(error);
-  }
-
-  loading.value = false;
-}
+const { loading, onClick } = useDeepBtnBase(props);
 </script>
 
 <style scoped lang="scss">

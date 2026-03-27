@@ -86,14 +86,32 @@ export async function tryRefreshTokens(): Promise<void> {
 
     moduleLogger.info('Reencrypting keys');
 
-    internals.personalGroupId = internals.storage.getItem('personalGroupId')!;
+    const personalGroupId = internals.storage.getItem('personalGroupId');
+    const publicKeyringBase64 = internals.storage.getItem('publicKeyring');
+    const encryptedPrivateKeyringBase64 = internals.storage.getItem(
+      'encryptedPrivateKeyring',
+    );
+    const encryptedSymmetricKeyringBase64 = internals.storage.getItem(
+      'encryptedSymmetricKeyring',
+    );
+
+    if (
+      personalGroupId == null ||
+      publicKeyringBase64 == null ||
+      encryptedPrivateKeyringBase64 == null ||
+      encryptedSymmetricKeyringBase64 == null
+    ) {
+      throw new Error('Missing required local keyring values.');
+    }
+
+    internals.personalGroupId = personalGroupId;
 
     const publicKeyring = createKeyring(
-      base64ToBytesSafe(internals.storage.getItem('publicKeyring'))!,
+      base64ToBytesSafe(publicKeyringBase64),
     );
 
     const privateKeyring = createPrivateKeyring(
-      base64ToBytes(internals.storage.getItem('encryptedPrivateKeyring')!),
+      base64ToBytes(encryptedPrivateKeyringBase64),
     ).unwrapSymmetric(oldSessionKey, {
       associatedData: {
         context: 'SessionUserPrivateKeyring',
@@ -104,7 +122,7 @@ export async function tryRefreshTokens(): Promise<void> {
     internals.keyPair = wrapKeyPair(publicKeyring, privateKeyring);
 
     internals.symmetricKeyring = createSymmetricKeyring(
-      base64ToBytes(internals.storage.getItem('encryptedSymmetricKeyring')!),
+      base64ToBytes(encryptedSymmetricKeyringBase64),
     ).unwrapSymmetric(oldSessionKey, {
       associatedData: {
         context: 'SessionUserSymmetricKeyring',

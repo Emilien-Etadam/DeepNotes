@@ -104,8 +104,9 @@ export async function createNotifications(input: {
   return [
     // Agent
 
-    ...(input.notifications.agent != null
-      ? [
+    ...(input.notifications.agent == null
+      ? []
+      : [
           {
             recipients: {
               [agentId]: {
@@ -128,8 +129,7 @@ export async function createNotifications(input: {
               },
             ),
           },
-        ]
-      : []),
+        ]),
 
     // Target
 
@@ -166,8 +166,9 @@ export async function createNotifications(input: {
 
     // Others
 
-    ...(input.notifications.observers != null
-      ? [
+    ...(input.notifications.observers == null
+      ? []
+      : [
           {
             recipients: objFromEntries(
               objEntries(input.recipients)
@@ -199,7 +200,6 @@ export async function createNotifications(input: {
               },
             ),
           },
-        ]
-      : []),
+        ]),
   ];
 }

@@ -192,7 +192,8 @@ async function rejectSelectedInvitations() {
         await rejectJoinInvitation({ groupId });
 
         numSuccess++;
-      } catch (_error) {
+      } catch (error) {
+        console.error(error);
         numFailed++;
       }
     }

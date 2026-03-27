@@ -12,6 +12,8 @@ import sodium from 'libsodium-wrappers-sumo';
 import { deriveUserValues } from 'src/code/crypto';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
+function noopStep3(_input: unknown) {}
+
 export async function rotateUserKeys(input: { password: string }) {
   // Get user email
 
@@ -36,7 +38,7 @@ export async function rotateUserKeys(input: { password: string }) {
       'ws',
     )}/users.account.rotateKeys`,
 
-    steps: [step1, step2, step3],
+    steps: [step1, step2, noopStep3],
   });
 
   function step1(): (typeof rotateKeysProcedureStep1)['_def']['_input_in'] {
@@ -172,11 +174,11 @@ export async function rotateUserKeys(input: { password: string }) {
             groupId,
             {
               encryptedAccessKeyring:
-                encryptedAccessKeyring != null
-                  ? createSymmetricKeyring(encryptedAccessKeyring)
+                encryptedAccessKeyring == null
+                  ? null
+                  : createSymmetricKeyring(encryptedAccessKeyring)
                       .unwrapAsymmetric(oldPrivateKeyring)
-                      .wrapAsymmetric(newKeyPair, newPublicKeyring).wrappedValue
-                  : null,
+                      .wrapAsymmetric(newKeyPair, newPublicKeyring).wrappedValue,
               encryptedInternalKeyring: createSymmetricKeyring(
                 encryptedInternalKeyring,
               )
@@ -192,11 +194,11 @@ export async function rotateUserKeys(input: { password: string }) {
             groupId,
             {
               encryptedAccessKeyring:
-                encryptedAccessKeyring != null
-                  ? createSymmetricKeyring(encryptedAccessKeyring)
+                encryptedAccessKeyring == null
+                  ? null
+                  : createSymmetricKeyring(encryptedAccessKeyring)
                       .unwrapAsymmetric(oldPrivateKeyring)
-                      .wrapAsymmetric(newKeyPair, newPublicKeyring).wrappedValue
-                  : null,
+                      .wrapAsymmetric(newKeyPair, newPublicKeyring).wrappedValue,
               encryptedInternalKeyring: createSymmetricKeyring(
                 encryptedInternalKeyring,
               )
@@ -207,12 +209,6 @@ export async function rotateUserKeys(input: { password: string }) {
         ),
       ),
     };
-  }
-
-  async function step3(
-    _input: (typeof rotateKeysProcedureStep2)['_def']['_output_out'],
-  ) {
-    //
   }
 
   return promise;

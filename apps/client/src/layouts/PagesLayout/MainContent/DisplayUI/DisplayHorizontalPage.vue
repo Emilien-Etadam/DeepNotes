@@ -53,10 +53,10 @@
 <script setup lang="ts">
 import { watchUntilTrue } from '@stdlib/vue';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';
-import { appPageUrl } from 'src/code/utils/app-url';
 import { groupNames } from 'src/code/pages/computed/group-names';
 import { pageGroupIds } from 'src/code/pages/computed/page-group-id';
 import { getPageTitle } from 'src/code/pages/utils';
+import { appPageUrl } from 'src/code/utils/app-url';
 import { isCtrlDown } from 'src/code/utils/misc';
 
 const props = defineProps<{

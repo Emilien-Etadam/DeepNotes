@@ -68,6 +68,99 @@ function handleInsertYoutubeVideo(page: Page): void {
     );
 }
 
+interface DirectionShortcutConfig {
+  code: 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown';
+  deltaX: number;
+  deltaY: number;
+}
+
+const directionShortcutConfigs: DirectionShortcutConfig[] = [
+  { code: 'ArrowLeft', deltaX: -1, deltaY: 0 },
+  { code: 'ArrowRight', deltaX: 1, deltaY: 0 },
+  { code: 'ArrowUp', deltaX: 0, deltaY: -1 },
+  { code: 'ArrowDown', deltaX: 0, deltaY: 1 },
+];
+
+function registerDirectionShortcuts(): KeyboardShortcut[] {
+  return directionShortcutConfigs.map(({ code, deltaX, deltaY }) => ({
+    code,
+    action: (page) =>
+      page.selection.shift(
+        new Vec2(
+          deltaX / page.camera.react.zoom,
+          deltaY / page.camera.react.zoom,
+        ),
+      ),
+    when: (_, ctx) => !ctx.isEditingInput,
+  }));
+}
+
+function createToggleMarkShortcuts(
+  marks: Array<{
+    code: string;
+    mark: string;
+    ctrl?: boolean;
+    shift?: boolean;
+    alt?: boolean;
+  }>,
+  when: KeyboardShortcut['when'],
+): KeyboardShortcut[] {
+  return marks.map(({ code, mark, ctrl, shift, alt }) => ({
+    code,
+    ctrl,
+    shift,
+    alt,
+    action: (page: Page) => page.selection.toggleMark(mark),
+    when,
+  }));
+}
+
+function createTextAlignShortcuts(
+  aligns: Array<{ code: string; align: string }>,
+  when: KeyboardShortcut['when'],
+): KeyboardShortcut[] {
+  return aligns.map(({ code, align }) => ({
+    code,
+    ctrl: true,
+    shift: true,
+    action: (page: Page) =>
+      page.selection.format((chain) => chain.setTextAlign(align)),
+    when,
+  }));
+}
+
+function createHeadingShortcuts(
+  mode: 'editing' | 'non-editing',
+): KeyboardShortcut[] {
+  const when: KeyboardShortcut['when'] =
+    mode === 'editing'
+      ? (_, ctx) => ctx.isEditingElem
+      : (_, ctx) => !ctx.isEditingInput;
+
+  const levels: Array<{ code: string; level: number }> = [
+    { code: 'Digit1', level: 1 },
+    { code: 'Digit2', level: 2 },
+    { code: 'Digit3', level: 3 },
+  ];
+
+  if (mode === 'editing') {
+    return levels.map(({ code, level }) => ({
+      code,
+      alt: true,
+      action: (page: Page) =>
+        page.selection.format((chain) => chain.toggleHeading({ level })),
+      when,
+    }));
+  }
+
+  return levels.map(({ code, level }) => ({
+    code,
+    alt: true,
+    action: (page: Page) => page.selection.toggleNode('heading', { level }),
+    when,
+  }));
+}
+
 export const keyboardShortcuts: KeyboardShortcut[] = [
   // --- Editing only (isEditingElem) ---
   {
@@ -82,27 +175,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
       page.selection.format((chain) => chain.clearNodes().unsetAllMarks()),
     when: (_, ctx) => ctx.isEditingElem,
   },
-  {
-    code: 'Digit1',
-    alt: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.toggleHeading({ level: 1 })),
-    when: (_, ctx) => ctx.isEditingElem,
-  },
-  {
-    code: 'Digit2',
-    alt: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.toggleHeading({ level: 2 })),
-    when: (_, ctx) => ctx.isEditingElem,
-  },
-  {
-    code: 'Digit3',
-    alt: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.toggleHeading({ level: 3 })),
-    when: (_, ctx) => ctx.isEditingElem,
-  },
+  ...createHeadingShortcuts('editing'),
   {
     code: 'Digit3',
     alt: true,
@@ -282,31 +355,18 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     action: openTakeScreenshotDialog,
     when: (_, ctx) => !ctx.isEditingInput,
   },
-  {
-    code: 'KeyB',
-    ctrl: true,
-    action: (page) => page.selection.toggleMark('bold'),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'KeyI',
-    ctrl: true,
-    action: (page) => page.selection.toggleMark('italic'),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'KeyX',
-    ctrl: true,
-    shift: true,
-    action: (page) => page.selection.toggleMark('strike'),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'KeyU',
-    ctrl: true,
-    action: (page) => page.selection.toggleMark('underline'),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
+  ...createToggleMarkShortcuts(
+    [
+      { code: 'KeyB', mark: 'bold', ctrl: true },
+      { code: 'KeyI', mark: 'italic', ctrl: true },
+      { code: 'KeyX', mark: 'strike', ctrl: true, shift: true },
+      { code: 'KeyU', mark: 'underline', ctrl: true },
+      { code: 'Comma', mark: 'subscript', ctrl: true },
+      { code: 'Period', mark: 'superscript', ctrl: true },
+      { code: 'KeyE', mark: 'code', ctrl: true },
+    ],
+    (_, ctx) => !ctx.isEditingInput,
+  ),
   {
     code: 'Space',
     ctrl: true,
@@ -314,55 +374,20 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
       page.selection.format((chain) => chain.clearNodes().unsetAllMarks()),
     when: (_, ctx) => !ctx.isEditingInput,
   },
-  {
-    code: 'KeyL',
-    ctrl: true,
-    shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.setTextAlign('left')),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'KeyE',
-    ctrl: true,
-    shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.setTextAlign('center')),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'KeyR',
-    ctrl: true,
-    shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.setTextAlign('right')),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'KeyJ',
-    ctrl: true,
-    shift: true,
-    action: (page) =>
-      page.selection.format((chain) => chain.setTextAlign('justify')),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
+  ...createTextAlignShortcuts(
+    [
+      { code: 'KeyL', align: 'left' },
+      { code: 'KeyE', align: 'center' },
+      { code: 'KeyR', align: 'right' },
+      { code: 'KeyJ', align: 'justify' },
+    ],
+    (_, ctx) => !ctx.isEditingInput,
+  ),
   {
     code: 'KeyH',
     ctrl: true,
     shift: true,
     action: (page) => page.selection.format((chain) => chain.toggleHighlight()),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'Comma',
-    ctrl: true,
-    action: (page) => page.selection.toggleMark('subscript'),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'Period',
-    ctrl: true,
-    action: (page) => page.selection.toggleMark('superscript'),
     when: (_, ctx) => !ctx.isEditingInput,
   },
   {
@@ -378,30 +403,7 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     action: (page) => page.selection.format((chain) => chain.unsetMark('link')),
     when: (_, ctx) => !ctx.isEditingInput,
   },
-  {
-    code: 'KeyE',
-    ctrl: true,
-    action: (page) => page.selection.toggleMark('code'),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'Digit1',
-    alt: true,
-    action: (page) => page.selection.toggleNode('heading', { level: 1 }),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'Digit2',
-    alt: true,
-    action: (page) => page.selection.toggleNode('heading', { level: 2 }),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'Digit3',
-    alt: true,
-    action: (page) => page.selection.toggleNode('heading', { level: 3 }),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
+  ...createHeadingShortcuts('non-editing'),
   {
     code: 'Digit0',
     alt: true,
@@ -473,28 +475,5 @@ export const keyboardShortcuts: KeyboardShortcut[] = [
     },
     when: (_, ctx) => !ctx.isEditingInput && ctx.activeElem != null,
   },
-  {
-    code: 'ArrowLeft',
-    action: (page) =>
-      page.selection.shift(new Vec2(-(1 / page.camera.react.zoom), 0)),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'ArrowRight',
-    action: (page) =>
-      page.selection.shift(new Vec2(1 / page.camera.react.zoom, 0)),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'ArrowUp',
-    action: (page) =>
-      page.selection.shift(new Vec2(0, -(1 / page.camera.react.zoom))),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
-  {
-    code: 'ArrowDown',
-    action: (page) =>
-      page.selection.shift(new Vec2(0, 1 / page.camera.react.zoom)),
-    when: (_, ctx) => !ctx.isEditingInput,
-  },
+  ...registerDirectionShortcuts(),
 ];

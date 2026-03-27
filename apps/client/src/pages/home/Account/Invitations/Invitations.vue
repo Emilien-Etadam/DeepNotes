@@ -117,9 +117,9 @@ async function createInvite() {
     });
     const path = `/accept-invite/${token}`;
     lastInviteLink.value =
-      globalThis.window !== undefined
-        ? `${globalThis.location.origin}${globalThis.location.pathname}${multiModePath(path)}`
-        : path;
+      globalThis.window === undefined
+        ? path
+        : `${globalThis.location.origin}${globalThis.location.pathname}${multiModePath(path)}`;
     $quasar().notify({
       message: 'Invitation created. Share the link with the user.',
       type: 'positive',

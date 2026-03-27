@@ -13,7 +13,6 @@
       <q-card-section style="padding: 24px">
         <EvaluatedPasswordField
           label="New password"
-          autocomplete="new-password"
           dense
           v-model="password"
         />
@@ -22,7 +21,6 @@
 
         <PasswordField
           label="Repeat new password"
-          autocomplete="new-password"
           dense
           v-model="repeatPassword"
         />

@@ -6,6 +6,7 @@
     <img
       ref="imageElem"
       v-bind="node.attrs"
+      :alt="node.attrs.alt ?? ''"
       draggable="true"
       data-drag-handle
     />

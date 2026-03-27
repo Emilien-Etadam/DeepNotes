@@ -211,10 +211,10 @@ export const PageArrow = once(
           }),
 
           sourceNote: computed(
-            () => this.page.notes.react.map[this.react.collab.source as string],
+            () => this.page.notes.react.map[this.react.collab.source],
           ),
           targetNote: computed(
-            () => this.page.notes.react.map[this.react.collab.target as string],
+            () => this.page.notes.react.map[this.react.collab.target],
           ),
 
           sourcePos: computed(() => {
@@ -289,12 +289,12 @@ export const PageArrow = once(
 
             for (
               let i = 0;
-              i < (this.react.collab.sourceAnchor != null ? 1 : 2);
+              i < (this.react.collab.sourceAnchor == null ? 2 : 1);
               i++
             ) {
               for (
                 let j = 0;
-                j < (this.react.collab.targetAnchor != null ? 1 : 2);
+                j < (this.react.collab.targetAnchor == null ? 2 : 1);
                 j++
               ) {
                 const sourceNormal = new Vec2(
@@ -355,9 +355,9 @@ export const PageArrow = once(
               return this.react.sourcePos.add(
                 this.react.halfSizes.source
                   .mul(
-                    this.react.collab.sourceAnchor != null
-                      ? new Vec2(this.react.collab.sourceAnchor)
-                      : this.react.normals.source,
+                    this.react.collab.sourceAnchor == null
+                      ? this.react.normals.source
+                      : new Vec2(this.react.collab.sourceAnchor),
                   )
                   .grow(new Vec2(ARROW_OFFSET)),
               );
@@ -365,22 +365,25 @@ export const PageArrow = once(
           }),
           targetHeadPos: computed(() => {
             if (this.react.collab.bodyType === 'line') {
-              return this.react.targetNote != null
-                ? (getLineRectIntersection(
-                    new Line(this.react.sourcePos, this.react.targetPos),
-                    (this.react.interregional
-                      ? this.react.targetNote.react.islandRect
-                      : this.react.targetNote.react.relativeRect
-                    ).grow(new Vec2(ARROW_OFFSET)),
-                  ) ?? this.react.targetPos)
-                : this.react.targetPos;
+              if (this.react.targetNote == null) {
+                return this.react.targetPos;
+              }
+              const targetRect = this.react.interregional
+                ? this.react.targetNote.react.islandRect
+                : this.react.targetNote.react.relativeRect;
+              return (
+                getLineRectIntersection(
+                  new Line(this.react.sourcePos, this.react.targetPos),
+                  targetRect.grow(new Vec2(ARROW_OFFSET)),
+                ) ?? this.react.targetPos
+              );
             } else {
               return this.react.targetPos.add(
                 this.react.halfSizes.target
                   .mul(
-                    this.react.collab.targetAnchor != null
-                      ? new Vec2(this.react.collab.targetAnchor)
-                      : this.react.normals.target,
+                    this.react.collab.targetAnchor == null
+                      ? this.react.normals.target
+                      : new Vec2(this.react.collab.targetAnchor),
                   )
                   .grow(new Vec2(ARROW_OFFSET)),
               );
@@ -530,9 +533,9 @@ export const PageArrow = once(
           return;
         }
 
-        const path = document.querySelector(
+        const path = document.querySelector<SVGPathElement>(
           `#arrow-${this.id} .arrow`,
-        ) as SVGPathElement;
+        );
 
         if (path == null) {
           return;

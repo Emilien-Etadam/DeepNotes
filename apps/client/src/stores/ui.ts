@@ -5,7 +5,9 @@ function trackProp<State>(state: State, prop: Extract<keyof State, string>) {
   watch(
     () => state[prop],
     (value) => {
-      internals.localStorage.setItem(prop, String(value));
+      const serializedValue =
+        typeof value === 'string' ? value : JSON.stringify(value);
+      internals.localStorage.setItem(prop, serializedValue);
     },
   );
 }

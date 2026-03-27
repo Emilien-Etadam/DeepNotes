@@ -1,74 +1,90 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    meta: { requiresGuest: true },
+const homeLayout = () => import('src/layouts/HomeLayout/HomeLayout.vue');
+const helpLayout = () => import('src/pages/home/Help/HelpLayout.vue');
+
+type HomeRouteConfig = {
+  path: string;
+  name: string;
+  component: () => Promise<unknown>;
+  layout?: () => Promise<unknown>;
+  meta?: RouteRecordRaw['meta'];
+};
+
+function createLayoutRoute(config: HomeRouteConfig): RouteRecordRaw {
+  return {
+    path: config.path,
+    component: config.layout ?? homeLayout,
+    ...(config.meta && { meta: config.meta }),
     children: [
       {
         path: '',
-        name: 'home',
-        component: () => import('src/pages/home/Login/Login.vue'),
+        name: config.name,
+        component: config.component,
       },
     ],
-  },
+  };
+}
 
-  {
-    path: '/login',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    meta: { requiresGuest: true },
-    children: [
-      {
-        path: '',
-        name: 'login',
-        component: () => import('src/pages/home/Login/Login.vue'),
-      },
-    ],
-  },
-
-  {
-    path: '/setup',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    meta: { requiresGuest: true },
-    children: [
-      {
-        path: '',
-        name: 'setup',
-        component: () => import('src/pages/home/Setup.vue'),
-      },
-    ],
-  },
-
-  {
-    path: '/register',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    meta: { requiresGuest: true },
-    children: [
-      {
-        path: '',
-        name: 'register',
-        component: () => import('src/pages/home/Register.vue'),
-      },
-    ],
-  },
-
+const guestPaths = [
+  { path: '/', name: 'home', page: 'Login/Login' },
+  { path: '/login', name: 'login', page: 'Login/Login' },
+  { path: '/setup', name: 'setup', page: 'Setup' },
+  { path: '/register', name: 'register', page: 'Register' },
   {
     path: '/finish-registration',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    meta: { requiresGuest: true },
-    children: [
-      {
-        path: '',
-        name: 'finish-registration',
-        component: () => import('src/pages/home/FinishRegistration.vue'),
-      },
-    ],
+    name: 'finish-registration',
+    page: 'FinishRegistration',
   },
+  {
+    path: '/accept-invite/:token',
+    name: 'accept-invite',
+    page: 'AcceptInvite',
+  },
+] as const;
+
+const guestHomeRoutes = guestPaths.map(({ path, name, page }) =>
+  createLayoutRoute({
+    path,
+    name,
+    component: () => import(`src/pages/home/${page}.vue`),
+    meta: { requiresGuest: true },
+  }),
+);
+
+const helpPages = [
+  'what-is-deepnotes',
+  'creating-group',
+  'inviting-users',
+  'joining-group',
+  'forgot-password',
+  'canvas-navigation',
+  'notes-and-arrows',
+  'export-for-ai',
+  'encryption',
+  'keyboard-shortcuts',
+] as const;
+
+const helpChildRoutes = helpPages.map((slug) => {
+  const pascal = slug
+    .split('-')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join('');
+
+  return createLayoutRoute({
+    path: slug,
+    name: `help/${slug}`,
+    component: () => import(`src/pages/home/Help/Pages/${pascal}.vue`),
+    layout: helpLayout,
+  });
+});
+
+const routes: RouteRecordRaw[] = [
+  ...guestHomeRoutes,
 
   {
     path: '/verify-email/:code',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
+    component: homeLayout,
     children: [
       {
         path: '',
@@ -80,152 +96,20 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/help',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
+    component: homeLayout,
     children: [
       {
         path: '',
         name: 'help',
         component: () => import('src/pages/home/Help/Help.vue'),
       },
-      {
-        path: 'what-is-deepnotes',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/what-is-deepnotes',
-            component: () =>
-              import('src/pages/home/Help/Pages/WhatIsDeepNotes.vue'),
-          },
-        ],
-      },
-      {
-        path: 'creating-group',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/creating-group',
-            component: () =>
-              import('src/pages/home/Help/Pages/CreatingGroup.vue'),
-          },
-        ],
-      },
-      {
-        path: 'inviting-users',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/inviting-users',
-            component: () =>
-              import('src/pages/home/Help/Pages/InvitingUsers.vue'),
-          },
-        ],
-      },
-      {
-        path: 'joining-group',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/joining-group',
-            component: () =>
-              import('src/pages/home/Help/Pages/JoiningGroup.vue'),
-          },
-        ],
-      },
-      {
-        path: 'forgot-password',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/forgot-password',
-            component: () =>
-              import('src/pages/home/Help/Pages/ForgotPassword.vue'),
-          },
-        ],
-      },
-      {
-        path: 'canvas-navigation',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/canvas-navigation',
-            component: () =>
-              import('src/pages/home/Help/Pages/CanvasNavigation.vue'),
-          },
-        ],
-      },
-      {
-        path: 'notes-and-arrows',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/notes-and-arrows',
-            component: () =>
-              import('src/pages/home/Help/Pages/NotesAndArrows.vue'),
-          },
-        ],
-      },
-      {
-        path: 'export-for-ai',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/export-for-ai',
-            component: () =>
-              import('src/pages/home/Help/Pages/ExportForAI.vue'),
-          },
-        ],
-      },
-      {
-        path: 'encryption',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/encryption',
-            component: () =>
-              import('src/pages/home/Help/Pages/Encryption.vue'),
-          },
-        ],
-      },
-      {
-        path: 'keyboard-shortcuts',
-        component: () => import('src/pages/home/Help/HelpLayout.vue'),
-        children: [
-          {
-            path: '',
-            name: 'help/keyboard-shortcuts',
-            component: () =>
-              import('src/pages/home/Help/Pages/KeyboardShortcuts.vue'),
-          },
-        ],
-      },
-    ],
-  },
-
-  {
-    path: '/accept-invite/:token',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
-    meta: { requiresGuest: true },
-    children: [
-      {
-        path: '',
-        name: 'accept-invite',
-        component: () => import('src/pages/home/AcceptInvite.vue'),
-      },
+      ...helpChildRoutes,
     ],
   },
 
   {
     path: '/account',
-    component: () => import('src/layouts/HomeLayout/HomeLayout.vue'),
+    component: homeLayout,
     meta: { requiresAuth: true },
     children: [
       {

@@ -36,11 +36,9 @@ export function createKeyring(
 
       this.keys = decodeKeys(_wrappedData.content);
 
-      if (_wrappedData.metadata.keys == null) {
-        _wrappedData.metadata.keys = new Array(this.keys.length).fill({
-          rotationDate: new Date(),
-        });
-      }
+      _wrappedData.metadata.keys ??= new Array(this.keys.length).fill({
+        rotationDate: new Date(),
+      });
 
       this.trimExpiredKeys();
     }
@@ -52,7 +50,8 @@ export function createKeyring(
 
       const currentDate = new Date();
 
-      const unexpiredIndexes = this.keys
+      const unexpiredIndexes = new Set(
+        this.keys
         .map((_, index) => index)
         .filter((index) => {
           return (
@@ -60,15 +59,16 @@ export function createKeyring(
             addDays(_wrappedData.metadata.keys[index].rotationDate, 1) >
               currentDate
           );
-        });
+        }),
+      );
 
       this.keys = this.keys.filter((_, index) =>
-        unexpiredIndexes.includes(index),
+        unexpiredIndexes.has(index),
       );
       _wrappedData.content = encodeKeys(this.keys);
 
       _wrappedData.metadata.keys = _wrappedData.metadata.keys.filter(
-        (_, index) => unexpiredIndexes.includes(index),
+        (_, index) => unexpiredIndexes.has(index),
       );
     }
 

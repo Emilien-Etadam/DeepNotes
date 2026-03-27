@@ -13,10 +13,10 @@ export class PageRegions {
   fromId(regionId: string): PageRegion {
     const note = this.page.notes.fromId(regionId);
 
-    if (note != null) {
-      return note;
-    } else {
+    if (note == null) {
       return this.page;
+    } else {
+      return note;
     }
   }
 

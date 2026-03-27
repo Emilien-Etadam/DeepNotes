@@ -2,7 +2,7 @@ export async function createPageBacklink(input: {
   sourcePageId: string;
   targetUrl: string;
 }) {
-  const pageLinkMatch = input.targetUrl.match(/\/pages\/([\w-]{21})(?:$|\/)/);
+  const pageLinkMatch = /\/pages\/([\w-]{21})(?:$|\/)/.exec(input.targetUrl);
 
   if (pageLinkMatch == null) {
     return;

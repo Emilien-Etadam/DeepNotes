@@ -25,12 +25,9 @@ export class ConsoleOutput {
 }
 
 export class Logger {
-  private ctx: string;
+  private ctx = '';
   /** Tableau d'opérations (comme unilogr) pour compat avec logger.client.ts qui fait .operations.unshift() */
   operations: unknown[] = [];
-  constructor(_pipeline?: unknown) {
-    this.ctx = '';
-  }
   error(msg: unknown, ...args: unknown[]) {
     console.error('[error]', this.ctx ? `(${this.ctx})` : '', msg, ...args);
     return this;

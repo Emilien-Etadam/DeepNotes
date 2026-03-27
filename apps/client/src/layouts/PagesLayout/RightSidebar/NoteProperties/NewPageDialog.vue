@@ -90,7 +90,6 @@
 
                 <EvaluatedPasswordField
                   label="Group password"
-                  autocomplete="new-password"
                   v-model="groupPassword"
                 />
               </template>

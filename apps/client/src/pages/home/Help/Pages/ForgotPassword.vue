@@ -17,8 +17,8 @@
     </p>
 
     <p>
-      If you've set up two-factor authentication, your recovery codes remain your
-      only fallback. Store them securely.
+      If you've set up two-factor authentication, your recovery codes remain
+      your only fallback. Store them securely.
     </p>
   </div>
 </template>

@@ -11,7 +11,7 @@ export class PageArrows {
   readonly page: Page;
 
   readonly react = reactive({
-    map: shallowReactive({} as Record<string, PageArrow>),
+    map: shallowReactive<Record<string, PageArrow>>({}),
 
     collab: computed(() => this.page.collab.store.arrows),
   });
@@ -23,12 +23,15 @@ export class PageArrows {
   }
 
   fromId(arrowId: string | null): PageArrow | null {
-    const arrow = this.react.map[arrowId!];
-
-    if (arrow != null) {
-      return arrow;
-    } else {
+    if (arrowId == null) {
       return null;
+    }
+    const arrow = this.react.map[arrowId];
+
+    if (arrow == null) {
+      return null;
+    } else {
+      return arrow;
     }
   }
   fromIds(arrowIds: string[]): PageArrow[] {
@@ -75,7 +78,8 @@ export class PageArrows {
       this.create(arrowIds[index], index);
     }
 
-    (getYjsValue(arrowIds) as Y.Array<string>).observe((event) => {
+    const yArrowIds: Y.Array<string> = getYjsValue(arrowIds);
+    yArrowIds.observe((event) => {
       let index = 0;
 
       for (const delta of event.changes.delta) {
@@ -93,8 +97,8 @@ export class PageArrows {
   }
 
   observeMap() {
-    (getYjsValue(this.react.collab) as Y.Map<IArrowCollabOutput>).observe(
-      (event) => {
+    const yArrowMap: Y.Map<IArrowCollabOutput> = getYjsValue(this.react.collab);
+    yArrowMap.observe((event) => {
         for (const [arrowId, change] of event.changes.keys) {
           if (change.action !== 'delete') {
             continue;
@@ -128,7 +132,6 @@ export class PageArrows {
 
           delete this.react.map[arrowId];
         }
-      },
-    );
+      });
   }
 }
