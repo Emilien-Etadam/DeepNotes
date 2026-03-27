@@ -1,12 +1,13 @@
 import { hashUserEmail } from '@deeplib/data';
-import type { DeviceRow, UserRow } from '@deeplib/db';
+import type { DeviceRow } from '@deeplib/db';
 import {
   createPrivateKeyring,
   createSymmetricKeyring,
+  encodePasswordHash,
   getPasswordHashValues,
 } from '@stdlib/crypto';
 import type { DataTransaction } from '@stdlib/data';
-import { allAsyncProps, w3cEmailRegex } from '@stdlib/misc';
+import { allAsyncProps, mainLogger, w3cEmailRegex } from '@stdlib/misc';
 import { TRPCError } from '@trpc/server';
 import type { Cluster, Redis } from 'ioredis';
 import sodium from 'libsodium-wrappers-sumo';
@@ -15,10 +16,14 @@ import { nanoid } from 'nanoid';
 import { authenticator } from 'otplib';
 import { type InferProcedureOpts, publicProcedure } from 'src/trpc/helpers';
 import {
+  computePasswordHash,
+  TARGET_MEM_LIMIT,
+  TARGET_OPS_LIMIT,
   decryptRecoveryCodes,
   decryptUserAuthenticatorSecret,
   decryptUserRehashedLoginHash,
   derivePasswordValues,
+  encryptUserRehashedLoginHash,
   encryptRecoveryCodes,
   verifyRecoveryCode,
 } from 'src/utils/crypto';
@@ -87,7 +92,7 @@ export async function login({
         eb.or([
           eb('email_verified', '=', true),
           eb('email_verification_expiration_date', '>', new Date()),
-        ] as any),
+        ]),
       )
       .select([
         'id',
@@ -105,6 +110,9 @@ export async function login({
       .executeTakeFirst();
 
     if (user == null) {
+      // Run a dummy Argon2 hash to keep timing close to invalid-password path.
+      computePasswordHash(input.loginHash);
+
       await _incrementFailedLoginAttempts({
         redis: ctx.redis,
 
@@ -127,6 +135,8 @@ export async function login({
     const passwordValues = derivePasswordValues({
       password: input.loginHash,
       salt: passwordHashValues.saltBytes,
+      opsLimit: passwordHashValues.timeCost,
+      memLimit: passwordHashValues.memoryCost * 1048576,
     });
 
     const passwordIsCorrect = sodium.memcmp(
@@ -146,6 +156,35 @@ export async function login({
         message: 'Incorrect email or password.',
         code: 'UNAUTHORIZED',
       });
+    }
+
+    const currentOpsLimit = passwordHashValues.timeCost;
+    const currentMemLimit = passwordHashValues.memoryCost * 1048576;
+    if (
+      currentOpsLimit !== TARGET_OPS_LIMIT ||
+      currentMemLimit !== TARGET_MEM_LIMIT
+    ) {
+      const newPasswordValues = derivePasswordValues({
+        password: input.loginHash,
+        salt: passwordHashValues.saltBytes,
+      });
+      const rehashedPassword = encodePasswordHash(
+        newPasswordValues.hash,
+        newPasswordValues.salt,
+        TARGET_OPS_LIMIT,
+        TARGET_MEM_LIMIT / 1048576,
+      );
+
+      await dtrx.trx!
+        .updateTable('users')
+        .set({
+          encrypted_rehashed_login_hash:
+            encryptUserRehashedLoginHash(rehashedPassword),
+        })
+        .where('id', '=', user.id)
+        .execute();
+
+      mainLogger.info('Rehashed password for user', { userId: user.id });
     }
 
     // Check if email is verified
@@ -174,7 +213,7 @@ export async function login({
 
     // Check two-factor authentication
 
-    if (user!.two_factor_auth_enabled) {
+    if (user.two_factor_auth_enabled) {
       await _checkTwoFactorAuth({
         device,
 
@@ -183,11 +222,11 @@ export async function login({
 
         redis: ctx.redis,
 
-        user: user as UserRow,
+        user,
 
-        authenticatorToken: input.authenticatorToken!,
-        recoveryCode: input.recoveryCode!,
-        rememberDevice: input.rememberDevice!,
+        authenticatorToken: input.authenticatorToken,
+        recoveryCode: input.recoveryCode,
+        rememberDevice: input.rememberDevice,
 
         dtrx,
       });
@@ -197,7 +236,7 @@ export async function login({
 
     const sessionId = nanoid();
 
-    const { sessionKey } = await generateSessionValues({
+    const { sessionKey, accessToken, refreshToken } = await generateSessionValues({
       sessionId,
       userId: user.id,
       deviceId: device.id,
@@ -209,30 +248,32 @@ export async function login({
     // Return session values
 
     return {
-      userId: user!.id,
+      userId: user.id,
       sessionId,
 
       sessionKey,
+      accessToken,
+      refreshToken,
 
-      personalGroupId: user!.personal_group_id,
+      personalGroupId: user.personal_group_id,
 
-      publicKeyring: new Uint8Array(user!.public_keyring),
+      publicKeyring: new Uint8Array(user.public_keyring),
       encryptedPrivateKeyring: new Uint8Array(
-        createPrivateKeyring(user!.encrypted_private_keyring)
+        createPrivateKeyring(user.encrypted_private_keyring)
           .unwrapSymmetric(passwordValues.key, {
             associatedData: {
               context: 'UserEncryptedPrivateKeyring',
-              userId: user!.id,
+              userId: user.id,
             },
           })
           .wrappedValue,
       ),
       encryptedSymmetricKeyring: new Uint8Array(
-        createSymmetricKeyring(user!.encrypted_symmetric_keyring)
+        createSymmetricKeyring(user.encrypted_symmetric_keyring)
           .unwrapSymmetric(passwordValues.key, {
             associatedData: {
               context: 'UserEncryptedSymmetricKeyring',
-              userId: user!.id,
+              userId: user.id,
             },
           })
           .wrappedValue,
@@ -303,16 +344,22 @@ async function _incrementFailedLoginAttempts(input: {
   ]);
 }
 
+type TwoFactorUser = {
+  id: string;
+  encrypted_authenticator_secret: Uint8Array | null;
+  encrypted_recovery_codes: Uint8Array | null;
+};
+
 async function _checkTwoFactorAuth(
   input: {
     device: DeviceRow;
 
-    authenticatorToken: string;
-    recoveryCode: string;
+    authenticatorToken?: string;
+    recoveryCode?: string;
 
-    rememberDevice: boolean;
+    rememberDevice?: boolean;
 
-    user: UserRow;
+    user: TwoFactorUser;
 
     dtrx: DataTransaction;
   } & Parameters<typeof _incrementFailedLoginAttempts>[0],
@@ -322,11 +369,17 @@ async function _checkTwoFactorAuth(
   }
 
   if (input.authenticatorToken != null) {
-    await _verifyAuthenticatorToken(input);
+    await _verifyAuthenticatorToken({
+      ...input,
+      authenticatorToken: input.authenticatorToken,
+    });
     return;
   }
   if (input.recoveryCode != null) {
-    await _verifyRecoveryCode(input);
+    await _verifyRecoveryCode({
+      ...input,
+      recoveryCode: input.recoveryCode,
+    });
     return;
   }
 
@@ -339,8 +392,8 @@ async function _checkTwoFactorAuth(
 async function _verifyAuthenticatorToken(
   input: {
     device: DeviceRow;
-    user: UserRow;
-    rememberDevice: boolean;
+    user: TwoFactorUser;
+    rememberDevice?: boolean;
     dtrx: DataTransaction;
   } & Parameters<typeof _incrementFailedLoginAttempts>[0] & {
       authenticatorToken: string;
@@ -373,7 +426,7 @@ async function _verifyAuthenticatorToken(
 
 async function _verifyRecoveryCode(
   input: {
-    user: UserRow;
+    user: TwoFactorUser;
     recoveryCode: string;
     dtrx: DataTransaction;
   } & Parameters<typeof _incrementFailedLoginAttempts>[0],
@@ -397,7 +450,7 @@ async function _verifyRecoveryCode(
         .updateTable('users')
         .set({
           encrypted_recovery_codes: encryptRecoveryCodes(recoveryCodes),
-        } as any)
+        })
         .where('id', '=', input.user.id)
         .execute();
       return;

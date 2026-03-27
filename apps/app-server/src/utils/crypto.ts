@@ -8,9 +8,14 @@ import CryptoJS from 'crypto-js';
 import sodium from 'libsodium-wrappers-sumo';
 import { pack, unpack } from 'msgpackr';
 
+export const TARGET_OPS_LIMIT = 3;
+export const TARGET_MEM_LIMIT = 32 * 1048576;
+
 export function derivePasswordValues(input: {
   password: Uint8Array;
   salt?: Uint8Array;
+  opsLimit?: number;
+  memLimit?: number;
 }) {
   mainLogger.info('Started hashing password');
 
@@ -20,8 +25,8 @@ export function derivePasswordValues(input: {
     32 + 64,
     input.password,
     input.salt,
-    2,
-    32 * 1048576,
+    input.opsLimit ?? TARGET_OPS_LIMIT,
+    input.memLimit ?? TARGET_MEM_LIMIT,
     sodium.crypto_pwhash_ALG_ARGON2ID13,
   );
 
@@ -39,7 +44,11 @@ export type PasswordValues = ReturnType<typeof derivePasswordValues>;
 export function computePasswordHash(password: Uint8Array) {
   mainLogger.info('Started hashing password');
 
-  const result = sodium.crypto_pwhash_str(password, 2, 32 * 1048576);
+  const result = sodium.crypto_pwhash_str(
+    password,
+    TARGET_OPS_LIMIT,
+    TARGET_MEM_LIMIT,
+  );
 
   mainLogger.info('Finished hashing password');
 

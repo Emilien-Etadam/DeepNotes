@@ -205,8 +205,10 @@ generate_b64_key() { openssl rand -base64 32; }
 
 sed -i "s|DEV=true|DEV=false|" .env
 sed -i "s|CLIENT_APP_URL=.*|CLIENT_APP_URL=${APP_URL}|" .env
-sed -i "s|access_token_secret_here|$(generate_secret)|" .env
-sed -i "s|refresh_token_secret_here|$(generate_secret)|" .env
+ACCESS_TOKEN_SECRET_VALUE=$(generate_secret)
+REFRESH_TOKEN_SECRET_VALUE=$(generate_secret)
+sed -i "s|^ACCESS_TOKEN_SECRET=.*|ACCESS_TOKEN_SECRET=\"${ACCESS_TOKEN_SECRET_VALUE}\"|" .env
+sed -i "s|^REFRESH_TOKEN_SECRET=.*|REFRESH_TOKEN_SECRET=\"${REFRESH_TOKEN_SECRET_VALUE}\"|" .env
 sed -i "s|email_secret_here|$(generate_secret)|" .env
 sed -i "s|postgres_password_here|$(generate_secret)|g" .env
 sed -i "s|keydb_password_here|$(generate_secret)|" .env

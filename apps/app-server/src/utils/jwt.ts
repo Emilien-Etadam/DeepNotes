@@ -5,23 +5,24 @@ import {
   REFRESH_TOKEN_LONG_DURATION,
   REFRESH_TOKEN_SHORT_DURATION,
 } from '@deeplib/misc';
+import { mainLogger } from '@stdlib/misc';
 import { createDecoder, createSigner, createVerifier } from 'fast-jwt';
 
 const signAccessJWT = createSigner({
-  key: process.env.ACCESS_SECRET!,
+  key: process.env.ACCESS_TOKEN_SECRET!,
   expiresIn: ACCESS_TOKEN_DURATION,
 });
 const signShortRefreshJWT = createSigner({
-  key: process.env.REFRESH_SECRET!,
+  key: process.env.REFRESH_TOKEN_SECRET!,
   expiresIn: REFRESH_TOKEN_SHORT_DURATION,
 });
 const signLongRefreshJWT = createSigner({
-  key: process.env.REFRESH_SECRET!,
+  key: process.env.REFRESH_TOKEN_SECRET!,
   expiresIn: REFRESH_TOKEN_LONG_DURATION,
 });
 
 const _verifyAccessJWT = createVerifier({
-  key: process.env.ACCESS_SECRET!,
+  key: process.env.ACCESS_TOKEN_SECRET!,
 });
 export function verifyAccessJWT<TokenType>(
   token: string | Buffer,
@@ -29,11 +30,12 @@ export function verifyAccessJWT<TokenType>(
   try {
     return _verifyAccessJWT(token);
   } catch (error) {
+    mainLogger.error(error);
     return null;
   }
 }
 const _verifyRefreshJWT = createVerifier({
-  key: process.env.REFRESH_SECRET!,
+  key: process.env.REFRESH_TOKEN_SECRET!,
 });
 export function verifyRefreshJWT<TokenType>(
   token: string | Buffer,
@@ -41,6 +43,7 @@ export function verifyRefreshJWT<TokenType>(
   try {
     return _verifyRefreshJWT(token);
   } catch (error) {
+    mainLogger.error(error);
     return null;
   }
 }
@@ -52,6 +55,7 @@ export function decodeAccessJWT<TokenType>(
   try {
     return _decodeAccessJWT(token);
   } catch (error) {
+    mainLogger.error(error);
     return null;
   }
 }
@@ -62,6 +66,7 @@ export function decodeRefreshJWT<TokenType>(
   try {
     return _decodeRefreshJWT(token);
   } catch (error) {
+    mainLogger.error(error);
     return null;
   }
 }
