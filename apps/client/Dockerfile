@@ -13,7 +13,7 @@ ENV APP_SERVER_URL=${APP_SERVER_URL}
 ENV COLLAB_SERVER_URL=${COLLAB_SERVER_URL}
 ENV REALTIME_SERVER_URL=${REALTIME_SERVER_URL}
 
-RUN pnpm install --filter deepnotes --filter @deepnotes/client...
+RUN pnpm install
 RUN pnpm run repo:build
 RUN pnpm --filter @deepnotes/client run build:spa
 
