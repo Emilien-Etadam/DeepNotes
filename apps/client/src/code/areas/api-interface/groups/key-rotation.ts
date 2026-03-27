@@ -169,21 +169,20 @@ export async function processGroupKeyRotationValues(
               },
             },
           ),
-    groupEncryptedContentKeyring: (
-      passwordProtected
-        ? newGroupContentKeyring.wrapSymmetric(
-            groupPasswordValues?.passwordKey ??
-              (() => {
-                throw new Error('Missing group password values.');
-              })(),
-            {
-              associatedData: {
-                context: 'GroupContentKeyringPasswordProtection',
-                groupId: input.groupId,
-              },
+    groupEncryptedContentKeyring: (passwordProtected
+      ? newGroupContentKeyring.wrapSymmetric(
+          groupPasswordValues?.passwordKey ??
+            (() => {
+              throw new Error('Missing group password values.');
+            })(),
+          {
+            associatedData: {
+              context: 'GroupContentKeyringPasswordProtection',
+              groupId: input.groupId,
             },
-          )
-        : newGroupContentKeyring
+          },
+        )
+      : newGroupContentKeyring
     ).wrapSymmetric(newGroupAccessKeyring, {
       associatedData: {
         context: 'GroupContentKeyring',

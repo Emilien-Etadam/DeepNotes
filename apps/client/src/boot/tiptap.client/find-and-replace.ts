@@ -47,9 +47,7 @@ const getRegex = (
   caseSensitive: boolean,
 ): RegExp => {
   return new RegExp(
-    disableRegex
-      ? s.replaceAll(/[-/\\^$*+?.()|[\]{}]/g, String.raw`\$&`)
-      : s,
+    disableRegex ? s.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`) : s,
     caseSensitive ? 'gu' : 'gui',
   );
 };
