@@ -5,6 +5,7 @@
 
   "compilerOptions": {
     "baseUrl": ".",
+    "noImplicitAny": true,
 
     "rootDir": "src",
     "outDir": "dist",

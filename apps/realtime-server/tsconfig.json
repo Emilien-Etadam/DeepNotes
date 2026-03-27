@@ -17,6 +17,7 @@
     },
 
     "composite": false,
+    "noImplicitAny": true,
     "declaration": false,
     "declarationMap": false
   },
