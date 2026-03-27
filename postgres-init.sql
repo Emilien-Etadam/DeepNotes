@@ -490,10 +490,45 @@ CREATE INDEX page_links_target_page_id_idx ON public.page_links USING btree (tar
 
 
 --
+-- Name: page_snapshots_page_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX page_snapshots_page_id_idx ON public.page_snapshots USING btree (page_id);
+
+
+--
+-- Name: pages_group_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX pages_group_id_idx ON public.pages USING btree (group_id);
+
+
+--
+-- Name: devices_user_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX devices_user_id_idx ON public.devices USING btree (user_id);
+
+
+--
 -- Name: sessions_refresh_code_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX sessions_refresh_code_idx ON public.sessions USING btree (refresh_code);
+
+
+--
+-- Name: sessions_user_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX sessions_user_id_idx ON public.sessions USING btree (user_id);
+
+
+--
+-- Name: sessions_invalidated_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX sessions_invalidated_idx ON public.sessions USING btree (invalidated);
 
 
 --
