@@ -11,7 +11,7 @@ jobs:
       matrix:
         image: [client, app-server, collab-server, realtime-server]
     steps:
-      - uses: aquasecurity/trivy-action@master
+      - uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: ghcr.io/emilien-etadam/deepnotes-${{ matrix.image }}:latest
           format: table
