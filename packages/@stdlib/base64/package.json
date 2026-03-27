@@ -12,8 +12,11 @@
   },
   "keywords": [],
   "license": "ISC",
-  "main": "dist/index.js",
-  "module": "src/index.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "build": "tsc --build ./tsconfig.json && tsc-alias -p tsconfig.json",
     "build:watch": "concurrently \"tsc --build ./tsconfig.json --watch\" \"tsc-alias -p tsconfig.json --watch\"",
