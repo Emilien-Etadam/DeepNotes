@@ -10,55 +10,58 @@
       <div
         style="padding: 20px; display: flex; flex-direction: column"
       >
-        <q-radio
-          label="Local image:"
-          val="local"
-          dense
+        <v-radio-group
           v-model="fileType"
-        />
-
-        <Gap style="height: 12px" />
-
-        <q-file
-          label="Click here to select"
-          filled
-          dense
-          accept="image/*"
-          :disable="fileType !== 'local'"
-          v-model="localFile"
+          hide-details
         >
-          <template #prepend>
-            <q-icon name="mdi-image" />
-          </template>
-        </q-file>
+          <v-radio
+            label="Local image:"
+            value="local"
+            density="compact"
+          />
 
-        <Gap style="height: 24px" />
+          <Gap style="height: 12px" />
 
-        <q-radio
-          label="External image:"
-          val="external"
-          dense
-          v-model="fileType"
-        />
+          <v-file-input
+            variant="filled"
+            density="compact"
+            accept="image/*"
+            :disabled="fileType !== 'local'"
+            v-model="localFile"
+            label="Click here to select"
+            prepend-icon="mdi-image"
+            hide-details
+            :multiple="false"
+          />
 
-        <Gap style="height: 12px" />
+          <Gap style="height: 24px" />
 
-        <TextField
-          label="Image URL"
-          dense
-          accept="image/*"
-          :disable="fileType !== 'external'"
-          v-model="imageURL"
-          :maxlength="maxUrlLength"
-        />
+          <v-radio
+            label="External image:"
+            value="external"
+            density="compact"
+          />
 
-        <Gap style="height: 12px" />
+          <Gap style="height: 12px" />
 
-        <q-checkbox
-          label="Embed image"
-          dense
-          v-model="embedImage"
-        />
+          <TextField
+            label="Image URL"
+            dense
+            accept="image/*"
+            :disable="fileType !== 'external'"
+            v-model="imageURL"
+            :maxlength="maxUrlLength"
+          />
+
+          <Gap style="height: 12px" />
+
+          <v-checkbox
+            label="Embed image"
+            density="compact"
+            v-model="embedImage"
+            hide-details
+          />
+        </v-radio-group>
       </div>
     </template>
 
@@ -93,7 +96,7 @@ const page = computed(() => internals.pages.react.page);
 
 const fileType = ref('local');
 
-const localFile = ref<File>();
+const localFile = ref<File | File[] | null>();
 const imageURL = ref('');
 
 const embedImage = ref(false);
@@ -109,7 +112,8 @@ async function insertImage() {
     let imageBlob;
 
     if (fileType.value === 'local') {
-      imageBlob = localFile.value!;
+      const f = localFile.value;
+      imageBlob = (Array.isArray(f) ? f[0] : f)!;
     } else {
       const response = await fetch(imageURL.value);
 

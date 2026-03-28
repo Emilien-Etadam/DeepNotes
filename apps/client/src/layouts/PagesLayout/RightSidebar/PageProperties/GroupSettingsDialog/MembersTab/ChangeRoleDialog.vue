@@ -4,22 +4,23 @@
     card-style="width: 260px"
   >
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Change user role</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section style="padding: 20px">
+      <div style="padding: 20px">
         <RoleSelect
           v-model="role"
           :options="manageableRoles"
         />
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
         <DeepBtn
           flat
           label="Cancel"
@@ -33,14 +34,13 @@
           color="primary"
           @click.prevent="changeRole()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>
 
 <script setup lang="ts">
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { changeUserRole } from 'src/code/areas/api-interface/groups/change-user-role';
 import { handleError } from 'src/code/utils/misc';
 import RoleSelect from 'src/layouts/PagesLayout/RightSidebar/PageProperties/GroupSettingsDialog/RoleSelect.vue';
@@ -93,7 +93,13 @@ async function changeRole() {
       }
     }
 
-    let notifUpdateOptions: QNotifyUpdateOptions = {
+    let notifUpdateOptions: {
+      timeout?: number;
+      caption?: string;
+      message?: string;
+      color?: string;
+      html?: boolean;
+    } = {
       timeout: undefined,
       caption: undefined,
     };

@@ -4,7 +4,7 @@
 
     <Gap style="height: 8px" />
 
-    <q-list
+    <div
       style="
         border-radius: 6px;
         height: 220px;
@@ -12,14 +12,12 @@
         overflow: auto;
       "
     >
-      <q-item
+      <div
         v-if="backlinks.length === 0"
-        style="color: #b0b0b0"
+        style="padding: 12px 16px; color: #b0b0b0"
       >
-        <q-item-section>
-          <q-item-label>No backlinks available</q-item-label>
-        </q-item-section>
-      </q-item>
+        No backlinks available
+      </div>
 
       <div
         v-for="backlinkPageId in backlinks"
@@ -49,7 +47,7 @@
           </template>
         </PageItem>
       </div>
-    </q-list>
+    </div>
   </div>
 </template>
 

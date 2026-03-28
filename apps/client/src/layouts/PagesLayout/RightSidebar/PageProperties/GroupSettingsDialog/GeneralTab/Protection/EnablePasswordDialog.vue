@@ -4,13 +4,13 @@
     card-style="width: 300px"
   >
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Password protection</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section style="padding: 24px">
+      <div style="padding: 24px">
         <EvaluatedPasswordField
           label="New password"
           dense
@@ -24,11 +24,12 @@
           dense
           v-model="repeatPassword"
         />
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
         <DeepBtn
           flat
           label="Cancel"
@@ -44,7 +45,7 @@
           delay
           @click.prevent="enablePasswordProtection"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

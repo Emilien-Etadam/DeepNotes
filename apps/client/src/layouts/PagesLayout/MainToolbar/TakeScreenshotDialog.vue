@@ -10,22 +10,24 @@
       <div
         style="padding: 20px; display: flex; flex-direction: column"
       >
-        <q-input
+        <v-text-field
           label="Margin (px):"
           type="number"
-          filled
-          dense
+          variant="filled"
+          density="compact"
+          hide-details
           v-model="margin"
           style="width: 160px"
         />
 
         <Gap style="height: 16px" />
 
-        <q-input
+        <v-text-field
           label="Scale (%):"
           type="number"
-          filled
-          dense
+          variant="filled"
+          density="compact"
+          hide-details
           v-model="scale"
           style="width: 160px"
         />

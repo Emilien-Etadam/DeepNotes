@@ -4,16 +4,16 @@
     card-style="width: 300px"
   >
     <template #header>
-      <q-card-section
+      <div
         style="padding: 12px 20px"
         class="text-h6"
       >
         User details
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section style="position: relative; padding: 20px">
+      <div style="position: relative; padding: 20px">
         <TextField
           label="User display name"
           dense
@@ -43,11 +43,12 @@
         />
 
         <LoadingOverlay v-if="realtimeCtx.loading" />
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
         <DeepBtn
           label="Close"
           type="submit"
@@ -55,7 +56,7 @@
           color="primary"
           @click.prevent="dialogRef.onDialogOK()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>
