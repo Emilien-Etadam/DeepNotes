@@ -39,22 +39,20 @@
         "
       >
         <template #item="{ itemId: groupId }">
-          <q-item-section>
-            <q-item-label>
-              {{ groupNames()(groupId).get().text }}
-            </q-item-label>
-            <q-item-label caption>
-              {{
-                rolesMap()[
-                  realtimeCtx.hget(
-                    'group-member',
-                    `${groupId}:${authStore().userId}`,
-                    'role',
-                  )!
-                ]?.name
-              }}
-            </q-item-label>
-          </q-item-section>
+          <div>
+            {{ groupNames()(groupId).get().text }}
+          </div>
+          <div style="font-size: 12px; color: rgba(255, 255, 255, 0.5)">
+            {{
+              rolesMap()[
+                realtimeCtx.hget(
+                  'group-member',
+                  `${groupId}:${authStore().userId}`,
+                  'role',
+                )!
+              ]?.name
+            }}
+          </div>
         </template>
       </Checklist>
     </div>

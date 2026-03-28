@@ -3,22 +3,21 @@
     <div>
       Default user alias
 
-      <q-icon
-        name="mdi-information"
-        size="15px"
-        style="margin-top: -1px; opacity: 0.9"
+      <v-tooltip
+        location="top"
+        max-width="230"
       >
-        <q-tooltip
-          anchor="top middle"
-          self="bottom middle"
-          transition-show="jump-up"
-          transition-hide="jump-down"
-          max-width="230px"
-        >
-          This is your default name in collaborative groups. This value is
-          encrypted, unreadable to the server.
-        </q-tooltip>
-      </q-icon>
+        <template #activator="{ props: tipProps }">
+          <v-icon
+            v-bind="tipProps"
+            icon="mdi-information"
+            size="15"
+            style="margin-top: -1px; opacity: 0.9"
+          />
+        </template>
+        This is your default name in collaborative groups. This value is
+        encrypted, unreadable to the server.
+      </v-tooltip>
     </div>
 
     <Gap style="height: 10px" />
@@ -34,7 +33,7 @@
 
     <Gap style="height: 24px" />
 
-    <q-separator />
+    <v-divider />
 
     <Gap style="height: 20px" />
 

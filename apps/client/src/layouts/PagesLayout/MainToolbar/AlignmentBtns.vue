@@ -21,7 +21,7 @@
     @click="page.aligning.alignRight()"
   />
 
-  <q-separator
+  <v-divider
     vertical
     :class="{ popup }"
   />
@@ -58,10 +58,10 @@ const page = computed(() => internals.pages.react.page);
 </script>
 
 <style scoped>
-.q-separator {
+.v-divider {
   margin: 6px 7px;
 }
-.q-separator.popup {
+.v-divider.popup {
   margin: 0;
 }
 </style>

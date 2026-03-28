@@ -3,7 +3,7 @@
     :notification="notification"
     @click="onClick"
   >
-    <q-item-label>{{ notificationInfo.get()?.message }}</q-item-label>
+    <div>{{ notificationInfo.get()?.message }}</div>
   </NotificationItem>
 </template>
 
@@ -12,7 +12,6 @@ import type { DeepNotesNotification } from '@deeplib/misc';
 import { wrapSymmetricKey } from '@stdlib/crypto';
 import { createSmartComputed } from '@stdlib/vue';
 import { unpack } from 'msgpackr';
-import type { QMenu } from 'quasar';
 import { getGroupInvitationAcceptedNotificationInfo } from 'src/code/pages/notifications/group-invitation-accepted';
 import GroupSettingsDialog from 'src/layouts/PagesLayout/RightSidebar/PageProperties/GroupSettingsDialog/GroupSettingsDialog.vue';
 import type { Ref } from 'vue';
@@ -41,7 +40,7 @@ const notificationInfo = createSmartComputed({
     getGroupInvitationAcceptedNotificationInfo(notificationContent.value),
 });
 
-const notificationsMenu = inject('notificationsMenu') as Ref<QMenu>;
+const notificationsMenu = inject('notificationsMenu') as Ref<{ hide: () => void }>;
 
 async function onClick() {
   await router().push(`/groups/${notificationContent.value.groupId}`);

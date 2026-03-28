@@ -36,7 +36,7 @@
     @click="page.selection.format((chain) => chain.addMathBlock())"
   />
 
-  <q-separator
+  <v-divider
     vertical
     :class="{ popup }"
   />
@@ -103,7 +103,7 @@
     "
   />
 
-  <q-separator
+  <v-divider
     vertical
     :class="{ popup }"
   />
@@ -152,7 +152,7 @@
     @click="page.selection.format((chain) => chain.deleteColumn())"
   />
 
-  <q-separator
+  <v-divider
     vertical
     :class="{ popup }"
   />
@@ -207,10 +207,10 @@ const page = computed(() => internals.pages.react.page);
 </script>
 
 <style scoped>
-.q-separator {
+.v-divider {
   margin: 6px 7px;
 }
-.q-separator.popup {
+.v-divider.popup {
   margin: 0;
 }
 </style>

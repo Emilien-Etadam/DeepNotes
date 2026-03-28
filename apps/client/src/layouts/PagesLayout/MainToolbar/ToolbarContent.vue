@@ -7,7 +7,7 @@
       v-for="(numSubgroups, groupIndex) in toolbarStructure"
       :key="groupIndex"
     >
-      <q-separator
+      <v-divider
         v-if="groupIndex > 0"
         vertical
       />
@@ -16,7 +16,7 @@
         v-for="subgroupIndex in numSubgroups"
         :key="subgroupIndex"
       >
-        <q-separator
+        <v-divider
           v-if="subgroupIndex > 1"
           vertical
         />
@@ -38,7 +38,7 @@
       <template
         v-if="numSubgroups < toolbarGroups[groupIndex].subgroups.length"
       >
-        <q-separator
+        <v-divider
           v-if="numSubgroups > 0"
           vertical
         />
@@ -47,35 +47,46 @@
           v-bind="toolbarGroups[groupIndex]"
           icon-size="24px"
         >
-          <q-menu
-            style="padding: 0px 4px"
+          <v-menu
+            activator="parent"
+            :close-on-content-click="true"
+            location="bottom"
             :offset="[0, 4]"
-            auto-close
           >
-            <template
-              v-for="subgroupIndex in toolbarGroups[groupIndex].subgroups
-                .length - numSubgroups"
-              :key="subgroupIndex"
+            <div
+              style="
+                padding: 0 4px;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+              "
             >
-              <q-separator
-                v-if="subgroupIndex > 1"
-                vertical
-                class="popup"
-              />
-
               <template
-                v-for="(button, buttonIndex) in toolbarGroups[groupIndex]
-                  .subgroups[numSubgroups + subgroupIndex - 1]"
-                :key="buttonIndex"
+                v-for="subgroupIndex in toolbarGroups[groupIndex].subgroups
+                  .length - numSubgroups"
+                :key="subgroupIndex"
               >
-                <ToolbarBtn
-                  v-bind="button"
-                  :disable="button.disable?.(page)"
-                  @click="onToolbarBtnClick(button)"
+                <v-divider
+                  v-if="subgroupIndex > 1"
+                  vertical
+                  class="popup"
                 />
+
+                <template
+                  v-for="(button, buttonIndex) in toolbarGroups[groupIndex]
+                    .subgroups[numSubgroups + subgroupIndex - 1]"
+                  :key="buttonIndex"
+                >
+                  <ToolbarBtn
+                    v-bind="button"
+                    :disable="button.disable?.(page)"
+                    @click="onToolbarBtnClick(button)"
+                  />
+                </template>
               </template>
-            </template>
-          </q-menu>
+            </div>
+          </v-menu>
         </ToolbarBtn>
       </template>
     </template>
@@ -704,10 +715,10 @@ const toolbarStructure = computed(() => {
 </script>
 
 <style scoped lang="scss">
-.q-separator {
+.v-divider {
   margin: 6px 7px;
 }
-.q-separator.popup {
+.v-divider.popup {
   margin: 0;
 }
 </style>

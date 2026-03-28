@@ -1,13 +1,13 @@
 <template>
   <CustomDialog ref="dialogRef">
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Insert image</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section
+      <div
         style="padding: 20px; display: flex; flex-direction: column"
       >
         <q-radio
@@ -59,11 +59,12 @@
           dense
           v-model="embedImage"
         />
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
         <DeepBtn
           flat
           label="Cancel"
@@ -77,7 +78,7 @@
           color="primary"
           @click="insertImage"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

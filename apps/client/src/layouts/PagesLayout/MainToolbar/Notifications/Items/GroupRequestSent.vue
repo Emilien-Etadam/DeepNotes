@@ -3,9 +3,9 @@
     :notification="notification"
     @click="onClick"
   >
-    <q-item-label>{{ notificationInfo.get()?.message }}</q-item-label>
+    <div>{{ notificationInfo.get()?.message }}</div>
 
-    <q-item-label
+    <div
       v-if="notificationContent.recipientType === 'agent' && canCancelRequest"
       style="text-align: center"
     >
@@ -15,9 +15,9 @@
         style="margin: 8px"
         @click.stop="_cancelJoinRequest"
       />
-    </q-item-label>
+    </div>
 
-    <q-item-label
+    <div
       v-if="
         notificationContent.recipientType === 'observer' && canAcceptRequest
       "
@@ -36,7 +36,7 @@
         style="margin: 8px"
         @click.stop="_acceptJoinRequest"
       />
-    </q-item-label>
+    </div>
   </NotificationItem>
 </template>
 
@@ -45,7 +45,6 @@ import { type DeepNotesNotification, rolesMap } from '@deeplib/misc';
 import { wrapSymmetricKey } from '@stdlib/crypto';
 import { createSmartComputed } from '@stdlib/vue';
 import { unpack } from 'msgpackr';
-import type { QMenu } from 'quasar';
 import { cancelJoinRequest } from 'src/code/areas/api-interface/groups/join-requests/cancel';
 import { rejectJoinRequest } from 'src/code/areas/api-interface/groups/join-requests/reject';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
@@ -61,7 +60,7 @@ const props = defineProps<{
   notification: DeepNotesNotification;
 }>();
 
-const notificationsMenu = inject('notificationsMenu') as Ref<QMenu>;
+const notificationsMenu = inject('notificationsMenu') as Ref<{ hide: () => void }>;
 
 const realtimeCtx = inject('realtimeCtx') as RealtimeContext;
 

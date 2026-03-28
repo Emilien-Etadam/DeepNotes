@@ -1,27 +1,25 @@
 <template>
   <CustomDialog ref="dialogRef">
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Insert link</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section
+      <div
         style="padding: 20px; display: flex; flex-direction: column"
       >
         <LinkURL
           ref="urlElem"
           v-model="url"
         />
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions
-        align="right"
-        style="padding: 12px 20px"
-      >
+      <v-card-actions style="padding: 12px 20px">
+        <v-spacer />
         <DeepBtn
           flat
           label="Cancel"
@@ -43,7 +41,7 @@
           color="primary"
           @click.prevent="insertLink()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

@@ -1,19 +1,17 @@
 <template>
-  <q-item clickable>
-    <q-item-section>
-      <slot></slot>
+  <v-list-item link>
+    <slot></slot>
 
-      <Gap style="height: 6px" />
+    <Gap style="height: 6px" />
 
-      <q-item-label caption>
-        {{
-          relativeTimeStr(
-            new Date(notification.dateTime).getTime() - Date.now(),
-          )
-        }}
-      </q-item-label>
-    </q-item-section>
-  </q-item>
+    <div style="font-size: 12px; color: rgba(255, 255, 255, 0.5)">
+      {{
+        relativeTimeStr(
+          new Date(notification.dateTime).getTime() - Date.now(),
+        )
+      }}
+    </div>
+  </v-list-item>
 </template>
 
 <script setup lang="ts">
@@ -26,7 +24,7 @@ defineProps<{
 </script>
 
 <style scoped>
-.q-item {
+.v-list-item {
   margin: 8px;
 
   border-radius: 4px;

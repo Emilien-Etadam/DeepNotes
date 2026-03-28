@@ -40,11 +40,9 @@
           "
         >
           <template #item="{ itemId: groupId }">
-            <q-item-section>
-              <q-item-label>
-                {{ groupNames()(groupId).get().text }}
-              </q-item-label>
-            </q-item-section>
+            <div>
+              {{ groupNames()(groupId).get().text }}
+            </div>
           </template>
         </Checklist>
       </div>

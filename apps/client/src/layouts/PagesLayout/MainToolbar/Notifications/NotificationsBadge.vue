@@ -1,12 +1,10 @@
 <template>
-  <q-badge
+  <div
     v-if="numUnreadNotifications > 0"
-    color="red"
-    floating
-    rounded
+    class="notification-badge"
   >
     {{ numUnreadNotifications }}
-  </q-badge>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -24,3 +22,23 @@ const numUnreadNotifications = computed(() => {
   );
 });
 </script>
+
+<style scoped>
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+}
+</style>

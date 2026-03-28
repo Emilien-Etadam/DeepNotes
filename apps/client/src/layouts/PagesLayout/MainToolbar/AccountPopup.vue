@@ -1,84 +1,62 @@
 <template>
-  <q-menu
-    anchor="bottom right"
-    self="top right"
+  <v-menu
+    activator="parent"
+    location="bottom end"
+    :close-on-content-click="true"
   >
-    <q-list>
+    <v-list density="compact">
       <template v-if="uiStore().loggedIn">
-        <q-item>
-          <q-item-section style="font-weight: bold">
-            <q-item-label>
-              {{ selfUserName().get() }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
+        <v-list-item
+          :title="selfUserName().get()"
+          style="font-weight: bold"
+        />
 
-        <q-separator />
+        <v-divider />
 
         <slot></slot>
 
-        <q-item
-          clickable
-          v-close-popup
+        <v-list-item
+          link
+          prepend-icon="mdi-account"
+          title="Account settings"
           :href="multiModePath('/account/general')"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-account" />
-          </q-item-section>
-          <q-item-section>Account settings</q-item-section>
-        </q-item>
+        />
       </template>
 
       <template v-else>
-        <q-item
-          clickable
-          v-close-popup
+        <v-list-item
+          link
+          prepend-icon="mdi-login"
+          title="Login"
           :href="multiModePath('/login')"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-login" />
-          </q-item-section>
-          <q-item-section>Login</q-item-section>
-        </q-item>
+        />
 
-        <q-item
-          clickable
-          v-close-popup
+        <v-list-item
+          link
+          prepend-icon="mdi-account-plus"
+          title="Register"
           :href="multiModePath('/register')"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-account-plus" />
-          </q-item-section>
-          <q-item-section>Register</q-item-section>
-        </q-item>
+        />
 
         <slot></slot>
       </template>
 
-      <q-item
-        clickable
-        v-close-popup
+      <v-list-item
+        link
+        prepend-icon="mdi-help"
+        title="Help"
         :href="multiModePath('/help')"
-      >
-        <q-item-section avatar>
-          <q-icon name="mdi-help" />
-        </q-item-section>
-        <q-item-section>Help</q-item-section>
-      </q-item>
+      />
 
-      <q-item
+      <v-list-item
         v-if="uiStore().loggedIn"
-        clickable
-        v-close-popup
+        link
+        prepend-icon="mdi-logout"
+        title="Logout"
         @click="logout()"
-      >
-        <q-item-section avatar>
-          <q-icon name="mdi-logout" />
-        </q-item-section>
-        <q-item-section>Logout</q-item-section>
-      </q-item>
-    </q-list>
-  </q-menu>
+      />
+    </v-list>
+  </v-menu>
 </template>
 
 <script setup lang="ts">

@@ -1,10 +1,11 @@
 <template>
-  <q-menu
-    ref="notificationsMenu"
-    anchor="bottom middle"
-    self="top middle"
+  <v-menu
+    v-model="menuModel"
+    activator="parent"
+    :close-on-content-click="false"
+    location="bottom"
     style="width: 250px"
-    @before-show="onBeforeShow()"
+    @update:model-value="onMenuModelUpdate"
   >
     <template v-if="pagesStore().notifications.items.length === 0">
       <div
@@ -20,14 +21,13 @@
     </template>
 
     <template v-else>
-      <q-list
+      <v-list
         class="overflow-auto"
         style="flex: 1"
       >
-        <q-infinite-scroll
+        <CustomInfiniteScroll
           @load="onLoad"
           :disable="!pagesStore().notifications.hasMore"
-          :offset="250"
         >
           <template
             v-for="notification in pagesStore().notifications.items"
@@ -76,22 +76,14 @@
               :notification="notification"
             />
           </template>
-
-          <template v-slot:loading>
-            <div class="row justify-center q-my-md">
-              <q-circular-progress
-                indeterminate
-                size="md"
-              />
-            </div>
-          </template>
-        </q-infinite-scroll>
-      </q-list>
+        </CustomInfiniteScroll>
+      </v-list>
     </template>
-  </q-menu>
+  </v-menu>
 </template>
 
 <script setup lang="ts">
+import CustomInfiniteScroll from 'src/components/CustomInfiniteScroll.vue';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';
 import { handleError } from 'src/code/utils/misc';
 
@@ -106,11 +98,23 @@ import GroupRequestCanceled from './Items/GroupRequestCanceled.vue';
 import GroupRequestRejected from './Items/GroupRequestRejected.vue';
 import GroupRequestSent from './Items/GroupRequestSent.vue';
 
-const notificationsMenu = ref();
+const menuModel = ref(false);
+
+const notificationsMenu = ref({
+  hide: () => {
+    menuModel.value = false;
+  },
+});
 provide('notificationsMenu', notificationsMenu);
 
 const realtimeCtx = useRealtimeContext();
 provide('realtimeCtx', realtimeCtx);
+
+function onMenuModelUpdate(open: boolean) {
+  if (open) {
+    void onBeforeShow();
+  }
+}
 
 async function onBeforeShow() {
   try {

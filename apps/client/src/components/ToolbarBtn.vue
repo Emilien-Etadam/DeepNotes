@@ -55,6 +55,7 @@ defineProps<Props>();
 
 <style scoped>
 .toolbar-btn {
+  position: relative;
   padding: 0;
   margin: 4px 0px;
   border: none;
