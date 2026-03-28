@@ -8,75 +8,61 @@
       :btn-size="uiStore().loggedIn ? '36px' : '46px'"
       :round="uiStore().loggedIn"
     >
-      <q-menu
-        anchor="bottom right"
-        self="top right"
-        auto-close
+      <v-menu
+        activator="parent"
+        location="bottom end"
+        :close-on-content-click="true"
       >
-        <q-list>
+        <v-list density="compact">
           <template v-if="uiStore().loggedIn">
-            <q-item>
-              <q-item-section style="font-weight: bold">
-                <q-item-label>
-                  {{ selfUserName().get() }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
+            <v-list-item
+              :title="selfUserName().get()"
+              style="font-weight: bold"
+              :ripple="false"
+            />
 
-            <q-separator />
+            <v-divider />
           </template>
 
           <template
             v-if="!uiStore().loggedIn && uiStore().width < BREAKPOINT_MD_MIN"
           >
-            <q-item
-              clickable
+            <v-list-item
+              link
               :to="{ name: 'login' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-login" />
-              </q-item-section>
-              <q-item-section>Login</q-item-section>
-            </q-item>
+              prepend-icon="mdi-login"
+              title="Login"
+            />
           </template>
 
           <template v-if="uiStore().loggedIn">
-            <q-item
-              clickable
+            <v-list-item
+              link
               :to="{ name: 'account/general' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-account" />
-              </q-item-section>
-              <q-item-section>Account settings</q-item-section>
-            </q-item>
+              prepend-icon="mdi-account"
+              title="Account settings"
+            />
           </template>
 
           <template v-if="uiStore().width < BREAKPOINT_LG_MIN">
-            <q-item
-              clickable
+            <v-list-item
+              link
               :to="{ name: 'help' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-help" />
-              </q-item-section>
-              <q-item-section>Help</q-item-section>
-            </q-item>
+              prepend-icon="mdi-help"
+              title="Help"
+            />
           </template>
 
           <template v-if="uiStore().loggedIn">
-            <q-item
-              clickable
+            <v-list-item
+              link
+              prepend-icon="mdi-logout"
+              title="Logout"
               @click="logout()"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-logout" />
-              </q-item-section>
-              <q-item-section>Logout</q-item-section>
-            </q-item>
+            />
           </template>
-        </q-list>
-      </q-menu>
+        </v-list>
+      </v-menu>
     </ToolbarBtn>
   </template>
 </template>

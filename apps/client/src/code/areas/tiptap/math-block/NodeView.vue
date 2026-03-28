@@ -11,27 +11,28 @@
       }"
     ></div>
 
-    <q-menu
+    <v-menu
       v-model="showFormulaEditor"
-      anchor="bottom middle"
-      self="top middle"
-      :offset="[0, 8]"
-      :transition-duration="200"
+      activator="parent"
+      location="bottom center"
+      :offset="8"
+      transition="fade-transition"
     >
       <div style="background-color: rgb(29, 29, 29); padding: 8px">
-        <q-input
+        <v-textarea
           :model-value="node.attrs.input"
           @update:model-value="(value) => updateAttributes({ input: value })"
-          type="textarea"
-          filled
-          dense
-          input-style="resize: none"
-          autogrow
+          variant="filled"
+          density="compact"
+          auto-grow
           autofocus
           placeholder="E = mc^2"
+          rows="1"
+          hide-details
+          style="resize: none"
         />
       </div>
-    </q-menu>
+    </v-menu>
   </NodeViewWrapper>
 </template>
 
@@ -64,8 +65,7 @@ const { showFormulaEditor, renderedFormula } = useMathNodeView(props, true);
   user-select: none !important;
 }
 
-:deep(.q-field__native),
-:deep(.q-field__input) {
+:deep(.v-field__input) {
   color: $text-primary;
 }
 </style>

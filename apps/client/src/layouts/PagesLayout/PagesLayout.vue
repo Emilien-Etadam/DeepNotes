@@ -124,7 +124,6 @@ body {
 
 .pages-layout :deep() {
   .right-sidebar-drawer.v-navigation-drawer--rail {
-    .q-item,
     .v-list-item {
       justify-content: normal !important;
       padding-left: 16px !important;
@@ -135,7 +134,6 @@ body {
     }
   }
 
-  .v-navigation-drawer .q-item,
   .v-navigation-drawer .v-list-item {
     justify-content: normal !important;
     padding-left: 16px !important;

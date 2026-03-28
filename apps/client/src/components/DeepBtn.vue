@@ -23,7 +23,7 @@ export default {
   inheritAttrs: false,
 };
 
-/** Props forwarded to `v-btn` (Quasar `q-btn` compatibility). */
+/** Props forwarded to `v-btn`. */
 export interface DeepBtnProps extends DeepBtnBaseProps {
   label?: string;
   icon?: string | boolean;
