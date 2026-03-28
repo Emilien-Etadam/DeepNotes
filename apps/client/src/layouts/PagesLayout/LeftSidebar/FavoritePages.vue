@@ -1,10 +1,13 @@
 <template>
-  <q-toolbar
+  <div
     style="
       padding: 0;
       background-color: #141414;
       min-height: 0;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      position: relative;
     "
   >
     <DeepBtn
@@ -14,14 +17,17 @@
       @click="negateProp(uiStore(), 'favoritePagesExpanded')"
     >
       <div style="width: 100%; height: 0; display: flex; align-items: center">
-        <q-avatar style="margin-top: -1px; margin-left: -8px">
-          <q-icon
-            name="mdi-star"
-            size="20px"
+        <v-avatar
+          size="32"
+          style="margin-top: -1px; margin-left: -8px"
+        >
+          <v-icon
+            icon="mdi-star"
+            size="20"
           />
-        </q-avatar>
+        </v-avatar>
 
-        <q-toolbar-title
+        <span
           style="
             margin-left: -2px;
             text-align: left;
@@ -30,12 +36,14 @@
           "
         >
           Favorite pages
-        </q-toolbar-title>
+        </span>
       </div>
     </DeepBtn>
 
-    <q-btn
-      icon="mdi-menu"
+    <v-btn
+      icon
+      variant="text"
+      size="small"
       style="
         position: absolute;
         right: 4px;
@@ -44,27 +52,25 @@
         min-height: 0;
       "
     >
-      <q-menu auto-close>
-        <q-list>
-          <q-item
-            clickable
+      <v-icon icon="mdi-menu" />
+      <v-menu
+        activator="parent"
+        :close-on-content-click="true"
+      >
+        <v-list density="compact">
+          <v-list-item
+            prepend-icon="mdi-close"
+            title="Clear favorite pages"
+            :disabled="favoritePageIds.length === 0"
+            link
             @click="clearfavoritePages"
-            :disable="favoritePageIds.length === 0"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-close" />
-            </q-item-section>
+          />
+        </v-list>
+      </v-menu>
+    </v-btn>
+  </div>
 
-            <q-item-section>
-              <q-item-label>Clear favorite pages</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
-    </q-btn>
-  </q-toolbar>
-
-  <q-list
+  <div
     :id="`${sectionName}List`"
     ref="listRef"
     style="height: 0; overflow-x: hidden; overflow-y: auto"
@@ -74,15 +80,11 @@
         : '0',
     }"
   >
-    <q-item v-if="favoritePageIds.length === 0">
-      <q-item-section>
-        <q-item-label
-          style="color: rgba(255, 255, 255, 0.7); font-size: 13.5px"
-        >
-          No favorite pages.
-        </q-item-label>
-      </q-item-section>
-    </q-item>
+    <v-list-item
+      v-if="favoritePageIds.length === 0"
+      title="No favorite pages."
+      style="color: rgba(255, 255, 255, 0.7); font-size: 13.5px"
+    />
 
     <div
       v-for="pageId in favoritePageIds"
@@ -95,12 +97,12 @@
         prefer="absolute"
         style="padding-right: 8px"
       >
-        <q-item-section side>
+        <template #append>
           <PagePopupOptions :page-id="pageId" />
-        </q-item-section>
+        </template>
       </PageItem>
     </div>
-  </q-list>
+  </div>
 
   <div
     style="position: relative"
@@ -122,13 +124,14 @@
     ></div>
   </div>
 
-  <q-separator style="background-color: rgba(255, 255, 255, 0.15) !important" />
+  <v-divider style="border-color: rgba(255, 255, 255, 0.15)" />
 </template>
 
 <script setup lang="ts">
 import { listenPointerEvents, map, negateProp } from '@stdlib/misc';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';
 import { asyncDialog, handleError } from 'src/code/utils/misc';
+import PagePopupOptions from 'src/components/PagePopupOptions.vue';
 import {
   leftSidebarSectionIndexes,
   type LeftSidebarSectionName,

@@ -34,26 +34,19 @@
           "
           style="padding-right: 8px"
         >
-          <q-item-section side>
+          <template #append>
             <PagePopupOptions
               :page-id="backlinkPageId"
-              :menu-props="{ anchor: 'bottom right', self: 'top right' }"
+              :menu-props="{ location: 'bottom end' }"
             >
-              <q-item
-                clickable
-                v-ripple
+              <v-list-item
+                link
+                prepend-icon="mdi-trash-can"
+                title="Delete backlink"
                 @click="deleteBacklink(backlinkPageId)"
-              >
-                <q-item-section avatar>
-                  <q-icon name="mdi-trash-can" />
-                </q-item-section>
-
-                <q-item-section>
-                  <q-item-label>Delete backlink</q-item-label>
-                </q-item-section>
-              </q-item>
+              />
             </PagePopupOptions>
-          </q-item-section>
+          </template>
         </PageItem>
       </div>
     </q-list>

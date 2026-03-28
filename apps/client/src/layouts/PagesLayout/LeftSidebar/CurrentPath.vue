@@ -1,10 +1,13 @@
 <template>
-  <q-toolbar
+  <div
     style="
       padding: 0;
       background-color: #141414;
       min-height: 0;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      position: relative;
     "
   >
     <DeepBtn
@@ -14,14 +17,17 @@
       @click="negateProp(uiStore(), 'currentPathExpanded')"
     >
       <div style="width: 100%; height: 0; display: flex; align-items: center">
-        <q-avatar style="margin-top: -1px; margin-left: -8px">
-          <q-icon
-            name="mdi-map-marker-radius"
-            size="20px"
+        <v-avatar
+          size="32"
+          style="margin-top: -1px; margin-left: -8px"
+        >
+          <v-icon
+            icon="mdi-map-marker-radius"
+            size="20"
           />
-        </q-avatar>
+        </v-avatar>
 
-        <q-toolbar-title
+        <span
           style="
             margin-left: -2px;
             text-align: left;
@@ -30,12 +36,12 @@
           "
         >
           Current path
-        </q-toolbar-title>
+        </span>
       </div>
     </DeepBtn>
-  </q-toolbar>
+  </div>
 
-  <q-list
+  <div
     :id="`${sectionName}List`"
     ref="listRef"
     style="height: 0; overflow-x: hidden; overflow-y: auto"
@@ -52,11 +58,11 @@
       prefer="relative"
       style="padding-right: 8px"
     >
-      <q-item-section side>
+      <template #append>
         <PagePopupOptions :page-id="pageId" />
-      </q-item-section>
+      </template>
     </PageItem>
-  </q-list>
+  </div>
 
   <div
     v-if="
@@ -78,7 +84,7 @@
     ></div>
   </div>
 
-  <q-separator style="background-color: rgba(255, 255, 255, 0.15) !important" />
+  <v-divider style="border-color: rgba(255, 255, 255, 0.15)" />
 </template>
 
 <script setup lang="ts">

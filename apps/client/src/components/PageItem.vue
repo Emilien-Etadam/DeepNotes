@@ -3,12 +3,11 @@
     :href="appPageUrl(pageId)"
     @click.prevent.stop
   >
-    <q-item
+    <v-list-item
       v-bind="$attrs"
       :data-page-id="pageId"
-      clickable
-      active-class="bg-grey-9"
-      v-ripple
+      link
+      active-class="bg-grey-darken-4"
       @click="
         internals.pages.goToPage(pageId, {
           openInNewTab: isCtrlDown($event as MouseEvent),
@@ -22,7 +21,14 @@
       />
 
       <slot></slot>
-    </q-item>
+
+      <template
+        v-if="$slots.append"
+        #append
+      >
+        <slot name="append"></slot>
+      </template>
+    </v-list-item>
   </a>
 </template>
 

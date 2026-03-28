@@ -6,93 +6,58 @@
     style="min-width: 0; min-height: 0; width: 32px; height: 32px"
     @click.stop
   >
-    <q-menu
+    <v-menu
       v-bind="menuProps"
-      auto-close
-      @before-show="beforeShow"
+      activator="parent"
+      :close-on-content-click="true"
+      @update:model-value="onMenuModelValue"
     >
-      <q-list>
-        <q-item
+      <v-list density="compact">
+        <v-list-item
           v-if="internals.pages.react.recentPageIds.includes(pageId)"
-          clickable
-          v-ripple
+          link
+          prepend-icon="mdi-trash-can"
+          title="Remove from recent pages"
           @click="removeRecentPages([pageId])"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-trash-can" />
-          </q-item-section>
+        />
 
-          <q-item-section>
-            <q-item-label>Remove from recent pages</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item
+        <v-list-item
           v-if="pageFavorited"
-          clickable
-          v-ripple
+          link
+          prepend-icon="mdi-star"
+          title="Remove from favorite pages"
           @click="removeFavoritePages([pageId])"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-star" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Remove from favorite pages</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item
+        />
+        <v-list-item
           v-else
-          clickable
-          v-ripple
+          link
+          prepend-icon="mdi-star"
+          title="Add to favorite pages"
           @click="addFavoritePages([pageId])"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-star" />
-          </q-item-section>
+        />
 
-          <q-item-section>
-            <q-item-label>Add to favorite pages</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item
+        <v-list-item
           v-if="pageSelected"
-          clickable
-          v-ripple
+          link
+          prepend-icon="mdi-selection-multiple"
+          title="Remove from selected pages"
           @click="deselectPage"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-selection-multiple" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Remove from selected pages</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item
+        />
+        <v-list-item
           v-else
-          clickable
-          v-ripple
+          link
+          prepend-icon="mdi-selection-multiple"
+          title="Add to selected pages"
           @click="selectPage"
-        >
-          <q-item-section avatar>
-            <q-icon name="mdi-selection-multiple" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Add to selected pages</q-item-label>
-          </q-item-section>
-        </q-item>
+        />
 
         <slot></slot>
-      </q-list>
-    </q-menu>
+      </v-list>
+    </v-menu>
   </DeepBtn>
 </template>
 
 <script setup lang="ts">
-import type { QMenuProps } from 'quasar';
 import { addFavoritePages } from 'src/code/areas/api-interface/users/add-favorite-pages';
 import { removeFavoritePages } from 'src/code/areas/api-interface/users/remove-favorite-pages';
 import { removeRecentPages } from 'src/code/areas/api-interface/users/remove-recent-pages';
@@ -103,7 +68,7 @@ import type { DeepBtnProps } from './DeepBtn.vue';
 interface Props extends DeepBtnProps {
   pageId: string;
 
-  menuProps?: QMenuProps;
+  menuProps?: Record<string, unknown>;
 }
 
 const props = defineProps<Props>();
@@ -116,6 +81,12 @@ function beforeShow() {
     props.pageId,
   );
   pageSelected.value = pageSelectionStore().selectedPages.has(props.pageId);
+}
+
+function onMenuModelValue(open: boolean) {
+  if (open) {
+    beforeShow();
+  }
 }
 
 function selectPage() {
