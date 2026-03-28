@@ -12,18 +12,18 @@
     }"
     @mousedown.prevent
   >
-    <q-icon
+    <v-icon
       :size="iconSize ?? '19px'"
-      :name="icon"
+      :icon="icon"
     />
 
     <slot></slot>
 
-    <q-tooltip
+    <v-tooltip
       v-if="tooltip != null"
-      anchor="bottom middle"
-      self="top middle"
-      :offset="[10, 10]"
+      activator="parent"
+      location="bottom"
+      :offset="10"
       style="text-align: center"
     >
       <div
@@ -32,7 +32,7 @@
       >
         {{ line }}
       </div>
-    </q-tooltip>
+    </v-tooltip>
   </button>
 </template>
 

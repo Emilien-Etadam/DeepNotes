@@ -1,47 +1,70 @@
 <template>
-  <q-select
-    ref="combobox"
+  <v-combobox
     :model-value="modelValue"
-    @input-value="
-      (event: any) => {
-        if (event !== modelValue) {
-          $emit('update:model-value', event);
-        }
-      }
-    "
-    filled
-    dense
-    use-input
-    fill-input
-    emit-value
-    hide-selected
+    variant="filled"
+    :density="dense ? 'compact' : undefined"
+    hide-details
+    :return-object="false"
+    :items="options ?? []"
+    :item-title="itemTitleFromItem"
+    item-value="value"
+    :label="label"
+    :disabled="disable"
+    @update:model-value="$emit('update:model-value', $event)"
+    @update:search="onSearch"
   >
-    <template #option="scope">
-      <q-item
-        v-bind="scope.itemProps"
-        @click="combobox.updateInputValue(scope.opt.value)"
-      >
+    <template #item="{ item, props: listItemProps }">
+      <v-list-item v-bind="listItemProps">
         <slot
           name="item"
-          v-bind="scope"
+          v-bind="{ opt: item, itemProps: listItemProps }"
         >
-          <q-item-section>{{ scope.opt.label }}</q-item-section>
+          <v-list-item-title>
+            {{ item?.label }}
+          </v-list-item-title>
         </slot>
-      </q-item>
+      </v-list-item>
     </template>
-  </q-select>
+  </v-combobox>
 </template>
 
 <script lang="ts">
-import type { QSelectProps } from 'quasar';
+export interface ComboboxOption {
+  label?: string;
+  value: string;
+  [key: string]: unknown;
+}
 
-export interface ComboboxProps extends QSelectProps {
+export interface ComboboxProps {
   modelValue: any;
+  options?: ComboboxOption[];
+  label?: string;
+  disable?: boolean;
+  dense?: boolean;
 }
 </script>
 
 <script setup lang="ts">
-defineProps<ComboboxProps>();
+const props = defineProps<ComboboxProps>();
 
-const combobox = ref();
+const emit = defineEmits<{ 'update:model-value': [value: any] }>();
+
+function itemTitleFromItem(item: unknown) {
+  if (item != null && typeof item === 'object') {
+    const o = item as ComboboxOption;
+    if (o.label != null && o.label !== '') {
+      return String(o.label);
+    }
+    if (o.value != null) {
+      return String(o.value);
+    }
+  }
+  return '';
+}
+
+function onSearch(value: string) {
+  if (value !== props.modelValue) {
+    emit('update:model-value', value);
+  }
+}
 </script>

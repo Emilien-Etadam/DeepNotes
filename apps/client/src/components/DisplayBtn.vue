@@ -15,15 +15,13 @@
   >
     <slot></slot>
 
-    <q-tooltip
+    <v-tooltip
       v-if="tooltip != null"
-      anchor="top middle"
-      self="bottom middle"
-      transition-show="jump-down"
-      transition-hide="jump-up"
+      activator="parent"
+      location="top"
     >
       {{ tooltip }}
-    </q-tooltip>
+    </v-tooltip>
   </DeepBtn>
 </template>
 

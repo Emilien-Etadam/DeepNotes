@@ -4,9 +4,9 @@
       style="position: absolute; top: 0; right: 0; bottom: 0; left: 0"
       :style="frameStyle"
     >
-      <q-circular-progress
+      <v-progress-circular
         indeterminate
-        size="lg"
+        size="64"
       />
     </div>
   </div>
@@ -36,7 +36,7 @@ defineProps<{
   pointer-events: none;
 }
 
-.q-circular-progress {
+.v-progress-circular {
   transform: translate(-50%, -50%);
 
   left: 50%;

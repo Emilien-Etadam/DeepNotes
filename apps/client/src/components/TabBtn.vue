@@ -1,16 +1,12 @@
 <template>
-  <q-item
-    clickable
+  <v-list-item
+    link
     :active="currentTab === name"
-    active-class="bg-grey-9 text-grey-1"
-    v-ripple
+    active-class="bg-grey-darken-4 text-grey-lighten-4"
+    :prepend-icon="icon"
+    :title="name"
     @click="$emit('set-tab', name)"
-  >
-    <q-item-section avatar>
-      <q-icon :name="icon" />
-    </q-item-section>
-    <q-item-section>{{ name }}</q-item-section>
-  </q-item>
+  />
 </template>
 
 <script setup lang="ts">

@@ -10,8 +10,8 @@
     class="bg-grey-9"
     @click="uiStore()[`toggle${upperFirst(side) as 'Left' | 'Right'}Sidebar`]()"
   >
-    <q-icon
-      :name="
+    <v-icon
+      :icon="
         uiStore()[`${side}SidebarExpanded`]
           ? `mdi-chevron-${otherSide}`
           : `mdi-chevron-${side}`

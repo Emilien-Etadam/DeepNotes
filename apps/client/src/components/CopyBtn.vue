@@ -1,7 +1,7 @@
 <template>
-  <q-icon
-    name="mdi-content-copy"
-    size="23px"
+  <v-icon
+    icon="mdi-content-copy"
+    size="23"
     class="cursor-pointer"
     style="margin-right: -3px"
     @click="
@@ -15,24 +15,19 @@
       }
     "
   >
-    <q-tooltip
-      anchor="top middle"
-      self="bottom middle"
-      transition-show="jump-up"
-      transition-hide="jump-down"
+    <v-tooltip
+      activator="parent"
+      location="top"
     >
       Copy
-    </q-tooltip>
-  </q-icon>
+    </v-tooltip>
+  </v-icon>
 </template>
 
 <script setup lang="ts">
-import type { QIconProps } from 'quasar';
 import { setClipboardText } from 'src/code/utils/clipboard';
 
-interface Props extends QIconProps {
+defineProps<{
   text: string;
-}
-
-defineProps<Props>();
+}>();
 </script>

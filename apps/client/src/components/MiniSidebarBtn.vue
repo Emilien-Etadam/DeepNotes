@@ -1,43 +1,39 @@
 <template>
-  <q-item
-    type="a"
-    clickable
+  <v-list-item
+    link
     :active="active"
-    v-ripple
-    :disable="disable"
+    :disabled="disable"
     v-bind="{
       ...$attrs,
 
       onClick: (...args) => onClick(args, $attrs),
     }"
   >
-    <q-item-section avatar>
-      <q-circular-progress
+    <template #prepend>
+      <v-progress-circular
         v-if="loading"
         indeterminate
-        size="20px"
+        size="20"
         style="margin-left: 2px"
       />
 
-      <q-icon
+      <v-icon
         v-else
-        :name="icon"
+        :icon="icon"
       />
-    </q-item-section>
+    </template>
 
-    <q-tooltip
-      anchor="center left"
-      self="center right"
-      :offset="[10, 10]"
+    <v-tooltip
+      activator="parent"
+      location="start"
+      :offset="10"
       max-width="200px"
-      transition-show="jump-left"
-      transition-hide="jump-right"
     >
       {{ tooltip }}
-    </q-tooltip>
+    </v-tooltip>
 
     <slot></slot>
-  </q-item>
+  </v-list-item>
 </template>
 
 <script lang="ts">
@@ -45,7 +41,7 @@ export default {
   inheritAttrs: false,
 };
 
-export interface MiniSidebarBtnProps extends QItemProps {
+export interface MiniSidebarBtnProps {
   delay?: boolean;
   active?: boolean;
   icon: string;
@@ -56,7 +52,6 @@ export interface MiniSidebarBtnProps extends QItemProps {
 
 <script setup lang="ts">
 import { sleep } from '@stdlib/misc';
-import type { QItemProps } from 'quasar';
 
 const props = defineProps<MiniSidebarBtnProps>();
 

@@ -1,36 +1,39 @@
 <template>
-  <q-item-section
-    v-if="icon"
-    avatar
-  >
-    <q-icon
-      name="mdi-note-text"
-      class="page-icon"
-      :class="{
-        encrypted: pageTitleInfo.status === 'encrypted',
-        empty: isEmpty,
-      }"
-    />
-  </q-item-section>
-
-  <q-item-section>
-    <q-item-label
-      class="group-name"
-      caption
+  <div class="page-item-content">
+    <v-avatar
+      v-if="icon"
+      size="24"
+      style="margin-right: 8px"
     >
-      {{ groupNameInfo.text }}
-    </q-item-label>
+      <v-icon
+        icon="mdi-note-text"
+        class="page-icon"
+        :class="{
+          encrypted: pageTitleInfo.status === 'encrypted',
+          empty: isEmpty,
+        }"
+      />
+    </v-avatar>
 
-    <q-item-label
-      class="page-title"
-      :class="{
-        encrypted: pageTitleInfo.status === 'encrypted',
-        empty: isEmpty,
-      }"
-    >
-      {{ pageTitleInfo.text }}
-    </q-item-label>
-  </q-item-section>
+    <div style="flex: 1; min-width: 0">
+      <div
+        class="group-name"
+        style="font-size: 12px"
+      >
+        {{ groupNameInfo.text }}
+      </div>
+
+      <div
+        class="page-title"
+        :class="{
+          encrypted: pageTitleInfo.status === 'encrypted',
+          empty: isEmpty,
+        }"
+      >
+        {{ pageTitleInfo.text }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -82,6 +85,14 @@ const isEmpty = computed(
 
 <style scoped lang="scss">
 @use 'sass:color';
+
+.page-item-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
 
 .group-name {
   color: color.adjust(#006dd2, $lightness: 23%);
