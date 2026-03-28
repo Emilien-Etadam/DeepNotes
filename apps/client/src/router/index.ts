@@ -1,9 +1,9 @@
-import { route } from 'quasar/wrappers';
+import type { Pinia } from 'pinia';
+import { router } from 'src/code/helpers';
 import { getRedirectDest } from 'src/code/routing';
 import {
   createRouter,
   createWebHashHistory,
-  createWebHistory,
   type RouteLocationRaw,
 } from 'vue-router';
 
@@ -13,17 +13,12 @@ const moduleLogger = mainLogger.sub('router/index.ts');
 
 moduleLogger.info('Running module');
 
-export default route(async function ({ store }) {
-  const createHistory =
-    process.env.VUE_ROUTER_MODE === 'history'
-      ? createWebHistory
-      : createWebHashHistory;
-
+export function createAppRouter(store: Pinia) {
   const Router = router(
     createRouter({
       scrollBehavior: () => ({ left: 0, top: 0 }),
       routes,
-      history: createHistory(process.env.VUE_ROUTER_BASE),
+      history: createWebHashHistory(),
     }),
   );
 
@@ -36,8 +31,6 @@ export default route(async function ({ store }) {
       from.fullPath,
       to.fullPath,
     );
-
-    // Compute redirect
 
     let redirectDest: RouteLocationRaw | undefined = undefined;
 
@@ -65,4 +58,4 @@ export default route(async function ({ store }) {
   });
 
   return Router;
-});
+}

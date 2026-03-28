@@ -1,6 +1,6 @@
-import { boot } from 'quasar/wrappers';
+import type { BootContext } from './boot-context';
 
-export default boot(({ store }) => {
+export async function setup({ store }: BootContext) {
   if (internals.localStorage.getItem('leftSidebarExpanded') == null) {
     uiStore(store).leftSidebarExpanded = globalThis.innerWidth > 1000;
   } else {
@@ -40,4 +40,4 @@ export default boot(({ store }) => {
   uiStore(store).selectedPagesWeight =
     Number.parseFloat(internals.localStorage.getItem('selectedPagesWeight')) ||
     1;
-});
+}

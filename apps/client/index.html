@@ -1,94 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DeepNotes</title>
-    <meta charset="utf-8" />
-    <meta
-      name="format-detection"
-      content="telephone=no"
-    />
-    <meta
-      name="msapplication-tap-highlight"
-      content="no"
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
-    />
-
-    <!-- Primary Meta Tags -->
-    <meta
-      name="keywords"
-      content="deepnotes, deep notes, infinite canvas, nested, mind map, note-taking, visual, spatial, end-to-end encrypted, collaborative, realtime collaboration, realtime collaboration, open source"
-    />
-    <meta
-      name="robots"
-      content="index, follow"
-    />
-    <meta
-      http-equiv="Content-Type"
-      content="text/html; charset=UTF-8"
-      data-qmeta="equiv"
-    />
-    <meta
-      name="language"
-      content="English"
-      data-qmeta="language"
-    />
-
-    <!-- Open Graph / Facebook -->
-    <meta
-      property="og:type"
-      content="website"
-    />
-    <meta
-      property="og:image"
-      content="/meta-image.png"
-    />
-
-    <!-- Twitter -->
-    <meta
-      property="twitter:card"
-      content="summary_large_image"
-    />
-    <meta
-      property="twitter:image"
-      content="/meta-image.png"
-    />
-
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="128x128"
-      href="icons/favicon-128x128.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="96x96"
-      href="icons/favicon-96x96.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="icons/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="icons/favicon-16x16.png"
-    />
-    <link
-      rel="icon"
-      type="image/ico"
-      href="favicon.ico"
-    />
-
     <script src="/argon2-bundled.min.js"></script>
   </head>
-  <body spellcheck="false">
-    <!-- quasar:entry-point -->
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

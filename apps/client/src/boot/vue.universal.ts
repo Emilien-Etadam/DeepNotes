@@ -1,6 +1,6 @@
-import { boot } from 'quasar/wrappers';
+import type { BootContext } from './boot-context';
 
-export default boot(async ({ app }) => {
+export async function setup({ app }: BootContext) {
   app.config.unwrapInjectedRef = true;
 
   app.config.globalProperties.global = globalThis;
@@ -10,4 +10,4 @@ export default boot(async ({ app }) => {
   app.config.globalProperties.authStore = authStore;
   app.config.globalProperties.uiStore = uiStore;
   app.config.globalProperties.pagesStore = pagesStore;
-});
+}

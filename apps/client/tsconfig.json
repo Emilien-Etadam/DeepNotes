@@ -1,19 +1,39 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
 
-  "extends": "./.quasar/tsconfig.json",
-
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "noEmit": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
     "baseUrl": ".",
-
     "paths": {
       "src/*": ["src/*"],
-
+      "app": ["."],
+      "app/*": ["./*"],
+      "components": ["src/components"],
+      "components/*": ["src/components/*"],
+      "layouts": ["src/layouts"],
+      "layouts/*": ["src/layouts/*"],
+      "pages": ["src/pages"],
+      "pages/*": ["src/pages/*"],
+      "assets": ["src/assets"],
+      "assets/*": ["src/assets/*"],
+      "boot": ["src/boot"],
+      "boot/*": ["src/boot/*"],
+      "stores": ["src/stores"],
+      "stores/*": ["src/stores/*"],
       "@deepnotes/app-server": ["../app-server/src"],
       "@deeplib/*": ["../../packages/@deeplib/*/src"],
       "@stdlib/*": ["../../packages/@stdlib/*/src"]
     },
-
     "allowSyntheticDefaultImports": true
   },
 
@@ -29,7 +49,15 @@
     { "path": "../../packages/@stdlib/vue/tsconfig.json" }
   ],
 
-  "include": ["*.ts", "*.js", "src*/**/*.ts", "src/**/*.vue"],
+  "include": [
+    "*.ts",
+    "*.js",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "vite.config.ts"
+  ],
+
+  "exclude": ["dist", "node_modules", "src-capacitor", "src-cordova"],
 
   "tsc-alias": {
     "replacers": {

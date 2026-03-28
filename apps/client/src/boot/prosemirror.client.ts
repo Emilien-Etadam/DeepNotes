@@ -1,5 +1,7 @@
 import { EditorView } from 'prosemirror-view';
 
+import type { BootContext } from './boot-context';
+
 // Prosemirror fix
 
 const oldUpdateState = EditorView.prototype.updateState;
@@ -13,3 +15,5 @@ EditorView.prototype.updateState = function (state) {
 
   oldUpdateState.call(this, state);
 };
+
+export async function setup(_ctx: BootContext) {}

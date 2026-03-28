@@ -1,10 +1,11 @@
 import { sleep } from '@stdlib/misc';
-import { boot } from 'quasar/wrappers';
 import { tryRefreshTokens } from 'src/code/areas/auth/refresh';
+
+import type { BootContext } from './boot-context';
 
 const _moduleLogger = mainLogger.sub('boot/auth.client.ts');
 
-export default boot(async ({ store }) => {
+export async function setup({ store }: BootContext) {
   _moduleLogger.info('Booting');
 
   _moduleLogger.info('Initializing authStore().loggedIn');
@@ -31,4 +32,4 @@ export default boot(async ({ store }) => {
   // Start realtime client
 
   internals.realtime.connect();
-});
+}

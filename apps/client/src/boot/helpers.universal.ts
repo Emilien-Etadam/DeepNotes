@@ -1,6 +1,6 @@
-import { boot } from 'quasar/wrappers';
+import type { BootContext } from './boot-context';
 
-export default boot(async ({ app, store }) => {
+export async function setup({ app, store }: BootContext) {
   $quasar(app.config.globalProperties.$q);
 
   if (process.env.CLIENT) {
@@ -9,4 +9,4 @@ export default boot(async ({ app, store }) => {
     uiStore(store);
     pagesStore(store);
   }
-});
+}

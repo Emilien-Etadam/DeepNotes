@@ -8,6 +8,7 @@
     "@deeplib/data": "workspace:*",
     "@deeplib/misc": "workspace:*",
     "@deepnotes/app-server": "workspace:*",
+    "@mdi/font": "^7.4.47",
     "@quasar/extras": "^1.16.7",
     "@stdlib/base64": "workspace:*",
     "@stdlib/color": "workspace:*",
@@ -80,6 +81,7 @@
     "vue": "^3.5.28",
     "vue-i18n": "^11.2.8",
     "vue-router": "^4.5.0",
+    "vuetify": "^4.0.4",
     "y-prosemirror": "^1.3.7",
     "y-protocols": "^1.0.6",
     "yjs": "^13.6.8",
@@ -102,6 +104,7 @@
     "@types/showdown": "^2.0.3",
     "@types/turndown": "^5.0.3",
     "@types/zxcvbn": "^4.4.3",
+    "@vitejs/plugin-vue": "^6.0.5",
     "@vue/devtools": "^6.5.1",
     "autoprefixer": "^10.4.16",
     "browserslist": "^4.22.1",
@@ -111,7 +114,8 @@
     "typescript": "~5.7.3",
     "unplugin-auto-import": "^19.0.0",
     "unplugin-vue-components": "^28.0.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "vite-plugin-vuetify": "^2.1.3"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -121,12 +125,13 @@
   "private": true,
   "productName": "DeepNotes",
   "scripts": {
-    "build:spa": "cross-env NODE_OPTIONS=--max_old_space_size=4096 quasar build -m spa",
+    "build:spa": "cross-env NODE_OPTIONS=--max_old_space_size=4096 vite build",
     "clean": "rimraf --glob ./dist *.tsbuildinfo",
-    "dev:spa": "quasar dev -m spa",
+    "dev:spa": "vite",
     "fix": "eslint --fix .",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "lint": "eslint .",
+    "preview": "vite preview",
     "npkill": "rimraf --glob ./node_modules",
     "preinstall": "npx only-allow pnpm"
   }

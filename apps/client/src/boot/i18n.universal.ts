@@ -1,6 +1,7 @@
-import { boot } from 'quasar/wrappers';
 import messages from 'src/i18n';
 import { createI18n } from 'vue-i18n';
+
+import type { BootContext } from './boot-context';
 
 export type MessageLanguages = keyof typeof messages;
 // Type-define 'en-US' as the master schema for the resource
@@ -18,7 +19,7 @@ declare module 'vue-i18n' {
   export type DefineNumberFormat = Record<string, unknown>;
 }
 
-export default boot(({ app }) => {
+export async function setup({ app }: BootContext) {
   const i18n = createI18n({
     locale: 'en-US',
     legacy: false,
@@ -27,4 +28,4 @@ export default boot(({ app }) => {
 
   // Set i18n instance on app
   app.use(i18n);
-});
+}

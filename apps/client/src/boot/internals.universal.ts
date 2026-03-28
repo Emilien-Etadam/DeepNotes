@@ -1,5 +1,4 @@
 import type { KeyPair, SymmetricKeyring } from '@stdlib/crypto';
-import { boot } from 'quasar/wrappers';
 import { RealtimeClient } from 'src/code/areas/realtime/client';
 import { factories } from 'src/code/factories';
 import type { Pages } from 'src/code/pages/pages';
@@ -7,6 +6,7 @@ import { shouldRememberSession, wrapStorage } from 'src/code/utils/misc';
 import type { Ref } from 'vue';
 import type { RouteLocationNormalized, Router } from 'vue-router';
 
+import type { BootContext } from './boot-context';
 import type { tiptap } from './tiptap.client';
 
 const moduleLogger = mainLogger.sub('boot/internals.universal.ts');
@@ -62,11 +62,11 @@ if (process.env.CLIENT) {
   (globalThis as any).internals = internals;
 }
 
-export default boot(async ({ store }) => {
+export async function setup({ store }: BootContext) {
   if (process.env.DEV) {
     (internals as any).appStore = appStore(store);
     (internals as any).authStore = authStore(store);
     (internals as any).uiStore = uiStore(store);
     (internals as any).pagesStore = pagesStore(store);
   }
-});
+}

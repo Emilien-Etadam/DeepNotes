@@ -1,7 +1,8 @@
 import { objEntries } from '@stdlib/misc';
-import { boot } from 'quasar/wrappers';
 
-export default boot(async () => {
+import type { BootContext } from './boot-context';
+
+export async function setup(_ctx: BootContext) {
   const originalSetItem = internals.sessionStorage.setItem;
   const originalRemoveItem = internals.sessionStorage.removeItem;
   const originalClear = internals.sessionStorage.clear;
@@ -65,4 +66,4 @@ export default boot(async () => {
     internals.localStorage.setItem('clearSessionStorage', '');
     internals.localStorage.removeItem('clearSessionStorage');
   };
-});
+}

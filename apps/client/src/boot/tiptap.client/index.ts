@@ -9,6 +9,7 @@ import {
   yXmlFragmentToProseMirrorRootNode,
 } from 'y-prosemirror';
 
+import type { BootContext } from '../boot-context';
 import { extensions } from './extensions';
 
 /** Schema partagé (rempli au premier éditeur créé ou à la première lecture de .schema) pour éviter "Duplicate use of selection JSON ID" et permettre la création de note sur page vide */
@@ -59,3 +60,5 @@ export const tiptap = once(() => ({
 }));
 
 internals.tiptap = tiptap;
+
+export async function setup(_ctx: BootContext) {}

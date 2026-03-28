@@ -1,0 +1,31 @@
+// Miroir des couleurs / breakpoints Quasar (Phase 1) — thème Vuetify dans main.ts
+$primary: #006dd2;
+$secondary: #606060;
+$accent: #9c27b0;
+
+$dark: #1d1d1d;
+
+$positive: #21ba45;
+$negative: #ce3232;
+$info: #31ccec;
+$warning: #f2c037;
+
+$breakpoint-sm-min: 576px;
+$breakpoint-md-min: 768px;
+$breakpoint-lg-min: 992px;
+$breakpoint-xl-min: 1200px;
+
+$breakpoint-xs-max: $breakpoint-sm-min - 1px;
+$breakpoint-sm-max: $breakpoint-md-min - 1px;
+$breakpoint-md-max: $breakpoint-lg-min - 1px;
+$breakpoint-lg-max: $breakpoint-xl-min - 1px;
+
+$breakpoint-xs: $breakpoint-xs-max;
+$breakpoint-sm: $breakpoint-sm-max;
+$breakpoint-md: $breakpoint-md-max;
+$breakpoint-lg: $breakpoint-lg-max;
+
+$container-xs: 540px;
+$container-sm: 720px;
+$container-md: 960px;
+$container-lg: 1140px;

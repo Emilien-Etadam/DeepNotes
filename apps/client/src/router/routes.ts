@@ -43,11 +43,19 @@ const guestPaths = [
   },
 ] as const;
 
+const guestPageComponents: Record<string, () => Promise<unknown>> = {
+  'Login/Login': () => import('src/pages/home/Login/Login.vue'),
+  Setup: () => import('src/pages/home/Setup.vue'),
+  Register: () => import('src/pages/home/Register.vue'),
+  FinishRegistration: () => import('src/pages/home/FinishRegistration.vue'),
+  AcceptInvite: () => import('src/pages/home/AcceptInvite.vue'),
+};
+
 const guestHomeRoutes = guestPaths.map(({ path, name, page }) =>
   createLayoutRoute({
     path,
     name,
-    component: () => import(`src/pages/home/${page}.vue`),
+    component: guestPageComponents[page],
     meta: { requiresGuest: true },
   }),
 );
@@ -65,19 +73,32 @@ const helpPages = [
   'keyboard-shortcuts',
 ] as const;
 
-const helpChildRoutes = helpPages.map((slug) => {
-  const pascal = slug
-    .split('-')
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join('');
+const helpPageComponents: Record<string, () => Promise<unknown>> = {
+  'what-is-deepnotes': () =>
+    import('src/pages/home/Help/Pages/WhatIsDeepNotes.vue'),
+  'creating-group': () => import('src/pages/home/Help/Pages/CreatingGroup.vue'),
+  'inviting-users': () => import('src/pages/home/Help/Pages/InvitingUsers.vue'),
+  'joining-group': () => import('src/pages/home/Help/Pages/JoiningGroup.vue'),
+  'forgot-password': () =>
+    import('src/pages/home/Help/Pages/ForgotPassword.vue'),
+  'canvas-navigation': () =>
+    import('src/pages/home/Help/Pages/CanvasNavigation.vue'),
+  'notes-and-arrows': () =>
+    import('src/pages/home/Help/Pages/NotesAndArrows.vue'),
+  'export-for-ai': () => import('src/pages/home/Help/Pages/ExportForAI.vue'),
+  encryption: () => import('src/pages/home/Help/Pages/Encryption.vue'),
+  'keyboard-shortcuts': () =>
+    import('src/pages/home/Help/Pages/KeyboardShortcuts.vue'),
+};
 
-  return createLayoutRoute({
+const helpChildRoutes = helpPages.map((slug) =>
+  createLayoutRoute({
     path: slug,
     name: `help/${slug}`,
-    component: () => import(`src/pages/home/Help/Pages/${pascal}.vue`),
+    component: helpPageComponents[slug],
     layout: helpLayout,
-  });
-});
+  }),
+);
 
 const routes: RouteRecordRaw[] = [
   ...guestHomeRoutes,

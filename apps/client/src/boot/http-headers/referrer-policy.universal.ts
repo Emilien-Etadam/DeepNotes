@@ -1,5 +1,5 @@
-import { boot } from 'quasar/wrappers';
+import type { BootContext } from '../boot-context';
 
-export default boot(async ({ ssrContext }) => {
+export async function setup({ ssrContext }: BootContext) {
   ssrContext?.res.setHeader('Referrer-Policy', 'no-referrer');
-});
+}
