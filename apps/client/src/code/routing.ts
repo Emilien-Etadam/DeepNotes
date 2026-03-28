@@ -1,3 +1,4 @@
+import type CookiesType from 'js-cookie';
 import type { AuthStore } from 'src/stores/auth';
 import type { RouteLocationNormalized, Router } from 'vue-router';
 
@@ -10,7 +11,7 @@ export async function redirectIfNecessary(input: {
   router: Router;
   route: RouteLocationNormalized;
   auth: AuthStore;
-  cookies?: typeof Cookies;
+  cookies?: typeof CookiesType;
 }) {
   const redirectDest = await getRedirectDest({
     route: input.route,
@@ -91,7 +92,7 @@ function getGuestRequiredRedirect(input: {
 async function getStartingPageRedirect(input: {
   route: RouteLocationNormalized;
   loggedIn: boolean;
-  cookies?: typeof Cookies;
+  cookies?: typeof CookiesType;
 }): Promise<{ name: string; params?: { pageId: string } } | undefined> {
   if (!input.loggedIn || input.route.name !== 'pages') return undefined;
   try {
@@ -127,7 +128,7 @@ async function getGroupMainPageRedirect(input: {
 export async function getRedirectDest(input: {
   route: RouteLocationNormalized;
   auth: AuthStore;
-  cookies?: typeof Cookies;
+  cookies?: typeof CookiesType;
 }) {
   const setupRedirect = await getSetupRedirectIfClient({
     route: input.route,

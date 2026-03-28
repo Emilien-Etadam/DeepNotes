@@ -1,4 +1,5 @@
 import { sleep } from '@stdlib/misc';
+import Cookies from 'js-cookie';
 import { tryRefreshTokens } from 'src/code/areas/auth/refresh';
 
 import type { BootContext } from './boot-context';

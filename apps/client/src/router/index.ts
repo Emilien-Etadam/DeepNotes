@@ -1,4 +1,5 @@
 import type { Pinia } from 'pinia';
+import Cookies from 'js-cookie';
 import { router } from 'src/code/helpers';
 import { getRedirectDest } from 'src/code/routing';
 import {
@@ -23,7 +24,6 @@ export function createAppRouter(store: Pinia) {
   );
 
   const auth = authStore(store);
-  const cookies = Cookies;
 
   Router.beforeEach(async (to, from, next) => {
     moduleLogger.info(
@@ -42,7 +42,7 @@ export function createAppRouter(store: Pinia) {
       redirectDest = await getRedirectDest({
         route: to,
         auth,
-        cookies,
+        cookies: Cookies,
       });
     }
 
