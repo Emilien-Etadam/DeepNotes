@@ -48,21 +48,20 @@
         v-model="rememberSession"
       />
 
-      <q-icon
-        name="mdi-information"
-        size="17px"
+      <v-icon
+        icon="mdi-information"
+        size="17"
         style="margin-left: 6px; margin-top: 1px"
       >
-        <q-tooltip
-          anchor="top middle"
-          self="bottom middle"
-          transition-show="jump-up"
-          transition-hide="jump-down"
-          max-width="233px"
+        <v-tooltip
+          activator="parent"
+          location="top"
         >
-          This option is convenient, but reduces the security of your account.
-        </q-tooltip>
-      </q-icon>
+          <span style="max-width: 233px; display: inline-block">
+            This option is convenient, but reduces the security of your account.
+          </span>
+        </v-tooltip>
+      </v-icon>
     </div>
   </details>
 </template>

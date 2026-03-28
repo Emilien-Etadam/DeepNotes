@@ -1,5 +1,8 @@
 <template>
-  <q-footer class="footer-minimal">
+  <v-footer
+    app
+    class="footer-minimal"
+  >
     <ResponsiveContainer>
       <div class="footer-line">
         <router-link
@@ -26,7 +29,7 @@
         <span class="footer-copy">© {{ new Date().getFullYear() }}</span>
       </div>
     </ResponsiveContainer>
-  </q-footer>
+  </v-footer>
 </template>
 
 <script setup lang="ts"></script>

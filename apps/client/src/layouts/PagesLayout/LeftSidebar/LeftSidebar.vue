@@ -1,15 +1,11 @@
 <template>
-  <q-drawer
+  <v-navigation-drawer
     :model-value="uiStore().leftSidebarExpanded"
-    side="left"
-    bordered
-    no-swipe-open
-    no-swipe-close
-    no-swipe-backdrop
-    behavior="desktop"
+    location="start"
     :width="uiStore().leftSidebarWidth"
     style="display: flex; flex-direction: column"
     class="left-sidebar-drawer"
+    @update:model-value="(v: boolean) => (uiStore().leftSidebarExpanded = v)"
   >
     <div
       class="resize-handle"
@@ -24,7 +20,7 @@
     <FavoritePages />
 
     <SelectedPages />
-  </q-drawer>
+  </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
@@ -47,12 +43,8 @@ function resizeLeftSidebar(event: PointerEvent) {
 <style scoped lang="scss">
 .left-sidebar-drawer {
   background-color: $bg-sidebar;
-}
 
-.q-drawer-container :deep() {
-  .q-drawer {
-    border-right: 1px solid $border-subtle !important;
-  }
+  border-right: 1px solid $border-subtle !important;
 }
 
 .resize-handle {

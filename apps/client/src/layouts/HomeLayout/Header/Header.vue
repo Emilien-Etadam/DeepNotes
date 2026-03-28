@@ -1,9 +1,11 @@
 <template>
-  <q-header
+  <v-app-bar
     ref="headerRef"
     class="home-header"
+    elevation="0"
+    app
   >
-    <q-toolbar
+    <v-toolbar
       style="
         height: 64px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -20,28 +22,30 @@
             $route.path.startsWith('/account/')
           "
         >
-          <ToolbarBtn
-            icon="mdi-menu"
-            icon-size="32px"
-            btn-size="46px"
+          <v-menu
+            location="bottom start"
+            :close-on-content-click="true"
           >
-            <q-menu
-              anchor="bottom left"
-              self="top left"
-              auto-close
-            >
-              <q-list>
-                <AccountItems />
-              </q-list>
-            </q-menu>
-          </ToolbarBtn>
+            <template #activator="{ props: menuActivatorProps }">
+              <ToolbarBtn
+                v-bind="menuActivatorProps"
+                icon="mdi-menu"
+                icon-size="32px"
+                btn-size="46px"
+              />
+            </template>
+
+            <v-list density="compact">
+              <AccountItems />
+            </v-list>
+          </v-menu>
 
           <Gap style="width: 10px" />
         </template>
 
         <!-- App name and Logo -->
 
-        <q-toolbar-title style="overflow: visible; padding: 0px; flex: none">
+        <v-toolbar-title style="overflow: visible; padding: 0px; flex: none">
           <router-link
             :to="{ name: 'home' }"
             style="display: flex; align-items: center"
@@ -61,7 +65,7 @@
               DeepNotes
             </div>
           </router-link>
-        </q-toolbar-title>
+        </v-toolbar-title>
 
         <!-- Center buttons -->
 
@@ -80,13 +84,13 @@
           />
         </template>
 
-        <q-space />
+        <v-spacer />
 
         <RightButtons></RightButtons>
         <RightMenu></RightMenu>
       </ResponsiveContainer>
-    </q-toolbar>
-  </q-header>
+    </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script setup lang="ts">

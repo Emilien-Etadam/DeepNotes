@@ -1,12 +1,13 @@
 <template>
-  <q-header
-    elevated
-    class="d-none d-md-block main-toolbar-header"
+  <v-app-bar
     v-show="uiStore().width >= 840"
+    elevation="1"
+    class="d-none d-md-block main-toolbar-header"
     style="background-color: transparent; z-index: 100; pointer-events: auto"
+    app
   >
-    <q-toolbar
-      class="bg-grey-10"
+    <v-toolbar
+      class="bg-grey-darken-4"
       style="padding: 0; pointer-events: auto"
     >
       <DeepBtn
@@ -17,12 +18,12 @@
           min-height: 42px;
           min-width: 42px;
         "
-        class="bg-grey-9"
+        class="bg-grey-darken-3"
         @click="uiStore().toggleLeftSidebar()"
       >
-        <q-icon
+        <v-icon
           style="position: relative; left: -2px"
-          :name="
+          :icon="
             uiStore().leftSidebarExpanded
               ? 'mdi-chevron-left'
               : 'mdi-chevron-right'
@@ -37,9 +38,10 @@
 
         <Gap style="width: 8px" />
 
-        <q-separator
+        <v-divider
           vertical
-          style="margin-top: -5px; margin-bottom: -5px"
+          class="my-0"
+          style="margin-top: -5px; margin-bottom: -5px; align-self: stretch"
         />
 
         <Gap style="width: 8px" />
@@ -94,11 +96,11 @@
           min-height: 42px;
           min-width: 42px;
         "
-        class="bg-grey-9"
+        class="bg-grey-darken-3"
         @click="uiStore().toggleRightSidebar()"
       >
-        <q-icon
-          :name="
+        <v-icon
+          :icon="
             uiStore().rightSidebarExpanded
               ? 'mdi-chevron-right'
               : 'mdi-chevron-left'
@@ -106,8 +108,8 @@
           style="position: relative; right: -2px"
         />
       </DeepBtn>
-    </q-toolbar>
-  </q-header>
+    </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script setup lang="ts">
@@ -126,7 +128,7 @@ const _quasarMode = process.env.MODE;
   border-bottom: 1px solid $border-subtle;
 }
 
-.q-header :deep() {
+.v-app-bar :deep() {
   transition:
     left 0.2s ease,
     right 0.2s ease;

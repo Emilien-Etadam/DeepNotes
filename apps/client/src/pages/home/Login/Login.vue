@@ -1,18 +1,18 @@
 <template>
-  <q-page class="login-page">
+  <div class="login-page">
     <ResponsiveContainer style="padding: 150px 32px">
       <div
         class="login-form"
         style="margin: 0px auto; max-width: 270px"
       >
-        <q-form @submit.prevent>
+        <form @submit.prevent>
           <Standard v-if="authType === 'standard'" />
           <Authenticator v-else-if="authType === 'authenticator'" />
           <Recovery v-else-if="authType === 'recovery'" />
-        </q-form>
+        </form>
       </div>
     </ResponsiveContainer>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -65,22 +65,23 @@ onMounted(async () => {
 .login-page {
   color: $text-primary;
 
-  :deep(.q-field__label),
-  :deep(.q-field__native),
-  :deep(.q-field__input),
-  :deep(.q-checkbox__label) {
+  :deep(.v-field__label),
+  :deep(.v-label),
+  :deep(.v-field input),
+  :deep(.v-field textarea) {
     color: $text-primary;
   }
 
-  :deep(.q-field--filled .q-field__control::before) {
+  :deep(.v-field--variant-filled .v-field__overlay) {
+    opacity: 1;
     background: $bg-input-idle;
   }
 
-  :deep(.q-field--filled:hover .q-field__control::before) {
+  :deep(.v-input:hover .v-field--variant-filled .v-field__overlay) {
     background: $bg-input-hover;
   }
 
-  :deep(.q-field--filled.q-field--focused .q-field__control::before) {
+  :deep(.v-input--focused .v-field--variant-filled .v-field__overlay) {
     background: $bg-input-focus;
   }
 
@@ -91,10 +92,10 @@ onMounted(async () => {
     color: $color-link-hover;
   }
 
-  :deep(.q-btn) {
+  :deep(.v-btn) {
     color: inherit;
   }
-  :deep(.q-btn.bg-primary) {
+  :deep(.v-btn.v-btn--color-primary) {
     color: #fff;
   }
 }

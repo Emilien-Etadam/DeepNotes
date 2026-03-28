@@ -1,16 +1,13 @@
 <template>
-  <q-layout
-    class="home-layout"
-    view="hHh Lpr fff"
-  >
+  <v-app class="home-layout">
     <Header></Header>
 
-    <q-page-container>
+    <v-main>
       <router-view />
-    </q-page-container>
+    </v-main>
 
     <Footer></Footer>
-  </q-layout>
+  </v-app>
 </template>
 
 <script setup lang="ts">

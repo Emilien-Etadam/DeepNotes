@@ -1,6 +1,7 @@
 <template>
   <button
     type="button"
+    v-bind="$attrs"
     :disabled="disable"
     class="toolbar-btn"
     :style="{
@@ -36,6 +37,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+});
+
 interface Props {
   icon: string;
   tooltip?: string;

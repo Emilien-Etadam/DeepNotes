@@ -1,8 +1,9 @@
 <template>
-  <q-page-container
+  <div
+    class="main-content-wrap"
     style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 0"
   >
-    <q-page class="main-content-page">
+    <div class="main-content-page">
       <DisplayPage
         v-for="page in internals.pages?.pageCache.react.cache"
         :key="page.id"
@@ -14,8 +15,8 @@
       />
 
       <DisplayUI v-if="!pagesStore().loading" />
-    </q-page>
-  </q-page-container>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

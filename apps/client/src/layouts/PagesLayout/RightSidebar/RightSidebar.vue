@@ -1,22 +1,15 @@
 <template>
-  <q-drawer
-    :mini="!uiStore().rightSidebarExpanded"
+  <v-navigation-drawer
     :model-value="true"
-    side="right"
-    bordered
-    no-swipe-open
-    no-swipe-close
-    no-swipe-backdrop
-    behavior="desktop"
-    style="
-      display: flex;
-      flex-direction: column;
-      min-width: 299px;
-      max-width: 299px;
-    "
+    location="end"
+    permanent
+    :rail="!uiStore().rightSidebarExpanded"
+    rail-width="72"
+    width="299"
+    style="display: flex; flex-direction: column"
     class="right-sidebar-drawer"
   >
-    <q-toolbar
+    <v-toolbar
       class="right-sidebar-toolbar"
       style="
         padding: 0;
@@ -26,14 +19,18 @@
         overflow: hidden;
       "
     >
-      <q-avatar style="margin-left: 9px">
-        <q-icon
-          name="mdi-chart-box"
-          size="20px"
+      <v-avatar
+        style="margin-left: 9px"
+        size="32"
+        rounded
+      >
+        <v-icon
+          icon="mdi-chart-box"
+          size="20"
         />
-      </q-avatar>
+      </v-avatar>
 
-      <q-toolbar-title
+      <v-toolbar-title
         v-if="uiStore().rightSidebarExpanded"
         class="right-sidebar-title"
         style="margin-left: -2px; text-align: left"
@@ -45,8 +42,8 @@
           Arrow properties
         </template>
         <template v-else> Page properties </template>
-      </q-toolbar-title>
-    </q-toolbar>
+      </v-toolbar-title>
+    </v-toolbar>
 
     <div style="overflow-y: auto; height: 0; flex: 1">
       <NoteProperties v-if="page.activeElem.react.value?.type === 'note'" />
@@ -55,7 +52,7 @@
       />
       <PageProperties v-else />
     </div>
-  </q-drawer>
+  </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
@@ -71,6 +68,8 @@ provide('page', page);
 <style scoped lang="scss">
 .right-sidebar-drawer {
   background-color: $bg-sidebar;
+
+  border-left: 1px solid $border-subtle !important;
 }
 
 .right-sidebar-toolbar {
@@ -80,11 +79,5 @@ provide('page', page);
 .right-sidebar-title {
   color: $text-secondary;
   font-size: $fs-sm;
-}
-
-.q-drawer-container :deep() {
-  .q-drawer {
-    border-left: 1px solid $border-subtle !important;
-  }
 }
 </style>

@@ -85,17 +85,18 @@ useEventListener(globalThis.window, 'resize', onWindowResize);
 
 html,
 body,
-#q-app {
+#app {
   height: 100%;
 }
 
-#q-app {
+#app {
   padding-top: env(safe-area-inset-top);
   padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
 }
 
+.v-application,
 .q-layout,
 .q-page {
   min-height: 100% !important; /* necessary */

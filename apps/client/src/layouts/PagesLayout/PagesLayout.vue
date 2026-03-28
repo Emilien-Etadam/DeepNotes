@@ -1,8 +1,5 @@
 <template>
-  <q-layout
-    class="pages-layout"
-    view="lHr lpR fFf"
-  >
+  <v-app class="pages-layout">
     <template v-if="!pagesStore().loading">
       <MainToolbar />
 
@@ -10,14 +7,16 @@
       <RightSidebar />
     </template>
 
-    <MainContent />
+    <v-main class="pages-layout-main">
+      <MainContent />
 
-    <router-view />
-  </q-layout>
+      <router-view />
+    </v-main>
 
-  <TableContextMenu v-if="!pagesStore().loading" />
+    <TableContextMenu v-if="!pagesStore().loading" />
 
-  <LoadingOverlay v-if="pagesStore().loading" />
+    <LoadingOverlay v-if="pagesStore().loading" />
+  </v-app>
 </template>
 
 <script setup lang="ts">
@@ -119,26 +118,30 @@ body {
 </style>
 
 <style lang="scss" scoped>
+.pages-layout-main {
+  padding: 0 !important;
+}
+
 .pages-layout :deep() {
-  .q-drawer {
-    &.q-drawer--mini {
-      .q-item {
-        justify-content: normal !important;
-        padding-left: 16px !important;
-      }
-
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-    }
-
-    .q-item {
+  .right-sidebar-drawer.v-navigation-drawer--rail {
+    .q-item,
+    .v-list-item {
       justify-content: normal !important;
       padding-left: 16px !important;
     }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
   }
 
-  .q-page-container {
+  .v-navigation-drawer .q-item,
+  .v-navigation-drawer .v-list-item {
+    justify-content: normal !important;
+    padding-left: 16px !important;
+  }
+
+  .v-main {
     transition:
       padding-left 0.2s ease,
       padding-right 0.2s ease;
