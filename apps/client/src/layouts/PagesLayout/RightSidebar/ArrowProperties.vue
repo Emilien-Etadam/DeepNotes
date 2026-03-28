@@ -1,5 +1,5 @@
 <template>
-  <q-list v-if="!uiStore().rightSidebarExpanded">
+  <div v-if="!uiStore().rightSidebarExpanded">
     <MiniSidebarBtn
       tooltip="Backward"
       icon="mdi-arrow-left-thick"
@@ -31,7 +31,7 @@
       "
     />
 
-    <q-separator />
+    <v-divider />
 
     <MiniSidebarBtn
       tooltip="Dashed"
@@ -48,7 +48,7 @@
       "
     />
 
-    <q-separator />
+    <v-divider />
 
     <ColorPalette
       type="arrows"
@@ -62,17 +62,17 @@
         })
       "
     />
-  </q-list>
+  </div>
 
   <div v-else>
     <div style="padding: 20px; display: flex; flex-direction: column">
       <div class="display: flex">
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="Source anchor"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="JSON.stringify(arrow.react.collab.sourceAnchor)"
-            :options="[
+            :items="[
               { label: 'Auto', value: 'null' },
               { label: 'Left', value: JSON.stringify({ x: -1, y: 0 }) },
               { label: 'Top', value: JSON.stringify({ x: 0, y: -1 }) },
@@ -84,21 +84,23 @@
                 selectedArrow.react.collab.sourceAnchor = JSON.parse(value);
               })
             "
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
 
         <Gap style="width: 16px" />
 
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="Target anchor"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="JSON.stringify(arrow.react.collab.targetAnchor)"
-            :options="[
+            :items="[
               { label: 'Auto', value: 'null' },
               { label: 'Left', value: JSON.stringify({ x: -1, y: 0 }) },
               { label: 'Top', value: JSON.stringify({ x: 0, y: -1 }) },
@@ -110,25 +112,27 @@
                 selectedArrow.react.collab.targetAnchor = JSON.parse(value);
               })
             "
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
       </div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <div class="display: flex">
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="Source head"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="arrow.react.collab.sourceHead"
-            :options="[
+            :items="[
               { label: 'None', value: 'none' },
               { label: 'Open', value: 'open' },
             ]"
@@ -137,21 +141,23 @@
                 selectedArrow.react.collab.sourceHead = value;
               })
             "
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
 
         <Gap style="width: 16px" />
 
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="Target head"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="arrow.react.collab.targetHead"
-            :options="[
+            :items="[
               { label: 'None', value: 'none' },
               { label: 'Open', value: 'open' },
             ]"
@@ -160,10 +166,12 @@
                 selectedArrow.react.collab.targetHead = value;
               })
             "
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
       </div>
@@ -178,16 +186,16 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <div class="display: flex">
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="Body type"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="arrow.react.collab.bodyType"
-            :options="[
+            :items="[
               { label: 'Curve', value: 'curve' },
               { label: 'Line', value: 'line' },
             ]"
@@ -196,21 +204,23 @@
                 selectedArrow.react.collab.bodyType = value;
               })
             "
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
 
         <Gap style="width: 16px" />
 
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="Body style"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="arrow.react.collab.bodyStyle"
-            :options="[
+            :items="[
               { label: 'Solid', value: 'solid' },
               { label: 'Dashed', value: 'dashed' },
             ]"
@@ -219,16 +229,18 @@
                 selectedArrow.react.collab.bodyStyle = value;
               })
             "
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
       </div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px">
       <div style="display: flex; justify-content: center">
@@ -247,7 +259,7 @@
       </div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <DeepBtn
@@ -283,7 +295,7 @@
         page.collab.store.arrows[arrow.id]?.editedAt != null
       "
     >
-      <q-separator />
+      <v-divider />
 
       <div style="padding: 16px 20px; display: flex; flex-direction: column">
         <div v-if="page.collab.store.arrows[arrow.id]?.createdAt != null">

@@ -1,34 +1,30 @@
 <template>
-  <q-select
-    :options="options"
-    option-label="name"
-    option-value="id"
-    filled
-    emit-value
-    map-options
-    dense
+  <v-select
+    :items="options"
+    item-title="name"
+    item-value="id"
+    variant="filled"
+    density="compact"
+    :return-object="false"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
   >
-    <template #selected>
+    <template #selection>
       <template v-if="modelValue">
         {{ rolesMap()[modelValue].name }}
       </template>
       <template v-else>(Select a role)</template>
     </template>
 
-    <template #option="scope">
-      <q-item
-        v-bind="scope.itemProps"
+    <template #item="{ item, props }">
+      <v-list-item
+        v-bind="props"
+        :title="item.name"
+        :subtitle="item.description"
         style="max-width: 220px"
-      >
-        <q-item-section>
-          <q-item-label>{{ scope.opt.name }}</q-item-label>
-          <q-item-label caption>{{ scope.opt.description }}</q-item-label>
-        </q-item-section>
-      </q-item>
+      />
     </template>
-  </q-select>
+  </v-select>
 </template>
 
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <q-list>
+  <div>
     <MiniSidebarBtn
       tooltip="Create new page"
       icon="mdi-note-plus"
@@ -17,7 +17,7 @@
       </TutorialTooltip>
     </MiniSidebarBtn>
 
-    <q-separator />
+    <v-divider />
 
     <MiniSidebarBtn
       tooltip="Head"
@@ -79,7 +79,7 @@
       </TutorialTooltip>
     </MiniSidebarBtn>
 
-    <q-separator />
+    <v-divider />
 
     <MiniSidebarBtn
       tooltip="Collapsible"
@@ -132,7 +132,7 @@
       "
     />
 
-    <q-separator />
+    <v-divider />
 
     <MiniSidebarBtn
       tooltip="Container"
@@ -190,7 +190,7 @@
       "
     />
 
-    <q-separator />
+    <v-divider />
 
     <ColorPalette
       type="notes"
@@ -208,7 +208,7 @@
         })
       "
     />
-  </q-list>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,7 @@
 <template>
   <!-- Collapsed sidebar -->
 
-  <q-list v-if="!uiStore().rightSidebarExpanded">
+  <div v-if="!uiStore().rightSidebarExpanded">
     <MiniSidebarBtn
       tooltip="Group settings"
       icon="mdi-account-cog"
@@ -15,7 +15,7 @@
         })
       "
     />
-  </q-list>
+  </div>
 
   <!-- Expanded sidebar -->
 
@@ -50,7 +50,7 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <!-- Page ID -->
@@ -82,7 +82,7 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <DeepBtn
@@ -101,7 +101,7 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <DeepBtn
@@ -142,15 +142,15 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <PageSelection />
 
-    <q-separator />
+    <v-divider />
 
     <VersionHistory />
 
-    <q-separator />
+    <v-divider />
 
     <PageBacklinks />
   </div>

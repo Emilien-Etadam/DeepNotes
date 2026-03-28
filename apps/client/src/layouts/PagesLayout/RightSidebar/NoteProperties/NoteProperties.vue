@@ -33,21 +33,14 @@
         :disable="page.react.readOnly"
         @click="createNewPageQuick()"
       >
-        <q-list class="bg-primary">
-          <q-item
-            clickable
-            v-close-popup
+        <v-list class="bg-primary">
+          <v-list-item
+            link
+            prepend-icon="mdi-note-plus"
+            title="Create with options"
             @click="showNewPageDialog()"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-note-plus" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>Create with options</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+          />
+        </v-list>
 
         <template #label>
           <TutorialTooltip
@@ -64,7 +57,7 @@
       </DeepBtnDropdown>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <!-- Head and body -->
 
@@ -149,7 +142,7 @@
         page.collab.store.notes[note.id]?.movedAt != null
       "
     >
-      <q-separator />
+      <v-divider />
 
       <div style="padding: 16px 20px; display: flex; flex-direction: column">
         <div v-if="page.collab.store.notes[note.id]?.createdAt != null">
@@ -193,7 +186,7 @@
       </div>
     </template>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <DeepBtn
@@ -224,7 +217,7 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <!-- Anchor -->
 
@@ -277,9 +270,9 @@
 
       <div class="display: flex">
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="X anchor"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="note.react.collab.anchor.x"
             @update:model-value="
               changeProp($event, (selectedNote, value) => {
@@ -289,24 +282,26 @@
                 selectedNote.react.collab.anchor.x = value;
               })
             "
-            :options="[
+            :items="[
               { label: 'Left', value: 0 },
               { label: 'Center', value: 0.5 },
               { label: 'Right', value: 1 },
             ]"
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
 
         <Gap style="width: 16px" />
 
         <div style="flex: 1">
-          <q-select
+          <v-select
             label="Y anchor"
-            :disable="page.react.readOnly"
+            :disabled="page.react.readOnly"
             :model-value="note.react.collab.anchor.y"
             @update:model-value="
               changeProp($event, (selectedNote, value) => {
@@ -316,21 +311,23 @@
                 selectedNote.react.collab.anchor.y = value;
               })
             "
-            :options="[
+            :items="[
               { label: 'Top', value: 0 },
               { label: 'Center', value: 0.5 },
               { label: 'Bottom', value: 1 },
             ]"
-            filled
-            dense
-            emit-value
-            map-options
+            variant="filled"
+            density="compact"
+            :return-object="false"
+            item-title="label"
+            item-value="value"
+            hide-details
           />
         </div>
       </div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <div style="display: flex">
@@ -404,7 +401,7 @@
       </div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px">
       <Checkbox
@@ -440,7 +437,7 @@
       </div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <!-- Collapsing -->
 
@@ -526,11 +523,11 @@
       </div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <NoteContainerProperties />
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex">
       <Checkbox
@@ -558,7 +555,7 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex">
       <Checkbox
@@ -586,7 +583,7 @@
       />
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <div style="padding: 20px; display: flex">
       <Checkbox
@@ -605,7 +602,7 @@
       <div style="flex: 1"></div>
     </div>
 
-    <q-separator />
+    <v-divider />
 
     <NoteExport />
   </div>
