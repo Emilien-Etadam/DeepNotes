@@ -7,13 +7,13 @@
     }"
   >
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Save your Recovery Codes</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section
+      <div
         style="flex: 1; padding: 20px; display: flex; flex-direction: column"
       >
         <div>
@@ -39,42 +39,30 @@
           <Gap style="width: 16px" />
 
           <div style="flex: none; display: flex; flex-direction: column">
-            <q-btn
+            <v-btn
               color="primary"
-              style="width: 38px"
-              @click="
-                async () => {
-                  await setClipboardText(recoveryCodes.join('\n'));
-
-                  $q.notify({
-                    message: 'Copied to clipboard.',
-                    type: 'positive',
-                  });
-                }
-              "
+              style="width: 38px; min-width: 38px"
+              @click="copyRecoveryCodes()"
             >
-              <q-icon
-                name="mdi-content-copy"
-                size="23px"
+              <v-icon
+                icon="mdi-content-copy"
+                size="23"
                 class="cursor-pointer"
                 style="margin-right: -3px"
+              />
+              <v-tooltip
+                activator="parent"
+                location="top"
               >
-                <q-tooltip
-                  anchor="top middle"
-                  self="bottom middle"
-                  transition-show="jump-up"
-                  transition-hide="jump-down"
-                >
-                  Copy
-                </q-tooltip>
-              </q-icon>
-            </q-btn>
+                Copy
+              </v-tooltip>
+            </v-btn>
 
             <Gap style="height: 16px" />
 
-            <q-btn
+            <v-btn
               color="primary"
-              style="width: 38px"
+              style="width: 38px; min-width: 38px"
               @click="
                 download(
                   recoveryCodes.join('\n'),
@@ -83,46 +71,40 @@
                 )
               "
             >
-              <q-icon
-                name="mdi-download"
-                size="23px"
+              <v-icon
+                icon="mdi-download"
+                size="23"
                 class="cursor-pointer"
                 style="margin-right: -3px"
+              />
+              <v-tooltip
+                activator="parent"
+                location="top"
               >
-                <q-tooltip
-                  anchor="top middle"
-                  self="bottom middle"
-                  transition-show="jump-up"
-                  transition-hide="jump-down"
-                >
-                  Download
-                </q-tooltip>
-              </q-icon>
-            </q-btn>
+                Download
+              </v-tooltip>
+            </v-btn>
 
             <Gap style="height: 16px" />
 
-            <q-btn
+            <v-btn
               color="primary"
-              style="width: 38px"
+              style="width: 38px; min-width: 38px"
               @click="printRecoveryCodes"
             >
-              <q-icon
-                name="mdi-printer"
-                size="23px"
+              <v-icon
+                icon="mdi-printer"
+                size="23"
                 class="cursor-pointer"
                 style="margin-right: -3px"
+              />
+              <v-tooltip
+                activator="parent"
+                location="top"
               >
-                <q-tooltip
-                  anchor="top middle"
-                  self="bottom middle"
-                  transition-show="jump-up"
-                  transition-hide="jump-down"
-                >
-                  Print
-                </q-tooltip>
-              </q-icon>
-            </q-btn>
+                Print
+              </v-tooltip>
+            </v-btn>
           </div>
         </div>
 
@@ -130,18 +112,20 @@
 
         <div style="color: red">These won't be displayed again.</div>
         <div>Make sure to store them in a safe and accessible place.</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
+
         <DeepBtn
           flat
           label="Finish"
           color="positive"
           @click="dialogRef.onDialogOK()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>
@@ -161,6 +145,15 @@ const props = defineProps<{
 const maximized = computed(() => uiStore().width < BREAKPOINT_SM_MIN);
 
 const recoveryCodes = ref(props.recoveryCodes);
+
+async function copyRecoveryCodes() {
+  await setClipboardText(recoveryCodes.value.join('\n'));
+
+  $quasar().notify({
+    message: 'Copied to clipboard.',
+    type: 'positive',
+  });
+}
 
 function printRecoveryCodes() {
   const newWindow = globalThis.open('', 'Print');

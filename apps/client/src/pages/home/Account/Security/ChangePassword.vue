@@ -1,5 +1,8 @@
 <template>
-  <q-form style="display: flex; flex-direction: column; max-width: 300px">
+  <form
+    @submit.prevent
+    style="display: flex; flex-direction: column; max-width: 300px"
+  >
     <PasswordField
       label="Old password"
       dense
@@ -31,11 +34,10 @@
       delay
       @click.prevent="_changePassword()"
     />
-  </q-form>
+  </form>
 </template>
 
 <script setup lang="ts">
-import { QForm } from 'quasar';
 import { changePassword } from 'src/code/areas/api-interface/users/change-password';
 import { logout } from 'src/code/areas/auth/logout';
 import { asyncDialog, handleError } from 'src/code/utils/misc';

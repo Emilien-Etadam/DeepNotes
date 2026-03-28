@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <div>
     <ResponsiveContainer
       v-if="status !== undefined"
       style="padding: 160px 0; text-align: center"
@@ -10,9 +10,9 @@
         <Gap style="height: 16px" />
 
         <div>
-          <q-icon
-            name="done"
-            size="48px"
+          <v-icon
+            icon="mdi-check"
+            size="48"
             color="green"
           />
         </div>
@@ -40,7 +40,7 @@
         />
       </template>
     </ResponsiveContainer>
-  </q-page>
+  </div>
 
   <LoadingOverlay v-if="status === undefined" />
 </template>

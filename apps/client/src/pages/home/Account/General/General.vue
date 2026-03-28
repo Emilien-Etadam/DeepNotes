@@ -3,7 +3,7 @@
 
   <Gap style="height: 8px" />
 
-  <q-separator />
+  <v-divider />
 
   <Gap style="height: 24px" />
 
@@ -15,7 +15,7 @@
 
   <Gap style="height: 8px" />
 
-  <q-separator />
+  <v-divider />
 
   <Gap style="height: 24px" />
 

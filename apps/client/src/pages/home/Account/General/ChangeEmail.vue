@@ -1,5 +1,8 @@
 <template>
-  <q-form style="display: flex; flex-direction: column; max-width: 300px">
+  <form
+    @submit.prevent
+    style="display: flex; flex-direction: column; max-width: 300px"
+  >
     <TextField
       label="Current email"
       dense
@@ -26,7 +29,7 @@
       color="primary"
       @click.prevent="_changeEmail()"
     />
-  </q-form>
+  </form>
 </template>
 
 <script setup lang="ts">

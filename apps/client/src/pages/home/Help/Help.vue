@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <div>
     <ResponsiveContainer>
       <Gap style="height: 130px" />
 
@@ -79,7 +79,7 @@
 
       <Gap style="height: 160px" />
     </ResponsiveContainer>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">

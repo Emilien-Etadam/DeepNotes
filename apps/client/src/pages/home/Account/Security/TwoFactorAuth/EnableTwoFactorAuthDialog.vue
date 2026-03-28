@@ -7,13 +7,13 @@
     }"
   >
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Two-factor authentication</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section
+      <div
         style="
           flex: 1;
           padding: 20px;
@@ -111,11 +111,13 @@
         </div>
 
         <LoadingOverlay v-if="loading" />
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
+
         <DeepBtn
           flat
           label="Cancel"
@@ -132,7 +134,7 @@
           :disable="loading"
           @click.prevent="verify()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>
@@ -216,17 +218,15 @@ async function verify() {
 </script>
 
 <style scoped lang="scss">
-.q-dialog :deep() {
-  a:not(.q-hoverable) {
-    text-decoration: none;
+:deep(.v-card a:not(.v-btn)) {
+  text-decoration: none;
 
-    color: #29b6f6;
+  color: #29b6f6;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    &:hover {
-      color: #4fc3f7;
-    }
+  &:hover {
+    color: #4fc3f7;
   }
 }
 </style>

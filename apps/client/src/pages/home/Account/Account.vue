@@ -1,5 +1,5 @@
 <template>
-  <q-page style="display: flex; flex-direction: column">
+  <div style="display: flex; flex-direction: column">
     <ResponsiveContainer
       style="
         margin-top: 48px;
@@ -14,43 +14,34 @@
         style="flex: 1"
       >
         <div class="d-none d-lg-block col-3">
-          <q-list
+          <v-list
             style="position: sticky"
             :style="{ top: `${uiStore().headerHeight + 56}px` }"
           >
-            <q-item
-              style="height: 60px"
-              clickable
+            <v-list-item
+              link
               :to="{ name: 'account/general' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-cog" />
-              </q-item-section>
-              <q-item-section>General</q-item-section>
-            </q-item>
-
-            <q-item
               style="height: 60px"
-              clickable
+              prepend-icon="mdi-cog"
+              title="General"
+            />
+
+            <v-list-item
+              link
               :to="{ name: 'account/security' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-shield" />
-              </q-item-section>
-              <q-item-section>Security</q-item-section>
-            </q-item>
-
-            <q-item
               style="height: 60px"
-              clickable
+              prepend-icon="mdi-shield"
+              title="Security"
+            />
+
+            <v-list-item
+              link
               :to="{ name: 'account/invitations' }"
-            >
-              <q-item-section avatar>
-                <q-icon name="mdi-account-plus" />
-              </q-item-section>
-              <q-item-section>Invitations</q-item-section>
-            </q-item>
-          </q-list>
+              style="height: 60px"
+              prepend-icon="mdi-account-plus"
+              title="Invitations"
+            />
+          </v-list>
         </div>
 
         <div class="col-12 col-lg-9 page-content">
@@ -58,7 +49,7 @@
         </div>
       </div>
     </ResponsiveContainer>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts"></script>

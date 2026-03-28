@@ -10,9 +10,9 @@
     }"
   >
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Two-factor authentication</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
@@ -24,7 +24,7 @@
           position: relative;
         "
       >
-        <q-card-section
+        <div
           style="padding: 20px; display: flex; flex-direction: column"
         >
           <div>Scan the following QR code to add another device:</div>
@@ -59,11 +59,11 @@
             color="primary"
             @click="forgetTrustedDevices()"
           />
-        </q-card-section>
+        </div>
 
-        <q-separator />
+        <v-divider />
 
-        <q-card-section
+        <div
           style="flex: 1; padding: 20px; display: flex; flex-direction: column"
         >
           <div>
@@ -78,11 +78,11 @@
             color="primary"
             @click="regenerateRecoveryCodes()"
           />
-        </q-card-section>
+        </div>
 
-        <q-separator />
+        <v-divider />
 
-        <q-card-section
+        <div
           style="padding: 20px; display: flex; flex-direction: column"
         >
           <DeepBtn
@@ -90,21 +90,23 @@
             color="negative"
             @click="disableTwoFactorAuth()"
           />
-        </q-card-section>
+        </div>
 
         <LoadingOverlay v-if="loading" />
       </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
+
         <DeepBtn
           flat
           label="Close"
           color="primary"
-          v-close-popup
+          @click="dialogRef.onDialogCancel()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>
