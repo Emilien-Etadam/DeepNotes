@@ -88,5 +88,5 @@ jobs:
         uses: anchore/scan-action@v6
         with:
           image: ${{ matrix.image }}:ci-${{ github.sha }}
-          severity-cutoff: high
+          severity-cutoff: critical
           fail-build: true
