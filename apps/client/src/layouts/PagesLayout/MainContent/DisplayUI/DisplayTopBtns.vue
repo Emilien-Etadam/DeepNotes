@@ -31,13 +31,16 @@
           icon="mdi-hammer-wrench"
           tooltip="Basic"
         >
-          <q-menu
-            style="padding: 1px 5px"
-            :offset="[0, 4]"
-            auto-close
+          <v-menu
+            activator="parent"
+            :close-on-content-click="true"
+            :offset="4"
+            location="bottom"
           >
-            <BasicBtns popup />
-          </q-menu>
+            <div style="padding: 1px 5px">
+              <BasicBtns popup />
+            </div>
+          </v-menu>
         </DisplayBtn>
 
         <Gap style="width: 4px" />
@@ -46,13 +49,16 @@
           icon="mdi-format-color-text"
           tooltip="Formatting"
         >
-          <q-menu
-            style="padding: 1px 5px"
-            :offset="[0, 4]"
-            auto-close
+          <v-menu
+            activator="parent"
+            :close-on-content-click="true"
+            :offset="4"
+            location="bottom"
           >
-            <FormattingBtns popup />
-          </q-menu>
+            <div style="padding: 1px 5px">
+              <FormattingBtns popup />
+            </div>
+          </v-menu>
         </DisplayBtn>
 
         <Gap style="width: 4px" />
@@ -61,13 +67,16 @@
           icon="mdi-format-list-bulleted"
           tooltip="Objects"
         >
-          <q-menu
-            style="padding: 1px 5px"
-            :offset="[0, 4]"
-            auto-close
+          <v-menu
+            activator="parent"
+            :close-on-content-click="true"
+            :offset="4"
+            location="bottom"
           >
-            <ObjectBtns popup />
-          </q-menu>
+            <div style="padding: 1px 5px">
+              <ObjectBtns popup />
+            </div>
+          </v-menu>
         </DisplayBtn>
 
         <Gap style="width: 4px" />
@@ -76,13 +85,16 @@
           icon="mdi-align-horizontal-left"
           tooltip="Alignment"
         >
-          <q-menu
-            style="padding: 1px 5px"
-            :offset="[0, 4]"
-            auto-close
+          <v-menu
+            activator="parent"
+            :close-on-content-click="true"
+            :offset="4"
+            location="bottom"
           >
-            <AlignmentBtns popup />
-          </q-menu>
+            <div style="padding: 1px 5px">
+              <AlignmentBtns popup />
+            </div>
+          </v-menu>
         </DisplayBtn>
       </div>
 
@@ -92,41 +104,40 @@
         style="position: absolute; right: 60px; top: 8px"
       >
         <AccountPopup>
-          <q-item
-            v-if="true"
-            clickable
-            v-close-popup
+          <v-list-item
+            link
+            prepend-icon="mdi-home"
+            title="Home"
             :href="multiModePath('/')"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-home" />
-            </q-item-section>
-            <q-item-section>Home</q-item-section>
-          </q-item>
+          />
 
-          <q-item clickable>
-            <q-item-section avatar>
-              <q-icon name="mdi-bell">
-                <NotificationsBadge />
-              </q-icon>
-            </q-item-section>
+          <div @click.stop>
+            <v-list-item>
+              <template #prepend>
+                <span
+                  style="
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
+                  "
+                >
+                  <v-icon icon="mdi-bell" />
+                  <NotificationsBadge />
+                </span>
+              </template>
 
-            <q-item-section>Notifications</q-item-section>
+              <v-list-item-title>Notifications</v-list-item-title>
 
-            <NotificationsPopup />
-          </q-item>
+              <NotificationsPopup />
+            </v-list-item>
+          </div>
 
-          <q-item
-            clickable
-            v-close-popup
-            @click="$q.dialog({ component: PagesSettingsDialog })"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-cog" />
-            </q-item-section>
-
-            <q-item-section>Pages settings</q-item-section>
-          </q-item>
+          <v-list-item
+            link
+            prepend-icon="mdi-cog"
+            title="Pages settings"
+            @click="$quasar().dialog({ component: PagesSettingsDialog })"
+          />
         </AccountPopup>
       </DisplayBtn>
     </template>
@@ -147,9 +158,9 @@
       class="bg-grey-9"
       @click="uiStore().toggleLeftSidebar()"
     >
-      <q-icon
+      <v-icon
         style="position: relative; left: -2px"
-        :name="
+        :icon="
           uiStore().leftSidebarExpanded
             ? 'mdi-chevron-left'
             : 'mdi-chevron-right'
@@ -174,8 +185,8 @@
       class="bg-grey-9"
       @click="uiStore().toggleRightSidebar()"
     >
-      <q-icon
-        :name="
+      <v-icon
+        :icon="
           uiStore().rightSidebarExpanded
             ? 'mdi-chevron-right'
             : 'mdi-chevron-left'
@@ -198,5 +209,4 @@ import NotificationsPopup from '../../MainToolbar/Notifications/NotificationsPop
 import ObjectBtns from '../../MainToolbar/ObjectBtns.vue';
 import PagesSettingsDialog from '../../MainToolbar/PagesSettingsDialog/PagesSettingsDialog.vue';
 
-const _quasarMode = process.env.MODE;
 </script>

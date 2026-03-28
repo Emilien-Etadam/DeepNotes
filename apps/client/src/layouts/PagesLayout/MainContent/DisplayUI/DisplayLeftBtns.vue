@@ -9,14 +9,12 @@
       "
       @click="internals.pages.goBackward()"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Go backward
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
 
     <Gap style="height: 6px" />
@@ -31,14 +29,12 @@
       "
       @click="internals.pages.goForward()"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Go forward
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
 
     <Gap style="height: 16px" />
@@ -47,16 +43,14 @@
       icon="mdi-camera-outline"
       size="11px"
       :btn-size="34"
-      @click="$q.dialog({ component: TakeScreenshotDialog })"
+      @click="$quasar().dialog({ component: TakeScreenshotDialog })"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Take screenshot
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
 
     <Gap style="height: 16px" />
@@ -72,14 +66,12 @@
         }
       "
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Find and replace
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
 
     <Gap style="height: 16px" />
@@ -90,33 +82,29 @@
       :btn-size="34"
       @click="exportCurrentPage()"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Export for AI
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
 import { exportPageToMarkdown } from 'src/code/pages/export/export-markdown';
 
 import TakeScreenshotDialog from '../../MainToolbar/TakeScreenshotDialog.vue';
 import ExportMarkdownDialog from './ExportMarkdownDialog.vue';
 
-const $q = useQuasar();
 const page = computed(() => internals.pages.react.page);
 
 function exportCurrentPage() {
   const currentPage = internals.pages.react.page;
   if (!currentPage) return;
   const markdown = exportPageToMarkdown(currentPage);
-  $q.dialog({
+  $quasar().dialog({
     component: ExportMarkdownDialog,
     componentProps: { markdown },
   });

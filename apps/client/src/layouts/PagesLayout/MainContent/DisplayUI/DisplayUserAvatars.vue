@@ -14,29 +14,28 @@
       :key="userState[0]"
       class="display-user-avatar"
       :style="{
-        left: `${($q.platform.is.mobile ? 82 : 20) + 44 * index}px`,
+        left: `${(mobile ? 82 : 20) + 44 * index}px`,
 
         'background-color': userState[1].user.color,
       }"
     >
       {{ getNameInitials(userState[1].user.name ?? '') }}
 
-      <q-tooltip
-        anchor="top middle"
-        self="bottom middle"
-        transition-show="jump-up"
-        transition-hide="jump-down"
+      <v-tooltip
+        activator="parent"
+        location="top"
       >
         {{ userState[1].user.name }}
-      </q-tooltip>
+      </v-tooltip>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { getNameInitials } from 'src/code/utils/misc';
+import { useDisplay } from 'vuetify';
 
-const $q = useQuasar();
+const { mobile } = useDisplay();
 
 const page = computed(() => internals.pages.react.page);
 </script>

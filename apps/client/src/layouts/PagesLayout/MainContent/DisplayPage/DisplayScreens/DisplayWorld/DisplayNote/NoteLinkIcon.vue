@@ -1,9 +1,9 @@
 <template>
-  <q-icon
+  <v-icon
     class="note-link-icon"
     v-if="note.react.link.url"
-    :name="note.react.link.external ? 'mdi-launch' : 'mdi-link-variant'"
-    :size="note.react.link.external ? '15px' : '16px'"
+    :icon="note.react.link.external ? 'mdi-launch' : 'mdi-link-variant'"
+    :size="note.react.link.external ? '15' : '16'"
   />
 </template>
 

@@ -5,14 +5,12 @@
       :btn-size="34"
       @click="page.camera.resetZoom()"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Reset zoom
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
 
     <Gap style="height: 6px" />
@@ -22,14 +20,12 @@
       :btn-size="34"
       @click="page.camera.fitToScreen()"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Fit to screen
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
 
     <Gap style="height: 8px" />
@@ -47,14 +43,12 @@
       :disable="page.react.readOnly || !page.undoRedo.react.canUndo"
       @click="page.undoRedo.undo()"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Undo
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
 
     <Gap style="height: 6px" />
@@ -66,14 +60,12 @@
       :disable="page.react.readOnly || !page.undoRedo.react.canRedo"
       @click="page.undoRedo.redo()"
     >
-      <q-tooltip
-        anchor="center right"
-        self="center left"
-        transition-show="jump-right"
-        transition-hide="jump-left"
+      <v-tooltip
+        activator="parent"
+        location="end"
       >
         Redo
-      </q-tooltip>
+      </v-tooltip>
     </DisplayBtn>
   </div>
 </template>

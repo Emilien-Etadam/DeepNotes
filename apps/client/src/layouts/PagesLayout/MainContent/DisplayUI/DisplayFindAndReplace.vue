@@ -45,14 +45,12 @@
               :btn-size="32"
               @click="page.findAndReplace.findNext()"
             >
-              <q-tooltip
-                anchor="bottom middle"
-                self="top middle"
-                transition-show="jump-down"
-                transition-hide="jump-up"
+              <v-tooltip
+                activator="parent"
+                location="bottom"
               >
                 Find next
-              </q-tooltip>
+              </v-tooltip>
             </DisplayBtn>
 
             <Gap style="width: 4px" />
@@ -64,14 +62,12 @@
               :btn-size="32"
               @click="page.findAndReplace.findPrev()"
             >
-              <q-tooltip
-                anchor="bottom middle"
-                self="top middle"
-                transition-show="jump-down"
-                transition-hide="jump-up"
+              <v-tooltip
+                activator="parent"
+                location="bottom"
               >
                 Find previous
-              </q-tooltip>
+              </v-tooltip>
             </DisplayBtn>
           </div>
 
@@ -88,14 +84,12 @@
                 :btn-size="32"
                 @click="page.findAndReplace.replace(replacement)"
               >
-                <q-tooltip
-                  anchor="bottom middle"
-                  self="top middle"
-                  transition-show="jump-down"
-                  transition-hide="jump-up"
+                <v-tooltip
+                  activator="parent"
+                  location="bottom"
                 >
                   Replace
-                </q-tooltip>
+                </v-tooltip>
               </DisplayBtn>
 
               <Gap style="width: 4px" />
@@ -107,14 +101,12 @@
                 :btn-size="32"
                 @click="page.findAndReplace.replaceAll(replacement)"
               >
-                <q-tooltip
-                  anchor="bottom middle"
-                  self="top middle"
-                  transition-show="jump-down"
-                  transition-hide="jump-up"
+                <v-tooltip
+                  activator="parent"
+                  location="bottom"
                 >
                   Replace all
-                </q-tooltip>
+                </v-tooltip>
               </DisplayBtn>
             </div>
           </template>
@@ -152,15 +144,5 @@ watch(
   background-color: $bg-overlay;
   padding: $sp-2;
   border-radius: $radius-sm;
-}
-
-.q-input :deep() {
-  .q-field__control {
-    height: $input-height-sm;
-  }
-}
-.q-input :deep() .q-field__native,
-.q-input :deep() .q-field__input {
-  color: $text-primary;
 }
 </style>

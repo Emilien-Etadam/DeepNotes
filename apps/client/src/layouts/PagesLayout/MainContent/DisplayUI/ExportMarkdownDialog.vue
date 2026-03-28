@@ -1,23 +1,21 @@
 <template>
   <CustomDialog ref="dialogRef">
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Export for AI (Markdown)</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section
-        style="padding: 20px; display: flex; flex-direction: column"
-      >
-        <q-input
+      <div style="padding: 20px; display: flex; flex-direction: column">
+        <v-textarea
           :model-value="markdown"
-          type="textarea"
           readonly
-          outlined
-          autogrow
-          input-class="export-markdown-textarea"
-          style="min-height: 400px; font-family: monospace; font-size: 13px"
+          variant="outlined"
+          auto-grow
+          rows="15"
+          class="export-markdown-textarea"
+          style="font-family: monospace; font-size: 13px"
         />
 
         <Gap style="height: 16px" />
@@ -38,18 +36,20 @@
             @click="downloadAsMd()"
           />
         </div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
+
         <DeepBtn
           flat
           label="Close"
           color="primary"
           @click="dialogRef.onDialogCancel()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

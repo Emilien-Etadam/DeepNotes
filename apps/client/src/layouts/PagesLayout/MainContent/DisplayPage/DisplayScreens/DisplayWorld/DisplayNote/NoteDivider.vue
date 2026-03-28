@@ -7,7 +7,7 @@
     "
     style="position: relative"
   >
-    <q-separator style="background: rgba(255, 255, 255, 0.35)" />
+    <v-divider style="border-color: rgba(255, 255, 255, 0.35)" />
 
     <NoteResizeBar
       side="s"

@@ -12,7 +12,10 @@
 
   <Gap style="height: 12px" />
 
-  <q-form style="display: flex; flex-direction: column; width: 240px">
+  <form
+    style="display: flex; flex-direction: column; width: 240px"
+    @submit.prevent
+  >
     <PasswordField
       placeholder="Password"
       v-model="password"
@@ -28,7 +31,7 @@
       delay
       @click.prevent="onEnterPassword()"
     />
-  </q-form>
+  </form>
 </template>
 
 <script setup lang="ts">

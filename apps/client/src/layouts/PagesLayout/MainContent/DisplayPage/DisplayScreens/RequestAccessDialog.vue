@@ -4,13 +4,13 @@
     card-style="width: 250px"
   >
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Request access</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section
+      <div
         style="
           padding: 20px;
           display: flex;
@@ -25,14 +25,13 @@
         />
 
         <LoadingOverlay v-if="loading" />
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions
-        align="right"
-        style="padding: 12px 20px"
-      >
+      <v-card-actions style="padding: 12px 20px">
+        <v-spacer />
+
         <DeepBtn
           flat
           label="Cancel"
@@ -48,7 +47,7 @@
           :disable="loading"
           @click="_sendJoinRequest()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <DeepBtn
-    v-if="$q.platform.is.mobile"
+    v-if="mobile"
     color="grey-9"
     style="
       background-color: #808080;
@@ -19,21 +19,20 @@
   >
     Alt
 
-    <q-tooltip
-      anchor="top middle"
-      self="bottom middle"
-      transition-show="jump-up"
-      transition-hide="jump-down"
+    <v-tooltip
+      activator="parent"
+      location="top"
     >
       Alternate function
-    </q-tooltip>
+    </v-tooltip>
   </DeepBtn>
 </template>
 
 <script setup lang="ts">
 import { listenPointerEvents } from '@stdlib/misc';
+import { useDisplay } from 'vuetify';
 
-const $q = useQuasar();
+const { mobile } = useDisplay();
 
 function onPointerDown(event: PointerEvent) {
   internals.mobileAltKey = true;

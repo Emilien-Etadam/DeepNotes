@@ -5,9 +5,10 @@
     "
     style="flex: none"
   >
-    <q-btn
+    <v-btn
       class="note-collapse-button"
-      flat
+      variant="text"
+      :ripple="false"
       :style="{
         height: note.react.numEnabledSections === 1 ? '36.45px' : '100%',
         'border-bottom-right-radius':
@@ -17,14 +18,14 @@
       @pointerdown.left.stop
       @dblclick.left.stop
     >
-      <q-icon
-        :name="
+      <v-icon
+        :icon="
           note.react.collapsing.collapsed
             ? 'mdi-chevron-down'
             : 'mdi-chevron-up'
         "
       />
-    </q-btn>
+    </v-btn>
   </div>
 </template>
 
@@ -50,6 +51,7 @@ function onClick() {
   color: white; /* Fix color on note links */
 
   min-width: 0 !important;
+  padding: 0;
   width: 32px;
 
   border-top-left-radius: 0;
