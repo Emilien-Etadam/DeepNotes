@@ -111,7 +111,7 @@ async function onClick() {
   await router().push(`/groups/${notificationContent.value.groupId}`);
 
   if (notificationContent.value.recipientType !== 'target') {
-    $quasar().dialog({
+    appDialog({
       component: GroupSettingsDialog,
 
       componentProps: {
@@ -170,14 +170,13 @@ async function _rejectJoinInvitation() {
 }
 
 async function _acceptJoinInvitation() {
-  $quasar()
-    .dialog({
-      component: AcceptInvitationDialog,
+  appDialog({
+    component: AcceptInvitationDialog,
 
-      componentProps: {
-        groupIds: [notificationContent.value.groupId],
-      },
-    })
+    componentProps: {
+      groupIds: [notificationContent.value.groupId],
+    },
+  })
     .onOk(async () => {
       const mainPageId = await internals.realtime.hget(
         'group',

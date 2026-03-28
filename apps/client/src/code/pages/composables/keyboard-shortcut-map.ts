@@ -1,6 +1,7 @@
 import { Vec2 } from '@stdlib/misc';
 import { unsetNode } from 'src/code/areas/tiptap/utils';
 import type { Page } from 'src/code/pages/page/page';
+import { appDialog } from 'src/code/utils/dialog';
 import InsertImageDialog from 'src/layouts/PagesLayout/MainToolbar/InsertImageDialog.vue';
 import InsertLinkDialog from 'src/layouts/PagesLayout/MainToolbar/InsertLinkDialog.vue';
 import TakeScreenshotDialog from 'src/layouts/PagesLayout/MainToolbar/TakeScreenshotDialog.vue';
@@ -34,38 +35,36 @@ export function matchesShortcut(
 }
 
 function openInsertLinkDialog(): void {
-  $quasar().dialog({ component: InsertLinkDialog });
+  appDialog({ component: InsertLinkDialog });
 }
 
 function openInsertImageDialog(): void {
-  $quasar().dialog({ component: InsertImageDialog });
+  appDialog({ component: InsertImageDialog });
 }
 
 function openTakeScreenshotDialog(): void {
-  $quasar().dialog({ component: TakeScreenshotDialog });
+  appDialog({ component: TakeScreenshotDialog });
 }
 
 function handleInsertYoutubeVideo(page: Page): void {
-  $quasar()
-    .dialog({
-      title: 'Insert YouTube video',
-      message: 'Enter the video URL:',
-      prompt: {
-        type: 'url',
-        model: '',
-        filled: true,
-      },
-      color: 'primary',
-      cancel: { flat: true, color: 'negative' },
-      focus: 'cancel',
-    })
-    .onOk((url: string) =>
-      page.selection.format((chain) =>
-        chain.setYoutubeVideo({
-          src: url,
-        }),
-      ),
-    );
+  appDialog({
+    title: 'Insert YouTube video',
+    message: 'Enter the video URL:',
+    prompt: {
+      type: 'url',
+      model: '',
+      filled: true,
+    },
+    color: 'primary',
+    cancel: { flat: true, color: 'negative' },
+    focus: 'cancel',
+  }).onOk((url: string) =>
+    page.selection.format((chain) =>
+      chain.setYoutubeVideo({
+        src: url,
+      }),
+    ),
+  );
 }
 
 interface DirectionShortcutConfig {

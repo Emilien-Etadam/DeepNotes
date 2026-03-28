@@ -72,7 +72,6 @@
 
 <script setup lang="ts">
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { cancelJoinRequest } from 'src/code/areas/api-interface/groups/join-requests/cancel';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
 import { groupNames } from 'src/code/pages/computed/group-names';
@@ -136,7 +135,7 @@ async function cancelSelectedRequests() {
       ok: { label: 'Yes', flat: true, color: 'negative' },
     });
 
-    const notif = $quasar().notify({
+    const notif = showNotify({
       group: false,
       timeout: 0,
       message: 'Canceling join requests...',
@@ -166,7 +165,13 @@ async function cancelSelectedRequests() {
 
     baseSelectedGroupIds.value.clear();
 
-    let notifUpdateOptions: QNotifyUpdateOptions = {
+    let notifUpdateOptions: {
+      timeout?: number;
+      caption?: string;
+      message?: string;
+      color?: string;
+      html?: boolean;
+    } = {
       timeout: undefined,
       caption: undefined,
     };

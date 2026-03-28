@@ -1,12 +1,17 @@
 <template>
   <router-view></router-view>
 
+  <GlobalDialogs />
+  <GlobalNotifications />
+
   <LoadingOverlay v-if="appStore().loading" />
 </template>
 
 <script setup lang="ts">
 import { useEventListener } from '@vueuse/core';
 
+import GlobalDialogs from './components/GlobalDialogs.vue';
+import GlobalNotifications from './components/GlobalNotifications.vue';
 import { isCtrlDown } from './code/utils/misc';
 
 useMeta(() => ({

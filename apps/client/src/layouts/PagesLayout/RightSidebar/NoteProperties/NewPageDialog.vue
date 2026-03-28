@@ -280,7 +280,7 @@ async function _createPage() {
 
     await internals.pages.goToPage(response.pageId, { fromParent: true });
 
-    $quasar().notify({
+    showNotify({
       message: 'Page created successfully.',
       type: 'positive',
     });

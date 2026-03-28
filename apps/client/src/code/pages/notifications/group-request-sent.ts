@@ -1,5 +1,5 @@
 import { rejectJoinRequest } from 'src/code/areas/api-interface/groups/join-requests/reject';
-import { asyncDialog, handleError } from 'src/code/utils/misc';
+import { appDialog, asyncDialog, handleError } from 'src/code/utils/misc';
 import GroupSettingsDialog from 'src/layouts/PagesLayout/RightSidebar/PageProperties/GroupSettingsDialog/GroupSettingsDialog.vue';
 import AcceptRequestDialog from 'src/layouts/PagesLayout/RightSidebar/PageProperties/GroupSettingsDialog/RequestsTab/AcceptRequestDialog.vue';
 
@@ -35,7 +35,7 @@ export async function getGroupRequestSentNotificationInfo({
             (async () => {
               await internals.pages.goToGroup(groupId);
 
-              $quasar().dialog({
+              appDialog({
                 component: GroupSettingsDialog,
 
                 componentProps: {
@@ -82,7 +82,7 @@ export async function getGroupRequestSentNotificationInfo({
           color: 'green',
 
           handler: () =>
-            $quasar().dialog({
+            appDialog({
               component: AcceptRequestDialog,
 
               componentProps: {

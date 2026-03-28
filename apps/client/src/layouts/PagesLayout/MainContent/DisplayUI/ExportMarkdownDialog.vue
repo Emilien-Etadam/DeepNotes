@@ -70,7 +70,7 @@ const dialogRef = ref() as Ref<InstanceType<typeof CustomDialog>>;
 
 function copyToClipboard() {
   navigator.clipboard.writeText(props.markdown).then(() => {
-    $quasar().notify({
+    showNotify({
       message: 'Copied to clipboard',
       color: 'positive',
       position: 'bottom',

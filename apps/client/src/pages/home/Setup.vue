@@ -93,7 +93,7 @@ async function createAdmin() {
     }
     const zxcvbnResult = await zxcvbnAsync(password.value);
     if (zxcvbnResult.score <= 0) {
-      $quasar().notify({
+      showNotify({
         html: true,
         message: 'Password is too weak. Please use a stronger password.',
         type: 'negative',
@@ -117,7 +117,7 @@ async function createAdmin() {
       ...registrationValues,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Admin account created. You can now log in.',
       type: 'positive',
     });

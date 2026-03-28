@@ -56,7 +56,7 @@ async function resendVerificationEmail() {
       email: internals.sessionStorage?.getItem('email')!,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Verification email resent.',
       type: 'positive',
     });

@@ -26,7 +26,7 @@ export function useImagePasting() {
         }
 
         if (file.size > 5 * 1024 * 1024) {
-          $quasar().notify({
+          showNotify({
             message: 'Cannot upload images larger than 5MB.',
             color: 'negative',
           });

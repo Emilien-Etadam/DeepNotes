@@ -43,7 +43,7 @@
       icon="mdi-camera-outline"
       size="11px"
       :btn-size="34"
-      @click="$quasar().dialog({ component: TakeScreenshotDialog })"
+      @click="appDialog({ component: TakeScreenshotDialog })"
     >
       <v-tooltip
         activator="parent"
@@ -104,7 +104,7 @@ function exportCurrentPage() {
   const currentPage = internals.pages.react.page;
   if (!currentPage) return;
   const markdown = exportPageToMarkdown(currentPage);
-  $quasar().dialog({
+  appDialog({
     component: ExportMarkdownDialog,
     componentProps: { markdown },
   });

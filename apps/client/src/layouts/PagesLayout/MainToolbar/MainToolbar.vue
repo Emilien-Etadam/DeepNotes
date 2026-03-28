@@ -68,7 +68,7 @@
             icon="mdi-cog"
             icon-size="28px"
             round
-            @click="$q.dialog({ component: PagesSettingsDialog })"
+            @click="appDialog({ component: PagesSettingsDialog })"
             :disable="!uiStore().loggedIn"
           />
 

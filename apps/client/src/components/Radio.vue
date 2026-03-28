@@ -1,12 +1,17 @@
 <template>
-  <q-radio
+  <v-radio-group
     class="radio"
-    :label="label"
     :model-value="modelValue"
+    density="compact"
+    hide-details
     @update:model-value="$emit('update:model-value', $event)"
-    :disable="disable"
-    :val="val"
-  />
+  >
+    <v-radio
+      :label="label"
+      :value="val"
+      :disabled="disable"
+    />
+  </v-radio-group>
 </template>
 
 <script setup lang="ts">

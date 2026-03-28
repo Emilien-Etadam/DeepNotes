@@ -16,7 +16,7 @@
       label="Request access"
       color="primary"
       @click="
-        $q.dialog({
+        appDialog({
           component: RequestAccessDialog,
 
           componentProps: {

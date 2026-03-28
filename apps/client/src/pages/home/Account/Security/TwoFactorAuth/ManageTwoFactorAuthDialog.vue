@@ -160,7 +160,7 @@ async function forgetTrustedDevices() {
       loginHash: props.loginHash,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'All trusted devices have been forgotten.',
       type: 'positive',
     });
@@ -186,7 +186,7 @@ async function regenerateRecoveryCodes() {
         { loginHash: props.loginHash },
       );
 
-    $quasar().dialog({
+    appDialog({
       component: RecoveryCodeDialog,
 
       componentProps: {
@@ -214,7 +214,7 @@ async function disableTwoFactorAuth() {
       loginHash: props.loginHash,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Two-factor authentication has been disabled.',
       type: 'positive',
     });

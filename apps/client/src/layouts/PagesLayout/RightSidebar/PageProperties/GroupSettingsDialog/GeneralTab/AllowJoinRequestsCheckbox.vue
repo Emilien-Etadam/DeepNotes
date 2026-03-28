@@ -26,12 +26,12 @@ async function setJoinRequestsAllowed(value: boolean) {
     });
 
     if (value) {
-      $quasar().notify({
+      showNotify({
         message: 'Join requests are now enabled in this group.',
         type: 'positive',
       });
     } else {
-      $quasar().notify({
+      showNotify({
         message: 'Join requests are now disabled in this group.',
         type: 'positive',
       });

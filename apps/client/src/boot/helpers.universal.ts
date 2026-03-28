@@ -1,8 +1,6 @@
 import type { BootContext } from './boot-context';
 
 export async function setup({ app, store }: BootContext) {
-  $quasar(app.config.globalProperties.$q);
-
   if (process.env.CLIENT) {
     appStore(store);
     authStore(store);

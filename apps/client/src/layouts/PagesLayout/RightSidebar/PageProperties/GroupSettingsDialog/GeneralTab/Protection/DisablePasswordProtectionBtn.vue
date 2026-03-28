@@ -34,7 +34,7 @@ async function disablePasswordProtection() {
       groupPassword,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Group password protection disabled successfully.',
       color: 'positive',
     });

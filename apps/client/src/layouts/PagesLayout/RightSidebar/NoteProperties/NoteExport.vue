@@ -173,7 +173,7 @@ async function copyAsMarkdown(params: { includeDescendants: boolean }) {
     }),
   );
 
-  $quasar().notify({
+  showNotify({
     message: 'Copied as markdown.',
     type: 'positive',
   });
@@ -220,7 +220,7 @@ async function downloadAsMarkdown(params: { includeDescendants: boolean }) {
       await writable.close();
     }
 
-    $quasar().notify({
+    showNotify({
       message: 'Downloaded as markdown.',
       type: 'positive',
     });

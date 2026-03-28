@@ -73,7 +73,7 @@ async function _restorePage() {
   try {
     await restorePageDeletion(page.id);
 
-    $quasar().notify({
+    showNotify({
       message: 'Page restored successfully.',
       color: 'positive',
     });
@@ -96,7 +96,7 @@ async function deletePermanently() {
 
     await deletePagePermanently(page.id);
 
-    $quasar().notify({
+    showNotify({
       message: 'Page deleted permanently.',
       color: 'positive',
     });

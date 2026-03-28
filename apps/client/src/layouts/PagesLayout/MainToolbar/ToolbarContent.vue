@@ -293,7 +293,7 @@ const toolbarGroups: ToolbarButtonGroup[] = [
           disable: (page: Page) =>
             page.react.readOnly || !page.activeElem.react.exists,
           click: (_page: Page) =>
-            $quasar().dialog({ component: InsertLinkDialog }),
+            appDialog({ component: InsertLinkDialog }),
         },
         {
           tooltip: `Remove link\n(${getCtrlKeyName()} + Shift + K)`,
@@ -441,7 +441,7 @@ const toolbarGroups: ToolbarButtonGroup[] = [
           disable: (page: Page) =>
             page.react.readOnly || !page.editing.react.active,
           click: (_page: Page) =>
-            $quasar().dialog({ component: InsertImageDialog }),
+            appDialog({ component: InsertImageDialog }),
         },
         {
           tooltip: `YouTube video\n(${getAltKeyName()} + Shift + Y)`,
@@ -450,29 +450,27 @@ const toolbarGroups: ToolbarButtonGroup[] = [
           disable: (page: Page) =>
             page.react.readOnly || !page.editing.react.active,
           click: (page: Page) =>
-            $quasar()
-              .dialog({
-                title: 'Insert YouTube video',
-                message: 'Enter the video URL:',
+            appDialog({
+              title: 'Insert YouTube video',
+              message: 'Enter the video URL:',
 
-                prompt: {
-                  type: 'url',
-                  model: '',
-                  filled: true,
-                },
-                color: 'primary',
+              prompt: {
+                type: 'url',
+                model: '',
+                filled: true,
+              },
+              color: 'primary',
 
-                cancel: { flat: true, color: 'negative' },
+              cancel: { flat: true, color: 'negative' },
 
-                focus: 'cancel',
-              })
-              .onOk((url: string) =>
-                page.selection.format((chain) =>
-                  chain.setYoutubeVideo({
-                    src: url,
-                  }),
-                ),
+              focus: 'cancel',
+            }).onOk((url: string) =>
+              page.selection.format((chain) =>
+                chain.setYoutubeVideo({
+                  src: url,
+                }),
               ),
+            ),
         },
       ],
       [

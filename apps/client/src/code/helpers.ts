@@ -33,7 +33,6 @@ function makeHelper<T>(
 }
 
 export const router = makeHelper('router', useRouter, '$router');
-export const $quasar = makeHelper('Quasar', useQuasar, '$q');
 
 // Route
 

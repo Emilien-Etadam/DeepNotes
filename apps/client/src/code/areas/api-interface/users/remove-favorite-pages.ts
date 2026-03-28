@@ -7,7 +7,7 @@ export async function removeFavoritePages(pageIds: string[]) {
       pageIds: pageIds,
     });
 
-    $quasar().notify({
+    showNotify({
       message: `Page${pluralS(pageIds.length)} removed from favorites.`,
       color: 'negative',
     });

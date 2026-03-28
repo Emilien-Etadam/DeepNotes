@@ -84,7 +84,6 @@
 <script setup lang="ts">
 import { rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { removeGroupUser } from 'src/code/areas/api-interface/groups/remove-user';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
 import { groupNames } from 'src/code/pages/computed/group-names';
@@ -148,7 +147,7 @@ async function leaveSelectedGroups() {
       ok: { label: 'Yes', flat: true, color: 'negative' },
     });
 
-    const notif = $quasar().notify({
+    const notif = showNotify({
       group: false,
       timeout: 0,
       message: 'Leaving groups...',
@@ -179,7 +178,13 @@ async function leaveSelectedGroups() {
 
     baseSelectedGroupIds.value.clear();
 
-    let notifUpdateOptions: QNotifyUpdateOptions = {
+    let notifUpdateOptions: {
+      timeout?: number;
+      caption?: string;
+      message?: string;
+      color?: string;
+      html?: boolean;
+    } = {
       timeout: undefined,
       caption: undefined,
     };

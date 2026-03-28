@@ -6,7 +6,7 @@
       tooltip="Group settings"
       icon="mdi-account-cog"
       @click="
-        $q.dialog({
+        appDialog({
           component: GroupSettingsDialog,
 
           componentProps: {
@@ -73,7 +73,7 @@
           async () => {
             await setClipboardText(appPageUrl(page.id));
 
-            $q.notify({
+            showNotify({
               message: 'Copied to clipboard.',
               type: 'positive',
             });
@@ -90,7 +90,7 @@
         icon="mdi-account-cog"
         color="primary"
         @click="
-          $q.dialog({
+          appDialog({
             component: GroupSettingsDialog,
 
             componentProps: {
@@ -196,7 +196,7 @@ async function _movePage() {
       pageId: page.value.id,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Page moved successfully.',
       color: 'positive',
     });
@@ -218,7 +218,7 @@ async function _deletePage() {
       await deletePage(page.value.id);
     }
 
-    $quasar().notify({
+    showNotify({
       message: 'Page deleted successfully.',
       color: 'positive',
     });

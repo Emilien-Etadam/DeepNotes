@@ -283,7 +283,7 @@ async function createNewPageQuick() {
   const initialPageTitle = getInitialPageTitle();
 
   if (initialPageTitle === '') {
-    $quasar().notify({
+    showNotify({
       html: true,
       message:
         'Cannot create a page from an empty note.<br/>Please write something in it first.',
@@ -305,7 +305,7 @@ async function createNewPageQuick() {
 
   await internals.pages.goToPage(response.pageId, { fromParent: true });
 
-  $quasar().notify({
+  showNotify({
     message: 'Page created successfully.',
     type: 'positive',
   });

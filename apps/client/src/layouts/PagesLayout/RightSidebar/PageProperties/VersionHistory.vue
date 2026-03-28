@@ -138,7 +138,7 @@ async function restoreSnapshot(snapshotId: string) {
       doc: page.value.collab.doc,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Version restored successfully.',
       color: 'positive',
     });
@@ -165,7 +165,7 @@ async function saveCurrentSnapshot() {
       doc: page.value.collab.doc,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Version saved successfully.',
       color: 'positive',
     });
@@ -198,7 +198,7 @@ async function deleteSelectedSnapshots() {
       await deletePageSnapshot(page.value.id, selectedSnapshotId);
     }
 
-    $quasar().notify({
+    showNotify({
       message: `Page version${multiple ? 's' : ''} deleted successfully.`,
       color: 'positive',
     });

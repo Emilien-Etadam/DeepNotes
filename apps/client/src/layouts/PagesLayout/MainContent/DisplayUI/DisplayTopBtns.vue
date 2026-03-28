@@ -136,7 +136,7 @@
             link
             prepend-icon="mdi-cog"
             title="Pages settings"
-            @click="$quasar().dialog({ component: PagesSettingsDialog })"
+            @click="appDialog({ component: PagesSettingsDialog })"
           />
         </AccountPopup>
       </DisplayBtn>

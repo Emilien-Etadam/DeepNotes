@@ -95,7 +95,6 @@
 <script setup lang="ts">
 import { rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { rejectJoinInvitation } from 'src/code/areas/api-interface/groups/join-invitations/reject';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
 import { groupNames } from 'src/code/pages/computed/group-names';
@@ -150,7 +149,7 @@ function deselectAll() {
 }
 
 async function acceptSelectedInvitations() {
-  $quasar().dialog({
+  appDialog({
     component: AcceptInvitationDialog,
 
     componentProps: {
@@ -170,7 +169,7 @@ async function rejectSelectedInvitations() {
       ok: { label: 'Yes', flat: true, color: 'negative' },
     });
 
-    const notif = $quasar().notify({
+    const notif = showNotify({
       group: false,
       timeout: 0,
       message: 'Rejecting join invitations...',
@@ -198,7 +197,13 @@ async function rejectSelectedInvitations() {
 
     baseSelectedGroupIds.value.clear();
 
-    let notifUpdateOptions: QNotifyUpdateOptions = {
+    let notifUpdateOptions: {
+      timeout?: number;
+      caption?: string;
+      message?: string;
+      color?: string;
+      html?: boolean;
+    } = {
       timeout: undefined,
       caption: undefined,
     };

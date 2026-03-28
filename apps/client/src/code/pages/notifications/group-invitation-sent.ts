@@ -1,5 +1,5 @@
 import { rejectJoinInvitation } from 'src/code/areas/api-interface/groups/join-invitations/reject';
-import { asyncDialog, handleError } from 'src/code/utils/misc';
+import { appDialog, asyncDialog, handleError } from 'src/code/utils/misc';
 import AcceptInvitationDialog from 'src/layouts/PagesLayout/MainContent/DisplayPage/DisplayScreens/AcceptInvitationDialog.vue';
 
 import type { NotificationInfo } from './notifications';
@@ -66,15 +66,13 @@ export async function getGroupInvitationSentNotificationInfo({
           color: 'green',
 
           handler: () =>
-            $quasar()
-              .dialog({
-                component: AcceptInvitationDialog,
+            appDialog({
+              component: AcceptInvitationDialog,
 
-                componentProps: {
-                  groupIds: [groupId],
-                },
-              })
-              .onOk(async () => {
+              componentProps: {
+                groupIds: [groupId],
+              },
+            }).onOk(async () => {
                 const mainPageId = await internals.realtime.hget(
                   'group',
                   groupId,

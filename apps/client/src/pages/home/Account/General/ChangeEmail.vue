@@ -92,7 +92,7 @@ async function _changeEmail() {
     });
 
     if (response?.emailVerificationCode == null) {
-      $quasar().notify({
+      showNotify({
         message: 'A verification code has been sent to the new email address.',
         color: 'positive',
       });
@@ -132,7 +132,7 @@ async function _changeEmail() {
       internals.localStorage.setItem('email', newEmail.value);
     }
 
-    $quasar().notify({
+    showNotify({
       message: 'Email changed successfully.',
       type: 'positive',
     });

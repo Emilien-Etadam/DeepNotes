@@ -57,7 +57,7 @@
           color="primary"
           :disable="finalSelectedUserIds.length !== 1"
           @click="
-            $q.dialog({
+            appDialog({
               component: GroupMemberDetailsDialog,
 
               componentProps: {
@@ -76,7 +76,7 @@
           :disable="!canManageSelected"
           @click="
             () => {
-              $q.dialog({
+              appDialog({
                 component: AcceptRequestDialog,
 
                 componentProps: {
@@ -172,7 +172,7 @@ async function rejectSelectedRequests() {
       ok: { label: 'Yes', flat: true, color: 'negative' },
     });
 
-    const notif = $quasar().notify({
+    const notif = showNotify({
       group: false,
       timeout: 0,
       message: 'Rejecting join requests...',

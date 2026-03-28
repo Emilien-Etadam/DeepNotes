@@ -86,15 +86,13 @@ function insertLink() {
 function createNewPage() {
   dialogRef.value.onDialogHide();
 
-  $quasar()
-    .dialog({
-      component: NewPageDialog,
+  appDialog({
+    component: NewPageDialog,
 
-      componentProps: {
-        initialPageTitle,
-      },
-    })
-    .onOk(async (newPageUrl: string) => {
+    componentProps: {
+      initialPageTitle,
+    },
+  }).onOk(async (newPageUrl: string) => {
       page.value.selection.format((chain) =>
         chain.setMark('link', { href: newPageUrl }),
       );

@@ -76,7 +76,7 @@ async function onEnterPassword() {
     pagesStore().dict[`${GROUP_CONTENT_KEYRING}:${page.react.groupId}`] =
       groupContentKeyring;
   } catch (error) {
-    $quasar().notify({
+    showNotify({
       message: 'Incorrect password.',
       type: 'negative',
     });

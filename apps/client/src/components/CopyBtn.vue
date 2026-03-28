@@ -8,7 +8,7 @@
       async () => {
         await setClipboardText(text);
 
-        $q.notify({
+        showNotify({
           message: 'Copied to clipboard.',
           type: 'positive',
         });

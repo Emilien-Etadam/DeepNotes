@@ -1,5 +1,4 @@
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { deletePage } from 'src/code/areas/api-interface/pages/deletion/delete';
 import { deletePagePermanently } from 'src/code/areas/api-interface/pages/deletion/delete-permanently';
 import { movePage } from 'src/code/areas/api-interface/pages/move';
@@ -25,7 +24,7 @@ export function usePageList({
         },
       });
 
-      const notif = $quasar().notify({
+      const notif = showNotify({
         group: false,
         timeout: 0,
         message: 'Moving pages...',
@@ -55,7 +54,13 @@ export function usePageList({
         }
       }
 
-      let notifUpdateOptions: QNotifyUpdateOptions = {
+      let notifUpdateOptions: {
+        timeout?: number;
+        caption?: string;
+        message?: string;
+        color?: string;
+        html?: boolean;
+      } = {
         timeout: undefined,
         caption: undefined,
       };
@@ -92,7 +97,7 @@ export function usePageList({
         componentProps: { subject: 'pages' },
       });
 
-      const notif = $quasar().notify({
+      const notif = showNotify({
         group: false,
         timeout: 0,
         message: 'Deleting pages...',
@@ -122,7 +127,13 @@ export function usePageList({
         }
       }
 
-      let notifUpdateOptions: QNotifyUpdateOptions = {
+      let notifUpdateOptions: {
+        timeout?: number;
+        caption?: string;
+        message?: string;
+        color?: string;
+        html?: boolean;
+      } = {
         timeout: undefined,
         caption: undefined,
       };

@@ -47,6 +47,15 @@
 </template>
 
 <script setup lang="ts">
+import { useDialogStore } from 'src/stores/dialog-store';
+
+const programmaticLayerId = inject<number | null>(
+  'programmaticDialogLayerId',
+  null,
+);
+
+const dialogStore = useDialogStore();
+
 const props = withDefaults(
   defineProps<{
     modelValue?: boolean;
@@ -92,11 +101,18 @@ function onAfterLeave() {
 }
 
 function ok() {
-  emit('ok', { deletePermanently: deletePermanently.value });
+  const payload = { deletePermanently: deletePermanently.value };
+  if (programmaticLayerId != null) {
+    dialogStore.resolveLayerOk(programmaticLayerId, payload);
+  }
+  emit('ok', payload);
   isOpen.value = false;
 }
 
 function cancel() {
+  if (programmaticLayerId != null) {
+    dialogStore.resolveLayerCancel(programmaticLayerId);
+  }
   emit('cancel');
   isOpen.value = false;
 }

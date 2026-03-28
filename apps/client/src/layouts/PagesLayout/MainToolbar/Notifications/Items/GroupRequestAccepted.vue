@@ -44,7 +44,7 @@ const notificationsMenu = inject('notificationsMenu') as Ref<{ hide: () => void 
 async function onClick() {
   await router().push(`/groups/${notificationContent.value.groupId}`);
 
-  $quasar().dialog({
+  appDialog({
     component: GroupSettingsDialog,
 
     componentProps: {

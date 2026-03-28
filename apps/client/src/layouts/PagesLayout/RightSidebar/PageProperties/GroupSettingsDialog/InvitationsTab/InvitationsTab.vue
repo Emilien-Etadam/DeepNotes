@@ -68,7 +68,7 @@
           color="primary"
           :disable="finalSelectedUserIds.length !== 1"
           @click="
-            $q.dialog({
+            appDialog({
               component: GroupMemberDetailsDialog,
 
               componentProps: {
@@ -107,7 +107,7 @@
       ]?.permissions.manageLowerRanks
     "
     @click="
-      $q.dialog({
+      appDialog({
         component: InviteUserDialog,
 
         componentProps: {
@@ -176,7 +176,7 @@ async function cancelSelectedInvitations() {
       ok: { label: 'Yes', flat: true, color: 'negative' },
     });
 
-    const notif = $quasar().notify({
+    const notif = showNotify({
       group: false,
       timeout: 0,
       message: 'Canceling join invitations...',

@@ -162,7 +162,7 @@ export class PageClipboard {
 
       this.page.selection.set(...notes.concat(arrows));
     } catch (error) {
-      $quasar().notify({
+      showNotify({
         message: 'Failed to paste from clipboard.',
         type: 'negative',
       });

@@ -26,7 +26,7 @@ async function makePrivate() {
 
     await makeGroupPrivate({ groupId });
 
-    $quasar().notify({
+    showNotify({
       message: 'Group is now private.',
       color: 'positive',
     });

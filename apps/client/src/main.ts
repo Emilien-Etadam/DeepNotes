@@ -1,13 +1,9 @@
 import '@mdi/font/css/materialdesignicons.css';
-import '@quasar/extras/mdi-v7/mdi-v7.css';
-import 'quasar/src/css/index.sass';
 import 'vuetify/styles';
 import './css/app.scss';
 
+import { createHead } from '@unhead/vue/client';
 import { createPinia } from 'pinia';
-import { Cookies, Dialog, Loading, Meta, Notify, Quasar } from 'quasar';
-import iconSet from 'quasar/icon-set/mdi-v7';
-import lang from 'quasar/lang/en-US';
 import { createApp } from 'vue';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -35,14 +31,8 @@ import { createAppRouter } from './router';
 
 const app = createApp(App);
 
-app.use(Quasar, {
-  plugins: { Notify, Cookies, Meta, Dialog, Loading },
-  lang,
-  iconSet,
-  config: {
-    dark: true,
-  },
-});
+const head = createHead();
+app.use(head);
 
 const vuetify = createVuetify({
   components,

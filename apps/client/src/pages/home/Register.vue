@@ -155,7 +155,7 @@ async function register() {
     const zxcvbnResult = await zxcvbnAsync(password.value);
 
     if (zxcvbnResult.score <= 0) {
-      $quasar().notify({
+      showNotify({
         html: true,
         message: 'Password is too weak.<br/>Please use a stronger password.',
         type: 'negative',
@@ -205,14 +205,14 @@ async function register() {
     internals.sessionStorage.setItem('email', email.value);
 
     if (process.env.SEND_EMAILS === 'false') {
-      $quasar().notify({
+      showNotify({
         message: 'User registered successfully.',
         type: 'positive',
       });
 
       await router().push({ name: 'login' });
     } else {
-      $quasar().notify({
+      showNotify({
         message: 'Verification email sent.',
         type: 'positive',
       });

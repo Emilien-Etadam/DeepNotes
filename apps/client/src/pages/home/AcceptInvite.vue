@@ -149,7 +149,7 @@ async function completeRegistration() {
     }
     const zxcvbnResult = await zxcvbnAsync(password.value);
     if (zxcvbnResult.score <= 0) {
-      $quasar().notify({
+      showNotify({
         message: 'Password is too weak. Please use a stronger password.',
         type: 'negative',
       });
@@ -173,7 +173,7 @@ async function completeRegistration() {
       ...registrationValues,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Account created. You can now log in.',
       type: 'positive',
     });

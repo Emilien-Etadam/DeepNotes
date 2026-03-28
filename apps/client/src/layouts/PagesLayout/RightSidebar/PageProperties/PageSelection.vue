@@ -37,7 +37,7 @@ const page = inject<Ref<Page>>('page')!;
 function selectPage() {
   pageSelectionStore().selectedPages.add(page.value.id);
 
-  $quasar().notify({
+  showNotify({
     message: 'Page added to selection.',
     color: 'positive',
     timeout: 1000,
@@ -47,7 +47,7 @@ function selectPage() {
 function deselectPage() {
   pageSelectionStore().selectedPages.delete(page.value.id);
 
-  $quasar().notify({
+  showNotify({
     message: 'Page removed from selection.',
     color: 'negative',
     timeout: 1000,
@@ -86,7 +86,7 @@ function selectLinkedPages() {
     }
   }
 
-  $quasar().notify({
+  showNotify({
     message: 'Linked pages added to selection.',
     color: 'positive',
     timeout: 1000,

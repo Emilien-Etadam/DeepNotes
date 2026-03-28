@@ -43,7 +43,7 @@ async function _deleteAccount() {
 
     await deleteAccount({ password });
 
-    $quasar().notify({
+    showNotify({
       message: 'Account deleted successfully.',
       type: 'positive',
     });

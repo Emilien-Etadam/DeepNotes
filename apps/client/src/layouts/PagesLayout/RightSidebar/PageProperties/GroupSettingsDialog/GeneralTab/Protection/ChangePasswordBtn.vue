@@ -50,7 +50,7 @@ async function changeGroupPassword() {
       newGroupPassword,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Group password changed successfully.',
       color: 'positive',
     });

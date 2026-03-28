@@ -7,7 +7,7 @@ export async function addFavoritePages(pageIds: string[]) {
       pageIds: pageIds,
     });
 
-    $quasar().notify({
+    showNotify({
       message: `Page${pluralS(pageIds.length)} added to favorites.`,
       color: 'positive',
     });

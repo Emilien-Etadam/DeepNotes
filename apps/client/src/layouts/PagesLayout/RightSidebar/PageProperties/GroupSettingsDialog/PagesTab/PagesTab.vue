@@ -212,7 +212,7 @@ function addToSelection() {
     pageSelectionStore().selectedPages.add(selectedPageId);
   }
 
-  $quasar().notify({
+  showNotify({
     message: 'Pages added to selection.',
     color: 'positive',
   });

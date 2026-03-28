@@ -63,7 +63,7 @@ async function changeRole() {
       throw new Error('Please select a role.');
     }
 
-    const notif = $quasar().notify({
+    const notif = showNotify({
       group: false,
       timeout: 0,
       message: 'Changing user roles...',

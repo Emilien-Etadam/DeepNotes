@@ -459,7 +459,7 @@ export const RealtimeClient = once(
 
         const notifInfo = await getNotificationInfo(notifObj, notifContent);
 
-        $quasar().notify({
+        showNotify({
           ...notifInfo,
 
           actions: notifInfo.actions,

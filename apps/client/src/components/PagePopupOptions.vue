@@ -92,7 +92,7 @@ function onMenuModelValue(open: boolean) {
 function selectPage() {
   pageSelectionStore().selectedPages.add(props.pageId);
 
-  $quasar().notify({
+  showNotify({
     message: 'Page added to selection.',
     color: 'positive',
     timeout: 1000,
@@ -102,7 +102,7 @@ function selectPage() {
 function deselectPage() {
   pageSelectionStore().selectedPages.delete(props.pageId);
 
-  $quasar().notify({
+  showNotify({
     message: 'Page removed from selection.',
     color: 'negative',
     timeout: 1000,

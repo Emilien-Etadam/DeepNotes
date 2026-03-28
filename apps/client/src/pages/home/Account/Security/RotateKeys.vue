@@ -44,7 +44,7 @@ async function _rotateKeys() {
 
     await rotateUserKeys({ password });
 
-    $quasar().notify({
+    showNotify({
       message: 'Encryption keys rotated successfully.',
       type: 'positive',
     });

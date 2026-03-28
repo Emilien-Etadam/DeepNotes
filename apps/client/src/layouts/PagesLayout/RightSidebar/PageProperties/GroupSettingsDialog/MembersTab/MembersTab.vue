@@ -68,7 +68,7 @@
         color="primary"
         :disable="finalSelectedUserIds.length !== 1"
         @click="
-          $q.dialog({
+          appDialog({
             component: GroupMemberDetailsDialog,
 
             componentProps: {
@@ -86,7 +86,7 @@
         color="secondary"
         :disable="!canManageSelected"
         @click="
-          $q.dialog({
+          appDialog({
             component: ChangeRoleDialog,
 
             componentProps: {
@@ -214,7 +214,7 @@ async function removeSelectedUsers() {
       ok: { label: 'Yes', flat: true, color: 'negative' },
     });
 
-    const notif = $quasar().notify({
+    const notif = showNotify({
       group: false,
       timeout: 0,
       message: 'Removing users...',

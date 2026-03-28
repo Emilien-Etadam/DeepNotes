@@ -70,7 +70,7 @@ async function deleteBacklink(backlinkPageId: string) {
       targetPageId: page.value.id,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Backlink deleted successfully.',
       color: 'positive',
     });

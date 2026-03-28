@@ -149,7 +149,7 @@ const recoveryCodes = ref(props.recoveryCodes);
 async function copyRecoveryCodes() {
   await setClipboardText(recoveryCodes.value.join('\n'));
 
-  $quasar().notify({
+  showNotify({
     message: 'Copied to clipboard.',
     type: 'positive',
   });

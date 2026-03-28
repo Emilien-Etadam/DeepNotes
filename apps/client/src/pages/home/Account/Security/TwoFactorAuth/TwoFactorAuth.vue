@@ -59,7 +59,7 @@ async function enableTwoFactorAuth() {
         loginHash,
       });
 
-    $quasar().dialog({
+    appDialog({
       component: EnableTwoFactorAuthDialog,
 
       componentProps: {
@@ -104,7 +104,7 @@ async function manageTwoFactorAuth() {
       loginHash,
     });
 
-    $quasar().dialog({
+    appDialog({
       component: ManageTwoFactorAuthDialog,
 
       componentProps: {

@@ -112,7 +112,7 @@ const notificationInfo = createSmartComputed({
 async function onClick() {
   await router().push(`/groups/${notificationContent.value.groupId}`);
 
-  $quasar().dialog({
+  appDialog({
     component: GroupSettingsDialog,
 
     componentProps: {
@@ -170,17 +170,15 @@ async function _rejectJoinRequest() {
 }
 
 async function _acceptJoinRequest() {
-  $quasar()
-    .dialog({
-      component: AcceptRequestDialog,
+  appDialog({
+    component: AcceptRequestDialog,
 
-      componentProps: {
-        groupId: notificationContent.value.groupId,
-        userIds: [notificationContent.value.agentId],
-      },
-    })
-    .onDismiss(() => {
-      notificationsMenu.value.hide();
-    });
+    componentProps: {
+      groupId: notificationContent.value.groupId,
+      userIds: [notificationContent.value.agentId],
+    },
+  }).onDismiss(() => {
+    notificationsMenu.value.hide();
+  });
 }
 </script>

@@ -44,7 +44,7 @@ onMounted(async () => {
   try {
     const res = await trpcClient.setup.getSetupStatus.query();
     if (res.error === 'unavailable') {
-      $quasar().notify({
+      showNotify({
         type: 'warning',
         message: backendUnavailableMessage,
         timeout: 8000,
@@ -52,7 +52,7 @@ onMounted(async () => {
     }
   } catch {
     // Network, "Unable to transform" (server returned non-JSON), or backend error
-    $quasar().notify({
+    showNotify({
       type: 'warning',
       message: backendUnavailableMessage,
       timeout: 8000,

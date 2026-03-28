@@ -64,7 +64,7 @@ async function _changePassword() {
     const zxcvbnResult = await zxcvbnAsync(newPassword.value);
 
     if (zxcvbnResult.score <= 1) {
-      $quasar().notify({
+      showNotify({
         html: true,
         message: 'Password is too weak.<br/>Please use a stronger password.',
         type: 'negative',
@@ -107,7 +107,7 @@ async function _changePassword() {
       newPassword: newPassword.value,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Password changed successfully.',
       type: 'positive',
     });

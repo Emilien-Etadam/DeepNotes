@@ -197,7 +197,7 @@ async function verify() {
       })
     ).recoveryCodes;
 
-    $quasar().dialog({
+    appDialog({
       component: RecoveryCodeDialog,
 
       componentProps: {
@@ -205,7 +205,7 @@ async function verify() {
       },
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Two-factor authentication enabled successfully.',
       type: 'positive',
     });

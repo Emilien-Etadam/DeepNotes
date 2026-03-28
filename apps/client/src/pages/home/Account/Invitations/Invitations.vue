@@ -103,7 +103,7 @@ onMounted(async () => {
 async function createInvite() {
   const email = inviteEmail.value.trim().toLowerCase();
   if (!email || !w3cEmailRegex.test(email)) {
-    $quasar().notify({
+    showNotify({
       message: 'Please enter a valid email address.',
       type: 'negative',
     });
@@ -120,7 +120,7 @@ async function createInvite() {
       globalThis.window === undefined
         ? path
         : `${globalThis.location.origin}${globalThis.location.pathname}${multiModePath(path)}`;
-    $quasar().notify({
+    showNotify({
       message: 'Invitation created. Share the link with the user.',
       type: 'positive',
     });
@@ -135,7 +135,7 @@ function copyLink() {
   if (!lastInviteLink.value) return;
   if (navigator.clipboard?.writeText) {
     navigator.clipboard.writeText(lastInviteLink.value);
-    $quasar().notify({ message: 'Link copied.', type: 'positive' });
+    showNotify({ message: 'Link copied.', type: 'positive' });
   }
 }
 </script>

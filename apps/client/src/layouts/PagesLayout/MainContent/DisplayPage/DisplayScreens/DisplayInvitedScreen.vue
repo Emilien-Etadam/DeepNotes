@@ -38,7 +38,7 @@ const page = inject<Page>('page')!;
 const groupName = computed(() => groupNames()(page.react.groupId).get());
 
 async function _acceptJoinInvitation() {
-  $quasar().dialog({
+  appDialog({
     component: AcceptInvitationDialog,
 
     componentProps: {

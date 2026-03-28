@@ -75,7 +75,7 @@ async function _restoreGroup() {
       groupId: page.react.groupId,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Group restored successfully.',
       color: 'positive',
     });
@@ -100,7 +100,7 @@ async function deletePermanently() {
       groupId: page.react.groupId,
     });
 
-    $quasar().notify({
+    showNotify({
       message: 'Group deleted permanently.',
       color: 'positive',
     });

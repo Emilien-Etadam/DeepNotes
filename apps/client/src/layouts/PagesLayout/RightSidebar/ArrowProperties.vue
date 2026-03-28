@@ -270,7 +270,7 @@
           async () => {
             await setClipboardText(appPageUrl(page.id, `elem=${arrow.id}`));
 
-            $q.notify({
+            showNotify({
               message: 'Copied to clipboard.',
               type: 'positive',
             });
@@ -378,7 +378,7 @@ async function setAsDefault() {
       }),
     );
 
-    $quasar().notify({
+    showNotify({
       message: 'Default arrow updated.',
       type: 'positive',
     });

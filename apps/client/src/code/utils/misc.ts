@@ -7,19 +7,15 @@ import {
 } from '@stdlib/misc';
 import { isString, pull } from 'lodash';
 import { nanoid } from 'nanoid';
-import type { Cookies, QDialogOptions } from 'quasar';
 
-export async function asyncDialog<T = any>(opts: QDialogOptions): Promise<T> {
-  return new Promise((resolve, reject) => {
-    $quasar()
-      .dialog(opts)
-      .onOk(async (output: T) => {
-        resolve(output);
-      })
-      .onCancel(() => {
-        reject(new Error('Dialog was cancelled.'));
-      });
-  });
+import { useDialogStore } from 'src/stores/dialog-store';
+import type { DialogOptions } from 'src/stores/dialog-store';
+
+import { isMac } from './platform';
+import { showNotify } from './notify';
+
+export async function asyncDialog<T = any>(opts: DialogOptions): Promise<T> {
+  return useDialogStore().openDialogAsync(opts) as Promise<T>;
 }
 
 const backendUnavailableMessage =
@@ -52,7 +48,7 @@ export function handleError(error: any, logger = mainLogger) {
       'An error has occurred.';
   }
 
-  $quasar().notify({
+  showNotify({
     message,
     type: 'negative',
   });
@@ -105,7 +101,7 @@ export function modsMatch(
   event: KeyboardEvent | MouseEvent,
   modifiers: (typeof _modifiers)[number][],
 ) {
-  if (modifiers.includes('Control') && $quasar().platform.is.mac) {
+  if (modifiers.includes('Control') && isMac) {
     pull(modifiers, 'Control');
     modifiers.push('Meta');
   }
@@ -119,10 +115,10 @@ export function modsMatch(
   return true;
 }
 export function getCtrlKeyName() {
-  return $quasar().platform.is.mac ? 'Cmd' : 'Ctrl';
+  return isMac ? 'Cmd' : 'Ctrl';
 }
 export function getAltKeyName() {
-  return $quasar().platform.is.mac ? 'Option' : 'Alt';
+  return isMac ? 'Option' : 'Alt';
 }
 
 export function sizeToCSS(size: string): string {
@@ -194,7 +190,7 @@ export function isWithinTimeout() {
   return _isWithinTimeout;
 }
 
-export function getRequestConfig(_cookies: Cookies | undefined) {
+export function getRequestConfig(_cookies?: unknown) {
   return undefined;
 }
 
@@ -260,3 +256,5 @@ export function createDoubleClickChecker() {
     }
   };
 }
+
+export { appDialog } from './dialog';

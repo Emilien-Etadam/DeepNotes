@@ -103,7 +103,7 @@
     icon="mdi-link"
     icon-size="24px"
     :disable="page.react.readOnly || !page.activeElem.react.exists"
-    @click="$q.dialog({ component: InsertLinkDialog })"
+    @click="appDialog({ component: InsertLinkDialog })"
   />
   <ToolbarBtn
     :tooltip="`Remove link\n(${getCtrlKeyName()} + Shift + K)`"

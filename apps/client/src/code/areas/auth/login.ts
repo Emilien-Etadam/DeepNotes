@@ -92,7 +92,7 @@ export async function login(input: {
 
   storeClientTokenExpirations();
 
-  $quasar().notify({
+  showNotify({
     message: 'Logged in successfully.',
     type: 'positive',
   });

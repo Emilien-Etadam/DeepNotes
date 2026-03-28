@@ -26,7 +26,7 @@ async function makePublic() {
 
     await makeGroupPublic({ groupId });
 
-    $quasar().notify({
+    showNotify({
       message: 'Group is now public.',
       color: 'positive',
     });
