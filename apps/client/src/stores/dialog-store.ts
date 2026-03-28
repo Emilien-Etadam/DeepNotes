@@ -8,7 +8,7 @@ export type DialogButtonOpts = {
   color?: string;
 };
 
-/** Options for confirm / prompt / component dialogs (Quasar-compatible subset). */
+/** Options for confirm / prompt / component dialogs (legacy-compatible subset). */
 export type DialogOptions = {
   title?: string;
   message?: string;

@@ -42,11 +42,11 @@ interface Props {
   readonly?: boolean;
   dense?: boolean;
   autofocus?: boolean;
-  /** Quasar-compatible: forwarded as Vuetify `disabled`. */
+  /** Forwarded as Vuetify `disabled`. */
   disable?: boolean;
   placeholder?: string;
   title?: string;
-  /** Quasar `filled`; field is always filled variant — prop ignored, declared so it is not forwarded as DOM attr. */
+  /** Legacy `filled`; field is always filled variant — prop ignored, declared so it is not forwarded as DOM attr. */
   filled?: boolean;
 }
 

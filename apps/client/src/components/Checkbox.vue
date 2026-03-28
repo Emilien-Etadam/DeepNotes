@@ -27,7 +27,7 @@ interface Props {
   label?: string;
   dense?: boolean;
   color?: string;
-  /** Quasar-compatible: forwarded as Vuetify `disabled`. */
+  /** Forwarded as Vuetify `disabled`. */
   disable?: boolean;
 }
 

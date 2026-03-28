@@ -1,6 +1,6 @@
 import type { ComponentPublicInstance } from 'vue';
 
-/** Mirrors Quasar programmatic dialog: call `show()` on the mounted component tree. */
+/** Mirrors legacy programmatic dialog: call `show()` on the mounted component tree. */
 export function applyProgrammaticDialogShow(vm: ComponentPublicInstance | null) {
   const inst = vm as any;
   if (inst == null) {

@@ -119,8 +119,6 @@ import AccountPopup from './AccountPopup.vue';
 import NotificationsBtn from './Notifications/NotificationsBtn.vue';
 import PagesSettingsDialog from './PagesSettingsDialog/PagesSettingsDialog.vue';
 import ToolbarContent from './ToolbarContent.vue';
-
-const _quasarMode = process.env.MODE;
 </script>
 
 <style scoped lang="scss">
