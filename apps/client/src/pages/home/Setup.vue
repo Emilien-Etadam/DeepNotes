@@ -1,9 +1,10 @@
 <template>
-  <q-page class="login-page">
+  <div class="login-page">
     <ResponsiveContainer style="padding: 120px 32px">
-      <q-form
+      <form
         class="login-form"
         style="margin: 0px auto; max-width: 270px"
+        @submit.prevent="createAdmin()"
       >
         <div
           class="setup-title"
@@ -56,11 +57,10 @@
           color="primary"
           style="width: 100%; font-size: 16px; padding: 14px 0px"
           delay
-          @click.prevent="createAdmin()"
         />
-      </q-form>
+      </form>
     </ResponsiveContainer>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -138,42 +138,34 @@ async function createAdmin() {
     color: $text-primary;
   }
 
-  /* Labels et champs Quasar */
-  :deep(.q-field__label),
-  :deep(.q-field__native),
-  :deep(.q-field__input),
-  :deep(.q-field__control),
-  :deep(.q-field .q-field__label) {
-    color: $text-primary !important;
-  }
-  :deep(input),
-  :deep(.q-field__native) {
+  :deep(.v-field__label),
+  :deep(.v-label),
+  :deep(.v-field input),
+  :deep(.v-field textarea) {
     color: $text-primary !important;
   }
   :deep(input::placeholder) {
     color: $text-placeholder;
   }
 
-  :deep(.q-field--filled .q-field__control::before) {
+  :deep(.v-field--variant-filled .v-field__overlay) {
+    opacity: 1;
     background: $bg-input-idle;
   }
 
-  :deep(.q-field--filled:hover .q-field__control::before) {
+  :deep(.v-input:hover .v-field--variant-filled .v-field__overlay) {
     background: $bg-input-hover;
   }
 
-  :deep(.q-field--filled.q-field--focused .q-field__control::before) {
+  :deep(.v-input--focused .v-field--variant-filled .v-field__overlay) {
     background: $bg-input-focus;
   }
 
-  /* Bouton et son texte visibles */
-  :deep(.q-btn) {
-    color: #fff !important;
-    background: var(--q-primary) !important;
+  :deep(.v-btn) {
+    color: inherit;
   }
-  :deep(.q-btn__content),
-  :deep(.q-btn .q-focus-helper + span) {
-    color: #fff !important;
+  :deep(.v-btn.v-btn--color-primary) {
+    color: #fff;
   }
 
   .setup-title {

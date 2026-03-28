@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <div>
     <ResponsiveContainer style="padding: 180px 0; text-align: center">
       <template v-if="internals.sessionStorage?.getItem('email') != null">
         <div style="font-size: 16px">
@@ -33,7 +33,7 @@
         />
       </template>
     </ResponsiveContainer>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">

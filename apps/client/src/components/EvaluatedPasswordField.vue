@@ -66,12 +66,7 @@ import type { ComponentPublicInstance } from 'vue';
 
 import type { PasswordFieldProps } from './PasswordField.vue';
 
-interface Props extends PasswordFieldProps {
-  modelValue: string;
-  autocomplete: 'current-password' | 'new-password';
-}
-
-const props = defineProps<Props>();
+const props = defineProps<PasswordFieldProps>();
 
 const focused = ref(false);
 
@@ -110,15 +105,5 @@ watch(
 
 .password-feedback {
   color: $text-disabled-alt;
-}
-
-.q-field :deep() {
-  .q-field__control:before {
-    border-bottom: 0;
-  }
-
-  .q-field__control:after {
-    height: 0px;
-  }
 }
 </style>

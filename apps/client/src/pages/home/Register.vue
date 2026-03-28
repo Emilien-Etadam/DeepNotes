@@ -1,67 +1,62 @@
 <template>
-  <q-page>
+  <div>
     <ResponsiveContainer style="padding: 120px 32px">
-      <q-form style="margin: 0px auto; max-width: 270px">
-        <q-input
-          label-slot
-          filled
-          stack-label
-          label-color="grey-5"
+      <form
+        style="margin: 0px auto; max-width: 270px"
+        @submit.prevent="register()"
+      >
+        <TextField
           v-model="email"
+          label-color="grey-5"
           :maxlength="maxEmailLength"
         >
           <template #label>
             Email
 
-            <q-icon
-              name="mdi-information"
-              size="18px"
-              style="margin-top: -4px; pointer-events: auto"
+            <v-icon
+              icon="mdi-information"
+              size="18"
+              style="margin-top: -4px; pointer-events: auto; vertical-align: middle"
             >
-              <q-tooltip
-                anchor="top middle"
-                self="bottom middle"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                max-width="230px"
+              <v-tooltip
+                activator="parent"
+                location="top"
               >
-                This is the only information readable to the server. Used for
-                user identification and communication.
-              </q-tooltip>
-            </q-icon>
+                <span style="max-width: 230px; display: inline-block">
+                  This is the only information readable to the server. Used for
+                  user identification and communication.
+                </span>
+              </v-tooltip>
+            </v-icon>
           </template>
-        </q-input>
+        </TextField>
 
         <Gap style="height: 12px" />
 
-        <q-input
-          label-slot
-          filled
-          stack-label
-          label-color="grey-5"
+        <TextField
           v-model="userName"
+          label-color="grey-5"
           :maxlength="maxNameLength"
         >
           <template #label>
             Display name
 
-            <q-icon
-              name="mdi-information"
-              size="18px"
-              style="margin-top: -4px; pointer-events: auto"
+            <v-icon
+              icon="mdi-information"
+              size="18"
+              style="margin-top: -4px; pointer-events: auto; vertical-align: middle"
             >
-              <q-tooltip
-                anchor="top middle"
-                self="bottom middle"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                max-width="165px"
+              <v-tooltip
+                activator="parent"
+                location="top"
               >
-                This value is encrypted, unreadable to the server.
-              </q-tooltip>
-            </q-icon>
+                <span style="max-width: 165px; display: inline-block">
+                  This value is encrypted, unreadable to the server.
+                </span>
+              </v-tooltip>
+            </v-icon>
           </template>
-        </q-input>
+        </TextField>
 
         <Gap style="height: 12px" />
 
@@ -100,9 +95,8 @@
           color="primary"
           style="width: 100%; font-size: 16px; padding: 14px 0px"
           delay
-          @click.prevent="register()"
         />
-      </q-form>
+      </form>
 
       <Gap style="height: 16px" />
 
@@ -114,7 +108,7 @@
         </router-link>
       </div>
     </ResponsiveContainer>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -233,11 +227,3 @@ async function register() {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.q-page :deep() {
-  .q-field__label {
-    font-size: $fs-md;
-  }
-}
-</style>

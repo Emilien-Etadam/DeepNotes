@@ -7,7 +7,6 @@
     color="primary"
     bg-color="grey-darken-4"
     dark
-    :label="label"
     :density="dense ? 'compact' : undefined"
     :maxlength="maxlength"
     :type="type"
@@ -18,6 +17,11 @@
     :title="title"
     @update:model-value="$emit('update:model-value', $event)"
   >
+    <template #label>
+      <slot name="label">
+        {{ label }}
+      </slot>
+    </template>
     <template
       v-if="copyBtn"
       #append-inner

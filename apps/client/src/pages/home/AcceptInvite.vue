@@ -1,5 +1,5 @@
 <template>
-  <q-page class="login-page">
+  <div class="login-page">
     <ResponsiveContainer style="padding: 120px 32px">
       <div
         v-if="loading"
@@ -22,10 +22,11 @@
         />
       </div>
 
-      <q-form
+      <form
         v-else
         class="login-form"
         style="margin: 0px auto; max-width: 270px"
+        @submit.prevent="completeRegistration()"
       >
         <div
           style="
@@ -88,11 +89,10 @@
           color="primary"
           style="width: 100%; font-size: 16px; padding: 14px 0px"
           delay
-          @click.prevent="completeRegistration()"
         />
-      </q-form>
+      </form>
     </ResponsiveContainer>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -189,21 +189,23 @@ async function completeRegistration() {
 .login-page {
   color: $text-primary;
 
-  :deep(.q-field__label),
-  :deep(.q-field__native),
-  :deep(.q-field__input) {
+  :deep(.v-field__label),
+  :deep(.v-label),
+  :deep(.v-field input),
+  :deep(.v-field textarea) {
     color: $text-primary;
   }
 
-  :deep(.q-field--filled .q-field__control::before) {
+  :deep(.v-field--variant-filled .v-field__overlay) {
+    opacity: 1;
     background: $bg-input-idle;
   }
 
-  :deep(.q-field--filled:hover .q-field__control::before) {
+  :deep(.v-input:hover .v-field--variant-filled .v-field__overlay) {
     background: $bg-input-hover;
   }
 
-  :deep(.q-field--filled.q-field--focused .q-field__control::before) {
+  :deep(.v-input--focused .v-field--variant-filled .v-field__overlay) {
     background: $bg-input-focus;
   }
 }
