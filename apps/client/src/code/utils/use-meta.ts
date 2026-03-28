@@ -1,5 +1,7 @@
 import { useHead } from '@unhead/vue';
 import { isString } from 'lodash';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { APP_URL } from 'src/code/utils/app-url';
 
 export type MetaTagDef = {
