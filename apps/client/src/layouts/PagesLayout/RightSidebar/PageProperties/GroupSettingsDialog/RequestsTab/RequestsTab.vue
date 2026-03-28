@@ -40,11 +40,9 @@
           "
         >
           <template #item="{ itemId: userId }">
-            <q-item-section>
-              <q-item-label>
-                {{ groupRequestNames()(`${groupId}:${userId}`).get().text }}
-              </q-item-label>
-            </q-item-section>
+            <div>
+              {{ groupRequestNames()(`${groupId}:${userId}`).get().text }}
+            </div>
           </template>
         </Checklist>
       </div>
@@ -106,7 +104,6 @@
 <script setup lang="ts">
 import { rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { rejectJoinRequest } from 'src/code/areas/api-interface/groups/join-requests/reject';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
 import { groupRequestNames } from 'src/code/pages/computed/group-request-names';
@@ -206,7 +203,13 @@ async function rejectSelectedRequests() {
 
     baseSelectedUserIds.value.clear();
 
-    let notifUpdateOptions: QNotifyUpdateOptions = {
+    let notifUpdateOptions: {
+      timeout?: number;
+      caption?: string;
+      message?: string;
+      color?: string;
+      html?: boolean;
+    } = {
       timeout: undefined,
       caption: undefined,
     };

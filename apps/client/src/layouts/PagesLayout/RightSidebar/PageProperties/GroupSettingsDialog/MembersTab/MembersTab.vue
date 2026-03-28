@@ -35,28 +35,25 @@
         "
       >
         <template #item="{ itemId: userId }">
-          <q-item-section>
-            <q-item-label>
-              {{ groupMemberNames()(`${groupId}:${userId}`).get().text }}
-              <span
-                v-if="authStore().userId === userId"
-                style="color: #c0c0c0"
-                >(You)</span
-              >
-            </q-item-label>
-
-            <q-item-label caption>
-              {{
-                rolesMap()[
-                  realtimeCtx.hget(
-                    'group-member',
-                    `${groupId}:${userId}`,
-                    'role',
-                  )
-                ]?.name
-              }}
-            </q-item-label>
-          </q-item-section>
+          <div>
+            {{ groupMemberNames()(`${groupId}:${userId}`).get().text }}
+            <span
+              v-if="authStore().userId === userId"
+              style="color: #c0c0c0"
+              >(You)</span
+            >
+          </div>
+          <div style="font-size: 12px; color: rgba(255, 255, 255, 0.5)">
+            {{
+              rolesMap()[
+                realtimeCtx.hget(
+                  'group-member',
+                  `${groupId}:${userId}`,
+                  'role',
+                )
+              ]?.name
+            }}
+          </div>
         </template>
       </Checklist>
     </div>
@@ -117,7 +114,6 @@
 <script setup lang="ts">
 import { canManageRole, rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { rotateGroupKeys } from 'src/code/areas/api-interface/groups/key-rotation';
 import { removeGroupUser } from 'src/code/areas/api-interface/groups/remove-user';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
@@ -264,7 +260,13 @@ async function removeSelectedUsers() {
 
     baseSelectedUserIds.value.clear();
 
-    let notifUpdateOptions: QNotifyUpdateOptions = {
+    let notifUpdateOptions: {
+      timeout?: number;
+      caption?: string;
+      message?: string;
+      color?: string;
+      html?: boolean;
+    } = {
       timeout: undefined,
       caption: undefined,
     };

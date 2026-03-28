@@ -9,10 +9,10 @@
     }"
   >
     <template #header>
-      <q-card-section style="display: flex">
+      <div style="display: flex">
         <div class="text-h5">Group Settings</div>
 
-        <q-space />
+        <v-spacer />
 
         <DeepBtn
           icon="mdi-close"
@@ -22,24 +22,23 @@
           style="margin: -5px; height: 42px"
           @click="dialogRef.onDialogCancel()"
         />
-      </q-card-section>
+      </div>
 
       <template v-if="maximized">
-        <q-separator />
+        <v-divider />
 
-        <q-tabs
+        <v-tabs
           v-model="tab"
-          inline-label
-          outside-arrows
-          mobile-arrows
+          :show-arrows="true"
         >
-          <q-tab
-            name="General"
-            icon="mdi-account-group"
-            label="General"
-          />
+          <v-tab
+            value="General"
+            prepend-icon="mdi-account-group"
+          >
+            General
+          </v-tab>
 
-          <q-tab
+          <v-tab
             v-if="
               (realtimeCtx.hget(
                 'group-member',
@@ -49,10 +48,11 @@
                 realtimeCtx.hget('group', groupId, 'is-public')) &&
               !loading
             "
-            name="Pages"
-            icon="mdi-account-group"
-            label="Pages"
-          />
+            value="Pages"
+            prepend-icon="mdi-account-group"
+          >
+            Pages
+          </v-tab>
 
           <template
             v-if="
@@ -67,11 +67,12 @@
               !loading
             "
           >
-            <q-tab
-              name="Members"
-              icon="mdi-wallet-membership"
-              label="Members"
-            />
+            <v-tab
+              value="Members"
+              prepend-icon="mdi-wallet-membership"
+            >
+              Members
+            </v-tab>
 
             <template
               v-if="
@@ -84,27 +85,29 @@
                 ]?.permissions.manageLowerRanks
               "
             >
-              <q-tab
-                name="Join invitations"
-                icon="mdi-calendar"
-                label="Join invitations"
-              />
+              <v-tab
+                value="Join invitations"
+                prepend-icon="mdi-calendar"
+              >
+                Join invitations
+              </v-tab>
 
-              <q-tab
-                name="Join requests"
-                icon="mdi-account-multiple-plus"
-                label="Join requests"
-              />
+              <v-tab
+                value="Join requests"
+                prepend-icon="mdi-account-multiple-plus"
+              >
+                Join requests
+              </v-tab>
             </template>
           </template>
-        </q-tabs>
+        </v-tabs>
       </template>
     </template>
 
     <template #body>
-      <q-card-section style="flex: 1; height: 0; display: flex; padding: 0">
+      <div style="flex: 1; height: 0; display: flex; padding: 0">
         <template v-if="!maximized">
-          <q-list style="flex: none; width: 200px">
+          <v-list style="flex: none; width: 200px">
             <TabBtn
               name="General"
               icon="mdi-account-group"
@@ -174,9 +177,9 @@
                 />
               </template>
             </template>
-          </q-list>
+          </v-list>
 
-          <q-separator vertical />
+          <v-divider vertical />
         </template>
 
         <div
@@ -197,18 +200,19 @@
 
           <LoadingOverlay v-if="loading" />
         </div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
         <DeepBtn
           flat
           label="Close"
           color="primary"
           @click="dialogRef.onDialogOK()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

@@ -1,16 +1,16 @@
 <template>
   <CustomDialog ref="dialogRef">
     <template #header>
-      <q-card-section
+      <div
         style="padding: 12px 20px"
         class="text-h6"
       >
         Move page
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section style="padding: 0">
+      <div style="padding: 0">
         <div
           style="display: flex"
           :style="{
@@ -18,14 +18,14 @@
           }"
         >
           <div style="padding: 20px; width: 260px">
-            <q-select
+            <v-select
               label="Destination group"
-              :options="groupOptions"
-              option-label="name"
-              option-value="id"
-              filled
-              emit-value
-              map-options
+              :items="groupOptions"
+              item-title="name"
+              item-value="id"
+              variant="filled"
+              density="compact"
+              :return-object="false"
               v-model="destGroupId"
             />
 
@@ -40,7 +40,7 @@
           </div>
 
           <template v-if="destGroupId === 'new'">
-            <q-separator :vertical="horizontal" />
+            <v-divider :vertical="horizontal" />
 
             <div style="padding: 20px; width: 260px">
               <div style="font-size: 20px; font-weight: bold">New group:</div>
@@ -87,11 +87,12 @@
             </div>
           </template>
         </div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
         <DeepBtn
           flat
           label="Cancel"
@@ -106,7 +107,7 @@
           color="primary"
           @click.prevent="_movePage()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

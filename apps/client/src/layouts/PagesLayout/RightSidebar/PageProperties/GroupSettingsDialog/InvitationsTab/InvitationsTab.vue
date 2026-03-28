@@ -40,22 +40,20 @@
           "
         >
           <template #item="{ itemId: userId }">
-            <q-item-section>
-              <q-item-label>
-                {{ groupInvitationNames()(`${groupId}:${userId}`).get().text }}
-              </q-item-label>
-              <q-item-label caption>
-                {{
-                  rolesMap()[
-                    realtimeCtx.hget(
-                      'group-join-invitation',
-                      `${groupId}:${userId}`,
-                      'role',
-                    )
-                  ]?.name
-                }}
-              </q-item-label>
-            </q-item-section>
+            <div>
+              {{ groupInvitationNames()(`${groupId}:${userId}`).get().text }}
+            </div>
+            <div style="font-size: 12px; color: rgba(255, 255, 255, 0.5)">
+              {{
+                rolesMap()[
+                  realtimeCtx.hget(
+                    'group-join-invitation',
+                    `${groupId}:${userId}`,
+                    'role',
+                  )
+                ]?.name
+              }}
+            </div>
           </template>
         </Checklist>
       </div>
@@ -123,7 +121,6 @@
 <script setup lang="ts">
 import { rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
-import type { QNotifyUpdateOptions } from 'quasar';
 import { cancelJoinInvitation } from 'src/code/areas/api-interface/groups/join-invitations/cancel';
 import type { RealtimeContext } from 'src/code/areas/realtime/context';
 import { groupInvitationNames } from 'src/code/pages/computed/group-invitation-names';
@@ -210,7 +207,13 @@ async function cancelSelectedInvitations() {
 
     baseSelectedUserIds.value.clear();
 
-    let notifUpdateOptions: QNotifyUpdateOptions = {
+    let notifUpdateOptions: {
+      timeout?: number;
+      caption?: string;
+      message?: string;
+      color?: string;
+      html?: boolean;
+    } = {
       timeout: undefined,
       caption: undefined,
     };

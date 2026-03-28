@@ -51,11 +51,9 @@
         "
       >
         <template #item="{ itemId: groupPageId }">
-          <q-item-section>
-            <q-item-label>
-              {{ getPageTitle(groupPageId, { prefer: 'absolute' }).text }}
-            </q-item-label>
-          </q-item-section>
+          <div>
+            {{ getPageTitle(groupPageId, { prefer: 'absolute' }).text }}
+          </div>
         </template>
       </Checklist>
     </div>

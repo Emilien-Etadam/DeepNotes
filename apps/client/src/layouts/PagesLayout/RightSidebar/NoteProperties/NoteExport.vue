@@ -5,71 +5,45 @@
       icon="mdi-export"
       color="primary"
     >
-      <q-menu
-        anchor="top middle"
-        self="bottom middle"
+      <v-menu
+        activator="parent"
+        location="top"
+        :close-on-content-click="true"
         :offset="[0, 2]"
-        style="width: 244px"
-        auto-close
       >
-        <q-list class="bg-primary">
-          <q-item
-            clickable
+        <v-list
+          class="bg-primary"
+          style="width: 244px"
+        >
+          <v-list-item
+            link
+            prepend-icon="mdi-content-copy"
+            title="Copy as markdown"
             @click="copyAsMarkdown({ includeDescendants: false })"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-content-copy" />
-            </q-item-section>
+          />
 
-            <q-item-section>
-              <q-item-label>Copy as markdown</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
+          <v-list-item
+            link
+            prepend-icon="mdi-content-copy"
+            title="Copy as markdown (include descendants)"
             @click="copyAsMarkdown({ includeDescendants: true })"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-content-copy" />
-            </q-item-section>
+          />
 
-            <q-item-section>
-              <q-item-label>
-                Copy as markdown (include descendants)
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
+          <v-list-item
+            link
+            prepend-icon="mdi-download"
+            title="Download as markdown"
             @click="downloadAsMarkdown({ includeDescendants: false })"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-download" />
-            </q-item-section>
+          />
 
-            <q-item-section>
-              <q-item-label>Download as markdown</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
+          <v-list-item
+            link
+            prepend-icon="mdi-download"
+            title="Download as markdown (include descendants)"
             @click="downloadAsMarkdown({ includeDescendants: true })"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-download" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>
-                Download as markdown (include descendants)
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
+          />
+        </v-list>
+      </v-menu>
     </DeepBtn>
   </div>
 </template>

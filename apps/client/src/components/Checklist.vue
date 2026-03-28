@@ -1,5 +1,5 @@
 <template>
-  <q-list>
+  <v-list>
     <PassthroughComponent
       :is="itemsWrapper"
       v-bind="wrapperProps"
@@ -10,51 +10,48 @@
         name="empty"
       ></slot>
 
-      <q-item
+      <v-list-item
         v-for="(itemId, itemIndex) of itemIds"
         :key="itemId"
-        clickable
-        v-ripple
+        link
         :style="{
           'background-color': selectedItemIds.has(itemId) ? '#505050' : '',
         }"
         @click="(event) => selectItem(itemId, event as any)"
         v-bind="props.itemProps?.(itemId, itemIndex)"
       >
-        <q-item-section
-          avatar
-          style="padding-right: 4px"
-        >
-          <Checkbox
-            :model-value="selectedItemIds.has(itemId)"
-            style="pointer-events: none; max-height: 100%"
-          />
-        </q-item-section>
+        <template #prepend>
+          <div style="padding-right: 4px">
+            <Checkbox
+              :model-value="selectedItemIds.has(itemId)"
+              style="pointer-events: none; max-height: 100%"
+            />
+          </div>
+        </template>
 
         <slot
           name="item"
           :item-id="itemId"
           :item-index="itemIndex"
         ></slot>
-      </q-item>
+      </v-list-item>
     </PassthroughComponent>
-  </q-list>
+  </v-list>
 </template>
 
 <script setup lang="ts">
-import type { QItemProps, QListProps } from 'quasar';
 import type { Component } from 'vue';
 
 const emit = defineEmits(['select', 'unselect']);
 
-interface Props extends QListProps {
+interface Props {
   itemIds: string[];
   selectedItemIds: Set<string>;
 
   itemProps?: (
     itemId: string,
     itemIndex: number,
-  ) => QItemProps & Record<string, unknown>;
+  ) => Record<string, unknown>;
 
   itemsWrapper?: string | Component | object;
   wrapperProps?: Record<string, unknown>;

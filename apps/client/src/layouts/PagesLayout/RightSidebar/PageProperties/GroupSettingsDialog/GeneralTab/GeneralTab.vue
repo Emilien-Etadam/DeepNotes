@@ -6,21 +6,19 @@
       <div>
         Group name
 
-        <q-icon
-          name="mdi-information"
-          size="15px"
+        <v-icon
+          icon="mdi-information"
+          size="15"
           style="margin-top: -1px; opacity: 0.9"
         >
-          <q-tooltip
-            anchor="top middle"
-            self="bottom middle"
-            transition-show="jump-up"
-            transition-hide="jump-down"
+          <v-tooltip
+            activator="parent"
+            location="top"
             max-width="164px"
           >
             This value is encrypted, unreadable to the server.
-          </q-tooltip>
-        </q-icon>
+          </v-tooltip>
+        </v-icon>
       </div>
 
       <Gap style="height: 8px" />
@@ -56,21 +54,19 @@
         <div>
           Your name in this group
 
-          <q-icon
-            name="mdi-information"
-            size="15px"
+          <v-icon
+            icon="mdi-information"
+            size="15"
             style="margin-top: -1px; opacity: 0.9"
           >
-            <q-tooltip
-              anchor="top middle"
-              self="bottom middle"
-              transition-show="jump-up"
-              transition-hide="jump-down"
+            <v-tooltip
+              activator="parent"
+              location="top"
               max-width="164px"
             >
               This value is encrypted, unreadable to the server.
-            </q-tooltip>
-          </q-icon>
+            </v-tooltip>
+          </v-icon>
         </div>
 
         <Gap style="height: 8px" />
@@ -99,7 +95,7 @@
 
       <Gap style="height: 28px" />
 
-      <q-separator />
+      <v-divider />
 
       <Gap style="height: 20px" />
     </template>
@@ -168,7 +164,7 @@
     >
       <Gap style="height: 28px" />
 
-      <q-separator />
+      <v-divider />
 
       <Gap style="height: 20px" />
 
@@ -219,7 +215,7 @@
     >
       <Gap style="height: 28px" />
 
-      <q-separator />
+      <v-divider />
 
       <Gap style="height: 20px" />
 
@@ -255,7 +251,7 @@
     >
       <Gap style="height: 28px" />
 
-      <q-separator />
+      <v-divider />
 
       <Gap style="height: 20px" />
 

@@ -1,13 +1,13 @@
 <template>
   <CustomDialog ref="dialogRef">
     <template #header>
-      <q-card-section style="padding: 12px 20px">
+      <div style="padding: 12px 20px">
         <div class="text-h6">Invite user</div>
-      </q-card-section>
+      </div>
     </template>
 
     <template #body>
-      <q-card-section style="padding: 20px">
+      <div style="padding: 20px">
         <TextField
           label="User ID or Email"
           dense
@@ -26,40 +26,37 @@
 
         <Gap style="height: 16px" />
 
-        <q-select
-          :options="manageableRoles"
-          option-label="name"
-          option-value="id"
-          filled
-          emit-value
-          map-options
-          dense
+        <v-select
           v-model="role"
+          :items="manageableRoles"
+          item-title="name"
+          item-value="id"
+          variant="filled"
+          density="compact"
+          :return-object="false"
         >
-          <template #selected>
+          <template #selection>
             <template v-if="role">
               {{ rolesMap()[role].name }}
             </template>
             <template v-else>(Select a role)</template>
           </template>
 
-          <template #option="scope">
-            <q-item
-              v-bind="scope.itemProps"
+          <template #item="{ item, props: itemProps }">
+            <v-list-item
+              v-bind="itemProps"
+              :title="item.raw.name"
+              :subtitle="item.raw.description"
               style="max-width: 220px"
-            >
-              <q-item-section>
-                <q-item-label>{{ scope.opt.name }}</q-item-label>
-                <q-item-label caption>{{ scope.opt.description }}</q-item-label>
-              </q-item-section>
-            </q-item>
+            />
           </template>
-        </q-select>
-      </q-card-section>
+        </v-select>
+      </div>
     </template>
 
     <template #footer>
-      <q-card-actions align="right">
+      <v-card-actions>
+        <v-spacer />
         <DeepBtn
           flat
           label="Cancel"
@@ -74,7 +71,7 @@
           color="primary"
           @click.prevent="inviteUser()"
         />
-      </q-card-actions>
+      </v-card-actions>
     </template>
   </CustomDialog>
 </template>

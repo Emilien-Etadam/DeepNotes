@@ -17,11 +17,9 @@
       @unselect="(snapshotId) => baseSelectedSnapshotIds.delete(snapshotId)"
     >
       <template #empty>
-        <q-item style="color: #b0b0b0">
-          <q-item-section>
-            <q-item-label>No versions available</q-item-label>
-          </q-item-section>
-        </q-item>
+        <div style="padding: 12px 16px; color: #b0b0b0">
+          No versions available
+        </div>
       </template>
 
       <template #item="{ itemIndex: snapshotIndex }">
@@ -29,31 +27,28 @@
           v-for="snapshotInfo in [snapshotInfos[snapshotIndex]]"
           :key="snapshotInfo.id"
         >
-          <q-item-section>
-            <q-item-label>{{
+          <div>
+            {{
               Intl.DateTimeFormat('en', {
                 dateStyle: 'medium',
                 timeStyle: 'short',
               }).format(snapshotInfo.creationDate)
-            }}</q-item-label>
+            }}
+          </div>
 
-            <q-item-label
-              caption
-              style="display: flex"
-            >
-              <div style="flex: 1">
-                {{
-                  groupMemberNames()(
-                    `${page.react.groupId}:${snapshotInfo.authorId}`,
-                  ).get().text
-                }}
-              </div>
+          <div style="display: flex; font-size: 12px; color: rgba(255, 255, 255, 0.7)">
+            <div style="flex: 1">
+              {{
+                groupMemberNames()(
+                  `${page.react.groupId}:${snapshotInfo.authorId}`,
+                ).get().text
+              }}
+            </div>
 
-              <Gap style="width: 20px" />
+            <Gap style="width: 20px" />
 
-              <div>{{ capitalize(snapshotInfo.type) }}</div>
-            </q-item-label>
-          </q-item-section>
+            <div>{{ capitalize(snapshotInfo.type) }}</div>
+          </div>
         </template>
       </template>
     </Checklist>
