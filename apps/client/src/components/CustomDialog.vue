@@ -1,41 +1,114 @@
 <template>
-  <q-dialog
-    ref="dialogRef"
-    @hide="onDialogHide"
+  <v-dialog
+    :model-value="isOpen"
+    @update:model-value="onUpdateOpen"
+    :max-width="dialogMaxWidth"
+    :persistent="persistent"
+    @after-leave="onAfterLeave"
   >
-    <q-card :style="cardStyle">
-      <q-form style="display: flex; flex-direction: column; height: 100%">
-        <slot name="header"></slot>
+    <v-card :style="cardStyle">
+      <v-card-title>
+        <slot name="header" />
+      </v-card-title>
 
-        <q-separator />
+      <v-divider />
 
-        <slot name="body"></slot>
+      <v-card-text>
+        <slot name="body" />
+      </v-card-text>
 
-        <q-separator />
+      <v-divider />
 
-        <slot name="footer"></slot>
-      </q-form>
-    </q-card>
-  </q-dialog>
+      <v-card-actions>
+        <slot name="footer" />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
-import type { QDialogProps } from 'quasar';
+const props = withDefaults(
+  defineProps<{
+    modelValue?: boolean;
+    cardStyle?: string | Record<string, string>;
+    persistent?: boolean;
+    maxWidth?: string | number;
+  }>(),
+  {
+    persistent: true,
+    maxWidth: 500,
+  },
+);
 
-defineEmits([...useDialogPluginComponent.emits]);
+const emit = defineEmits<{
+  'update:modelValue': [value: boolean];
+  ok: [payload?: unknown];
+  cancel: [];
+  hide: [];
+}>();
 
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const internalOpen = ref(false);
 
-interface Props extends QDialogProps {
-  cardStyle?: any;
+const isControlled = computed(() => props.modelValue !== undefined);
+
+const isOpen = computed({
+  get: () => (isControlled.value ? props.modelValue! : internalOpen.value),
+  set: (v: boolean) => {
+    if (isControlled.value) {
+      emit('update:modelValue', v);
+    } else {
+      internalOpen.value = v;
+    }
+  },
+});
+
+const dialogMaxWidth = computed(() => props.maxWidth);
+
+function onUpdateOpen(v: boolean) {
+  isOpen.value = v;
 }
 
-defineProps<Props>();
+function onAfterLeave() {
+  emit('hide');
+}
+
+function show() {
+  isOpen.value = true;
+}
+
+function hide() {
+  isOpen.value = false;
+}
+
+function ok(payload?: unknown) {
+  onDialogOK(payload);
+}
+
+function cancel() {
+  onDialogCancel();
+}
+
+function onDialogOK(payload?: unknown) {
+  emit('ok', payload);
+  isOpen.value = false;
+}
+
+function onDialogCancel() {
+  emit('cancel');
+  isOpen.value = false;
+}
+
+function onDialogHide() {
+  emit('hide');
+}
 
 defineExpose({
-  onDialogHide,
+  show,
+  hide,
+  ok,
+  cancel,
   onDialogOK,
   onDialogCancel,
+  onDialogHide,
 });
 </script>

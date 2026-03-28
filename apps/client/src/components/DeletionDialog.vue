@@ -1,65 +1,117 @@
 <template>
-  <q-dialog
-    ref="dialogRef"
-    @hide="onDialogHide"
+  <v-dialog
+    :model-value="isOpen"
+    @update:model-value="onUpdateOpen"
+    max-width="400"
+    :persistent="persistent"
+    @after-leave="onAfterLeave"
   >
-    <q-card :style="cardStyle">
-      <q-card-section style="padding: 12px 20px">
-        <div class="text-h6">Delete {{ subject }}</div>
-      </q-card-section>
+    <v-card :style="cardStyle">
+      <v-card-title>Delete {{ subject }}</v-card-title>
 
-      <q-card-section style="padding: 12px 20px">
-        <div>
-          Are you sure you want to delete
-          {{ subject?.endsWith('s') ? 'these' : 'this' }} {{ subject }}?
-        </div>
+      <v-divider />
 
-        <Gap style="height: 10px" />
+      <v-card-text>
+        Are you sure you want to delete
+        {{ subject?.endsWith('s') ? 'these' : 'this' }}
+        {{ subject?.toLowerCase() }}?
 
-        <div style="padding-left: 16px">
+        <div style="margin-top: 12px">
           <Checkbox
-            v-model="deletePermanently"
             label="Delete permanently"
+            v-model="deletePermanently"
           />
         </div>
+      </v-card-text>
 
-        <Gap style="height: 10px" />
-      </q-card-section>
+      <v-divider />
 
-      <q-card-actions align="right">
-        <DeepBtn
-          flat
-          autofocus
-          color="primary"
-          label="No"
-          @click="onDialogCancel"
-        />
-
-        <DeepBtn
-          flat
-          color="negative"
-          label="Yes"
-          @click="onDialogOK({ deletePermanently })"
-        />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          variant="text"
+          @click="cancel"
+        >
+          No
+        </v-btn>
+        <v-btn
+          color="error"
+          variant="text"
+          @click="ok"
+        >
+          Yes
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
-import type { QDialogProps } from 'quasar';
+const props = withDefaults(
+  defineProps<{
+    modelValue?: boolean;
+    subject?: string;
+    cardStyle?: string;
+    persistent?: boolean;
+  }>(),
+  {
+    persistent: true,
+  },
+);
 
-defineEmits([...useDialogPluginComponent.emits]);
+const emit = defineEmits<{
+  'update:modelValue': [value: boolean];
+  ok: [payload: { deletePermanently: boolean }];
+  cancel: [];
+  hide: [];
+}>();
 
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const internalOpen = ref(false);
 
-interface Props extends QDialogProps {
-  cardStyle?: any;
-  subject?: string;
-}
+const isControlled = computed(() => props.modelValue !== undefined);
 
-defineProps<Props>();
+const isOpen = computed({
+  get: () => (isControlled.value ? props.modelValue! : internalOpen.value),
+  set: (v: boolean) => {
+    if (isControlled.value) {
+      emit('update:modelValue', v);
+    } else {
+      internalOpen.value = v;
+    }
+  },
+});
 
 const deletePermanently = ref(false);
+
+function onUpdateOpen(v: boolean) {
+  isOpen.value = v;
+}
+
+function onAfterLeave() {
+  emit('hide');
+}
+
+function ok() {
+  emit('ok', { deletePermanently: deletePermanently.value });
+  isOpen.value = false;
+}
+
+function cancel() {
+  emit('cancel');
+  isOpen.value = false;
+}
+
+defineExpose({
+  show: () => {
+    isOpen.value = true;
+  },
+  hide: () => {
+    isOpen.value = false;
+  },
+  ok,
+  cancel,
+  onDialogOK: ok,
+  onDialogCancel: cancel,
+  onDialogHide: () => emit('hide'),
+});
 </script>
