@@ -113,6 +113,7 @@
 </template>
 
 <script setup lang="ts">
+import { appDialog } from 'src/code/utils/dialog';
 import { multiModePath } from 'src/code/utils/misc';
 
 import AccountPopup from './AccountPopup.vue';

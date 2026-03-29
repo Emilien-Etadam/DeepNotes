@@ -157,6 +157,7 @@
 </template>
 
 <script setup lang="ts">
+import { appDialog } from 'src/code/utils/dialog';
 import { maxPageTitleLength } from '@deeplib/misc';
 import { deletePage } from 'src/code/areas/api-interface/pages/deletion/delete';
 import { deletePagePermanently } from 'src/code/areas/api-interface/pages/deletion/delete-permanently';

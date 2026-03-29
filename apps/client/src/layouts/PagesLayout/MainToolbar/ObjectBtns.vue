@@ -193,6 +193,7 @@
 </template>
 
 <script setup lang="ts">
+import { appDialog } from 'src/code/utils/dialog';
 import { getAltKeyName, getCtrlKeyName } from 'src/code/utils/misc';
 
 import InsertImageDialog from './InsertImageDialog.vue';

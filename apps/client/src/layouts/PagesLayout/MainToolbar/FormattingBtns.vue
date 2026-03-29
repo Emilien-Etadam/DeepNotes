@@ -160,6 +160,7 @@
 </template>
 
 <script setup lang="ts">
+import { appDialog } from 'src/code/utils/dialog';
 import { unsetNode } from 'src/code/areas/tiptap/utils';
 import { getAltKeyName, getCtrlKeyName } from 'src/code/utils/misc';
 

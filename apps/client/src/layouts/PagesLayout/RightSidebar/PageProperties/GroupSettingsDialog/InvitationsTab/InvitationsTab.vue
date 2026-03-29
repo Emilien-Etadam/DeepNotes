@@ -119,6 +119,7 @@
 </template>
 
 <script setup lang="ts">
+import { appDialog } from 'src/code/utils/dialog';
 import { rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
 import { cancelJoinInvitation } from 'src/code/areas/api-interface/groups/join-invitations/cancel';

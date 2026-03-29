@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { setClipboardText } from 'src/code/utils/clipboard';
+import { showNotify } from 'src/code/utils/notify';
 
 defineProps<{
   text: string;

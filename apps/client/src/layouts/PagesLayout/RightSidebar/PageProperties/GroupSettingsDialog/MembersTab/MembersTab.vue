@@ -112,6 +112,7 @@
 </template>
 
 <script setup lang="ts">
+import { appDialog } from 'src/code/utils/dialog';
 import { canManageRole, rolesMap } from '@deeplib/misc';
 import { pluralS } from '@stdlib/misc';
 import { rotateGroupKeys } from 'src/code/areas/api-interface/groups/key-rotation';
