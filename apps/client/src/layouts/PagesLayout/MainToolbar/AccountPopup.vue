@@ -19,7 +19,7 @@
           link
           prepend-icon="mdi-account"
           title="Account settings"
-          :href="multiModePath('/account/general')"
+          @click="appDialog({ component: AccountSettingsDialog })"
         />
       </template>
 
@@ -45,7 +45,7 @@
         link
         prepend-icon="mdi-help"
         title="Help"
-        :href="multiModePath('/help')"
+        @click="appDialog({ component: HelpDialog })"
       />
 
       <v-list-item
@@ -61,6 +61,10 @@
 
 <script setup lang="ts">
 import { logout } from 'src/code/areas/auth/logout';
+import { appDialog } from 'src/code/utils/dialog';
 import { selfUserName } from 'src/code/self-user-name';
 import { multiModePath } from 'src/code/utils/misc';
+
+import AccountSettingsDialog from './AccountSettingsDialog.vue';
+import HelpDialog from './HelpDialog.vue';
 </script>
