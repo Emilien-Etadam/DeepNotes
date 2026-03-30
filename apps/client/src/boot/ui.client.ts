@@ -21,23 +21,4 @@ export async function setup({ store }: BootContext) {
     );
   }
 
-  uiStore(store).currentPathExpanded =
-    internals.localStorage.getItem('currentPathExpanded') !== 'false';
-  uiStore(store).recentPagesExpanded =
-    internals.localStorage.getItem('recentPagesExpanded') !== 'false';
-  uiStore(store).favoritePagesExpanded =
-    internals.localStorage.getItem('favoritePagesExpanded') === 'true';
-  uiStore(store).selectedPagesExpanded =
-    internals.localStorage.getItem('selectedPagesExpanded') === 'true';
-
-  uiStore(store).currentPathWeight =
-    Number.parseFloat(internals.localStorage.getItem('currentPathWeight')) || 1;
-  uiStore(store).recentPagesWeight =
-    Number.parseFloat(internals.localStorage.getItem('recentPagesWeight')) || 1;
-  uiStore(store).favoritePagesWeight =
-    Number.parseFloat(internals.localStorage.getItem('favoritePagesWeight')) ||
-    1;
-  uiStore(store).selectedPagesWeight =
-    Number.parseFloat(internals.localStorage.getItem('selectedPagesWeight')) ||
-    1;
 }

@@ -2,8 +2,8 @@
   <div class="display-navigation-btns">
     <DisplayBtn
       icon="mdi-arrow-up"
-      size="12px"
-      :btn-size="30"
+      size="17px"
+      :btn-size="28"
       :disable="
         internals.pages.react.pageId === internals.pages.react.pathPageIds[0]
       "
@@ -21,8 +21,8 @@
 
     <DisplayBtn
       icon="mdi-arrow-down"
-      size="12px"
-      :btn-size="30"
+      size="17px"
+      :btn-size="28"
       :disable="
         internals.pages.react.pageId ===
         internals.pages.react.pathPageIds.at(-1)
@@ -41,8 +41,8 @@
 
     <DisplayBtn
       icon="mdi-camera-outline"
-      size="11px"
-      :btn-size="34"
+      size="16px"
+      :btn-size="28"
       @click="appDialog({ component: TakeScreenshotDialog })"
     >
       <v-tooltip
@@ -57,8 +57,8 @@
 
     <DisplayBtn
       icon="mdi-find-replace"
-      size="11px"
-      :btn-size="34"
+      size="16px"
+      :btn-size="28"
       @click="
         () => {
           page.findAndReplace.react.active = !page.findAndReplace.react.active;
@@ -78,8 +78,8 @@
 
     <DisplayBtn
       icon="mdi-export-variant"
-      size="11px"
-      :btn-size="34"
+      size="16px"
+      :btn-size="28"
       @click="exportCurrentPage()"
     >
       <v-tooltip
@@ -116,8 +116,8 @@ function exportCurrentPage() {
   pointer-events: auto;
   position: absolute;
 
-  left: $sp-3;
-  top: 55px;
+  left: calc(var(--v-layout-left, 0px) + #{$sp-3});
+  top: 79px;
 
   display: flex;
   flex-direction: column;

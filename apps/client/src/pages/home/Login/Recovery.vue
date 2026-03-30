@@ -1,5 +1,5 @@
 <template>
-  <div style="font-size: 22px; text-align: center; font-weight: bold">
+  <div style="font-size: 14px; text-align: center; font-weight: bold">
     Two-factor Authentication
   </div>
 
@@ -27,7 +27,7 @@
     <DeepBtn
       label="Cancel"
       color="grey-9"
-      style="flex: 1; font-size: 16px; padding: 8px 0px"
+      style="flex: 1; font-size: 14px; padding: 8px 0px"
       @click="authType = 'authenticator'"
     />
 
@@ -37,7 +37,7 @@
       label="Verify"
       type="submit"
       color="primary"
-      style="flex: 1; font-size: 16px; padding: 8px 0px"
+      style="flex: 1; font-size: 14px; padding: 8px 0px"
       delay
       @click="onSubmit()"
     />

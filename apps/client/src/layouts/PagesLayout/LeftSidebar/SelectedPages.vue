@@ -1,44 +1,17 @@
 <template>
-  <div
-    style="
-      padding: 0;
-      background-color: #141414;
-      min-height: 0;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      position: relative;
-    "
-  >
-    <DeepBtn
-      flat
-      style="width: 100%; height: 32px; min-height: 0; border-radius: 0"
-      no-caps
-      @click="negateProp(uiStore(), 'selectedPagesExpanded')"
-    >
-      <div style="width: 100%; height: 0; display: flex; align-items: center">
-        <v-avatar
-          size="32"
-          style="margin-top: -1px; margin-left: -8px"
-        >
-          <v-icon
-            icon="mdi-selection-multiple"
-            size="20"
-          />
-        </v-avatar>
+  <div class="section-root">
+    <div class="section-header">
+      <v-avatar
+        size="32"
+        style="margin-top: -1px; margin-left: -8px"
+      >
+        <v-icon
+          icon="mdi-selection-multiple"
+          size="20"
+        />
+      </v-avatar>
 
-        <span
-          style="
-            margin-left: -2px;
-            text-align: left;
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 13.5px;
-          "
-        >
-          Selected pages
-        </span>
-      </div>
-    </DeepBtn>
+      <span class="section-title">Selected pages</span>
 
     <v-btn
       icon
@@ -52,7 +25,7 @@
         min-height: 0;
       "
     >
-      <v-icon icon="mdi-menu" />
+      <v-icon icon="mdi-dots-vertical" />
       <v-menu
         activator="parent"
         :close-on-content-click="true"
@@ -84,17 +57,9 @@
         </v-list>
       </v-menu>
     </v-btn>
-  </div>
+    </div>
 
-  <div
-    :id="`${'selectedPages'}List`"
-    style="height: 0; overflow-x: hidden; overflow-y: auto"
-    :style="{
-      flex: uiStore().selectedPagesExpanded
-        ? uiStore().selectedPagesWeight
-        : '0',
-    }"
-  >
+    <div class="section-list">
     <v-list-item
       v-if="selectedPageIds.length === 0"
       title="No pages selected."
@@ -117,11 +82,11 @@
         </template>
       </PageItem>
     </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { negateProp } from '@stdlib/misc';
 import { useRealtimeContext } from 'src/code/areas/realtime/context';
 import PagePopupOptions from 'src/components/PagePopupOptions.vue';
 import { pageSelectionStore } from 'src/stores/page-selection';
@@ -143,6 +108,37 @@ const { movePages, deletePages } = usePageList({
 </script>
 
 <style scoped lang="scss">
+.section-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background-color: #141414;
+}
+
+.section-header {
+  min-height: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.section-title {
+  margin-left: -2px;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.section-list {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .selected-page {
   position: relative;
 

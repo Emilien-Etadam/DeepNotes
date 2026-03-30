@@ -6,19 +6,19 @@
   >
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">Password protection</div>
+        <div class="text-h5">Password protection</div>
       </div>
     </template>
 
     <template #body>
-      <div style="padding: 24px">
+      <div style="padding: 16px">
         <EvaluatedPasswordField
           label="New password"
           dense
           v-model="password"
         />
 
-        <Gap style="height: 20px" />
+        <Gap style="height: 12px" />
 
         <PasswordField
           label="Repeat new password"

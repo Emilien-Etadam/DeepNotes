@@ -6,7 +6,7 @@
   >
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">Accept join request</div>
+        <div class="text-h5">Accept join request</div>
       </div>
     </template>
 

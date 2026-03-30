@@ -2,7 +2,7 @@
   <CustomDialog ref="dialogRef" v-bind="$attrs">
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">Create new page</div>
+        <div class="text-h5">Create new page</div>
       </div>
     </template>
 

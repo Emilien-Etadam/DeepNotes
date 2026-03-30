@@ -30,6 +30,7 @@
         <DisplayBtn
           icon="mdi-hammer-wrench"
           tooltip="Basic"
+          :btn-size="28"
         >
           <v-menu
             activator="parent"
@@ -48,6 +49,7 @@
         <DisplayBtn
           icon="mdi-format-color-text"
           tooltip="Formatting"
+          :btn-size="28"
         >
           <v-menu
             activator="parent"
@@ -66,6 +68,7 @@
         <DisplayBtn
           icon="mdi-format-list-bulleted"
           tooltip="Objects"
+          :btn-size="28"
         >
           <v-menu
             activator="parent"
@@ -84,6 +87,7 @@
         <DisplayBtn
           icon="mdi-align-horizontal-left"
           tooltip="Alignment"
+          :btn-size="28"
         >
           <v-menu
             activator="parent"
@@ -101,6 +105,7 @@
       <DisplayBtn
         icon="mdi-menu"
         tooltip="Menu"
+        :btn-size="28"
         style="position: absolute; right: 60px; top: 8px"
       >
         <AccountPopup>

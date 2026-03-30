@@ -1,7 +1,7 @@
 <template>
   <v-icon
     icon="mdi-content-copy"
-    size="23"
+    size="20"
     class="cursor-pointer"
     style="margin-right: -3px"
     @click="

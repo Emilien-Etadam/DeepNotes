@@ -20,7 +20,7 @@
   <!-- Expanded sidebar -->
 
   <div v-else>
-    <div style="padding: 16px; display: flex; flex-direction: column">
+    <div style="padding: 12px; display: flex; flex-direction: column">
       <!-- Relative title -->
 
       <TextField
@@ -35,7 +35,7 @@
         title="Title displayed in the page path"
       />
 
-      <Gap style="height: 12px" />
+      <Gap style="height: 8px" />
 
       <!-- Absolute title -->
 
@@ -54,7 +54,7 @@
 
     <v-divider />
 
-    <div style="padding: 16px; display: flex; flex-direction: column">
+    <div style="padding: 12px; display: flex; flex-direction: column">
       <!-- Page ID -->
 
       <TextField
@@ -66,11 +66,11 @@
         readonly
       />
 
-      <Gap style="height: 12px" />
+      <Gap style="height: 8px" />
 
       <DeepBtn
         dense
-        size="sm"
+        size="small"
         label="Copy link to this page"
         icon="mdi-content-copy"
         color="primary"
@@ -89,10 +89,10 @@
 
     <v-divider />
 
-    <div style="padding: 16px; display: flex; flex-direction: column">
+    <div style="padding: 12px; display: flex; flex-direction: column">
       <DeepBtn
         dense
-        size="sm"
+        size="small"
         label="Group settings"
         icon="mdi-account-cog"
         color="primary"
@@ -110,10 +110,10 @@
 
     <v-divider />
 
-    <div style="padding: 16px; display: flex; flex-direction: column">
+    <div style="padding: 12px; display: flex; flex-direction: column">
       <DeepBtn
         dense
-        size="sm"
+        size="small"
         label="Move page"
         icon="mdi-file-move"
         color="primary"
@@ -122,11 +122,11 @@
         @click="_movePage"
       />
 
-      <Gap style="height: 12px" />
+      <Gap style="height: 8px" />
 
       <DeepBtn
         dense
-        size="sm"
+        size="small"
         v-if="internals.pages.react.favoritePageIds.includes(page.id)"
         label="Remove from favorites"
         icon="mdi-star"
@@ -136,7 +136,7 @@
       />
       <DeepBtn
         dense
-        size="sm"
+        size="small"
         v-else
         label="Add to favorites"
         icon="mdi-star"
@@ -145,11 +145,11 @@
         @click="addFavoritePages([page.id])"
       />
 
-      <Gap style="height: 12px" />
+      <Gap style="height: 8px" />
 
       <DeepBtn
         dense
-        size="sm"
+        size="small"
         label="Delete page"
         color="negative"
         :disable="page.react.readOnly"

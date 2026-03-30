@@ -3,7 +3,6 @@
     class="horizontal-path"
     style="
       position: absolute;
-      left: 12px;
       right: 12px;
       top: 7px;
       white-space: nowrap;
@@ -48,6 +47,7 @@ import DisplayHorizontalPage from './DisplayHorizontalPage.vue';
 /* Hide scrollbar */
 
 .horizontal-path {
+  left: calc(var(--v-layout-left, 0px) + 12px);
   font-size: $fs-sm;
   -ms-overflow-style: none;
   scrollbar-width: none;

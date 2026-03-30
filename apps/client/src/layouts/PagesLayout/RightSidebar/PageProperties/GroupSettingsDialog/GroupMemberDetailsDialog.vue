@@ -7,14 +7,14 @@
     <template #header>
       <div
         style="padding: 12px 20px"
-        class="text-h6"
+        class="text-h5"
       >
         User details
       </div>
     </template>
 
     <template #body>
-      <div style="position: relative; padding: 20px">
+      <div style="position: relative; padding: 16px">
         <TextField
           label="User display name"
           dense

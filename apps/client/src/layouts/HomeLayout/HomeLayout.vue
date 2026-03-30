@@ -24,7 +24,7 @@ body {
 <style scoped lang="scss">
 .home-layout {
   :deep() {
-    a:not(.q-hoverable) {
+    a:not(.v-btn) {
       text-decoration: none;
 
       color: #47a7ff;

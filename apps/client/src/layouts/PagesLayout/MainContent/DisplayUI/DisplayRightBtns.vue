@@ -2,7 +2,7 @@
   <div class="display-camera-btns">
     <DisplayBtn
       icon="mdi-magnify-remove-outline"
-      :btn-size="34"
+      :btn-size="28"
       @click="page.camera.resetZoom()"
     >
       <v-tooltip
@@ -17,7 +17,7 @@
 
     <DisplayBtn
       icon="mdi-image-filter-center-focus-weak"
-      :btn-size="34"
+      :btn-size="28"
       @click="page.camera.fitToScreen()"
     >
       <v-tooltip
@@ -39,7 +39,7 @@
     <DisplayBtn
       icon="mdi-undo"
       size="11px"
-      :btn-size="32"
+      :btn-size="28"
       :disable="page.react.readOnly || !page.undoRedo.react.canUndo"
       @click="page.undoRedo.undo()"
     >
@@ -56,7 +56,7 @@
     <DisplayBtn
       icon="mdi-redo"
       size="11px"
-      :btn-size="32"
+      :btn-size="28"
       :disable="page.react.readOnly || !page.undoRedo.react.canRedo"
       @click="page.undoRedo.redo()"
     >
@@ -78,7 +78,7 @@ const page = computed(() => internals.pages.react.page);
 .display-camera-btns {
   position: absolute;
 
-  left: $sp-3;
+  left: calc(var(--v-layout-left, 0px) + #{$sp-3});
   top: 298px;
 
   display: flex;

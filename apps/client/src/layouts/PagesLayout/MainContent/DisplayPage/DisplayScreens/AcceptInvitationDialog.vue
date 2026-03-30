@@ -6,7 +6,7 @@
   >
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">
+        <div class="text-h5">
           Accept invitation{{ pluralS(groupIds.length) }}
         </div>
       </div>

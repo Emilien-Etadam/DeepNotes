@@ -9,7 +9,7 @@
   >
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">Save your Recovery Codes</div>
+        <div class="text-h5">Save your Recovery Codes</div>
       </div>
     </template>
 

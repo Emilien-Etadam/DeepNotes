@@ -2,7 +2,7 @@
   <CustomDialog ref="dialogRef" v-bind="$attrs">
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">Export for AI (Markdown)</div>
+        <div class="text-h5">Export for AI (Markdown)</div>
       </div>
     </template>
 

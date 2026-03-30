@@ -9,7 +9,7 @@
   >
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">Two-factor authentication</div>
+        <div class="text-h5">Two-factor authentication</div>
       </div>
     </template>
 

@@ -1,4 +1,4 @@
-import { minmax, negateProp } from '@stdlib/misc';
+import { negateProp } from '@stdlib/misc';
 import { defineStore } from 'pinia';
 
 function trackProp<State>(state: State, prop: Extract<keyof State, string>) {
@@ -12,19 +12,6 @@ function trackProp<State>(state: State, prop: Extract<keyof State, string>) {
   );
 }
 
-export const leftSidebarSectionNames = [
-  'currentPath',
-  'recentPages',
-  'favoritePages',
-  'selectedPages',
-] as const;
-
-export type LeftSidebarSectionName = (typeof leftSidebarSectionNames)[number];
-
-export const leftSidebarSectionIndexes = Object.fromEntries(
-  leftSidebarSectionNames.map((section, index) => [section, index]),
-);
-
 export const useUIStore = defineStore('ui', () => {
   const state = reactive({
     loggedIn: false,
@@ -33,16 +20,6 @@ export const useUIStore = defineStore('ui', () => {
     rightSidebarExpanded: false,
 
     leftSidebarWidth: 240,
-
-    currentPathExpanded: true,
-    recentPagesExpanded: true,
-    favoritePagesExpanded: false,
-    selectedPagesExpanded: false,
-
-    currentPathWeight: 1,
-    recentPagesWeight: 1,
-    favoritePagesWeight: 1,
-    selectedPagesWeight: 1,
 
     headerHeight: 0,
 
@@ -54,11 +31,6 @@ export const useUIStore = defineStore('ui', () => {
   trackProp(state, 'rightSidebarExpanded');
 
   trackProp(state, 'leftSidebarWidth');
-
-  for (const section of leftSidebarSectionNames) {
-    trackProp(state, `${section}Expanded`);
-    trackProp(state, `${section}Weight`);
-  }
 
   return {
     ...toRefs(state),
@@ -80,23 +52,6 @@ export const useUIStore = defineStore('ui', () => {
 
     resetLeftSidebarWidth() {
       state.leftSidebarWidth = 240;
-    },
-
-    normalizeWeights() {
-      const min = minmax(
-        Math.min(
-          ...leftSidebarSectionNames.map(
-            (section) => state[`${section}Weight`],
-          ),
-        ),
-        1e-10,
-        1e10,
-      );
-
-      for (const section of leftSidebarSectionNames) {
-        state[`${section}Weight`] =
-          minmax(state[`${section}Weight`] / min, 1e-10, 1e10) || 1;
-      }
     },
   };
 });

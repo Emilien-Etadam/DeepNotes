@@ -6,7 +6,7 @@
   >
     <template #header>
       <div style="padding: 12px 20px">
-        <div class="text-h6">Request access</div>
+        <div class="text-h5">Request access</div>
       </div>
     </template>
 

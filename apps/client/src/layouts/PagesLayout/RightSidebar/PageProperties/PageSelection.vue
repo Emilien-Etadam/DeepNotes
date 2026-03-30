@@ -1,9 +1,9 @@
 <template>
-  <div style="padding: 16px; display: flex; flex-direction: column">
+  <div style="padding: 12px; display: flex; flex-direction: column">
     <DeepBtn
       v-if="pageSelectionStore().selectedPages.has(page.id)"
       dense
-      size="sm"
+      size="small"
       label="Deselect this page"
       icon="mdi-selection-multiple"
       color="negative"
@@ -12,18 +12,18 @@
     <DeepBtn
       v-else
       dense
-      size="sm"
+      size="small"
       label="Select this page"
       icon="mdi-selection-multiple"
       color="primary"
       @click="selectPage"
     />
 
-    <Gap style="height: 12px" />
+    <Gap style="height: 8px" />
 
     <DeepBtn
       dense
-      size="sm"
+      size="small"
       label="Select linked pages"
       icon="mdi-selection-multiple"
       color="primary"

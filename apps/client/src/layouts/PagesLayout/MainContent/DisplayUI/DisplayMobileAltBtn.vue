@@ -2,19 +2,7 @@
   <DeepBtn
     v-if="mobile"
     color="grey-9"
-    style="
-      background-color: #808080;
-
-      position: absolute;
-
-      left: 16px;
-      bottom: 12px;
-
-      width: 48px;
-      height: 48px;
-
-      text-transform: none;
-    "
+    class="display-mobile-alt-btn"
     @pointerdown="onPointerDown"
   >
     Alt
@@ -46,3 +34,15 @@ function onPointerUp() {
   internals.mobileAltKey = false;
 }
 </script>
+
+<style scoped lang="scss">
+.display-mobile-alt-btn {
+  background-color: #808080;
+  position: absolute;
+  left: calc(var(--v-layout-left, 0px) + 16px);
+  bottom: 12px;
+  width: 48px;
+  height: 48px;
+  text-transform: none;
+}
+</style>

@@ -65,7 +65,7 @@
         <DeepBtn
           label="Copy link"
           flat
-          size="sm"
+          size="small"
           @click="copyLink()"
         />
       </div>

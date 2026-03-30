@@ -7,7 +7,7 @@ export function useTouchscreenPointerCaptureRelease() {
       if (event.pointerType !== 'touch') return;
       const target = event.target as Element;
       if (!target?.hasPointerCapture?.(event.pointerId)) return;
-      if (target?.closest?.('.q-toolbar')) return;
+      if (target?.closest?.('.v-toolbar')) return;
       if (!target?.releasePointerCapture) return;
       try {
         target.releasePointerCapture(event.pointerId);

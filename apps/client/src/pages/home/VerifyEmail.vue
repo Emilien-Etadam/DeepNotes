@@ -5,7 +5,7 @@
       style="padding: 160px 0; text-align: center"
     >
       <template v-if="status">
-        <div style="font-size: 16px">Your email has been verified.</div>
+        <div style="font-size: 14px">Your email has been verified.</div>
 
         <Gap style="height: 16px" />
 
@@ -22,20 +22,20 @@
         <DeepBtn
           label="Go to Login"
           color="primary"
-          style="font-size: 16px; padding: 10px 22px"
+          style="font-size: 14px; padding: 10px 22px"
           :to="{ name: 'login' }"
         />
       </template>
 
       <template v-else>
-        <div style="font-size: 16px">Invalid email verification code.</div>
+        <div style="font-size: 14px">Invalid email verification code.</div>
 
         <Gap style="height: 24px" />
 
         <DeepBtn
           label="Go home"
           color="primary"
-          style="font-size: 16px; padding: 10px 22px"
+          style="font-size: 14px; padding: 10px 22px"
           :to="{ name: 'home' }"
         />
       </template>

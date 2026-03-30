@@ -3,7 +3,7 @@
     <template #header>
       <div
         style="padding: 12px 20px"
-        class="text-h6"
+        class="text-h5"
       >
         Move page
       </div>
@@ -17,7 +17,7 @@
             'flex-direction': horizontal ? 'row' : 'column',
           }"
         >
-          <div style="padding: 20px; width: 260px">
+          <div style="padding: 16px; width: 260px">
             <v-select
               label="Destination group"
               :items="groupOptions"
@@ -42,7 +42,7 @@
           <template v-if="destGroupId === 'new'">
             <v-divider :vertical="horizontal" />
 
-            <div style="padding: 20px; width: 260px">
+            <div style="padding: 16px; width: 260px">
               <div style="font-size: 20px; font-weight: bold">New group:</div>
 
               <Gap style="height: 8px" />

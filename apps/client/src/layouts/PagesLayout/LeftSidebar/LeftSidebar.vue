@@ -14,13 +14,26 @@
       @dblclick="() => uiStore().resetLeftSidebarWidth()"
     ></div>
 
-    <CurrentPath />
+    <div class="sections-container">
+      <div class="section-panel">
+        <CurrentPath />
+      </div>
+      <v-divider style="border-color: rgba(255, 255, 255, 0.15)" />
 
-    <RecentPages />
+      <div class="section-panel">
+        <RecentPages />
+      </div>
+      <v-divider style="border-color: rgba(255, 255, 255, 0.15)" />
 
-    <FavoritePages />
+      <div class="section-panel">
+        <FavoritePages />
+      </div>
+      <v-divider style="border-color: rgba(255, 255, 255, 0.15)" />
 
-    <SelectedPages />
+      <div class="section-panel">
+        <SelectedPages />
+      </div>
+    </div>
   </v-navigation-drawer>
 </template>
 
@@ -46,6 +59,25 @@ function resizeLeftSidebar(event: PointerEvent) {
   background-color: $bg-sidebar;
 
   border-right: 1px solid $border-subtle !important;
+}
+
+.left-sidebar-drawer :deep(.v-navigation-drawer__content) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sections-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.section-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .resize-handle {

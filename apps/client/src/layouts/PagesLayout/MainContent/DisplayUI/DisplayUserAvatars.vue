@@ -14,7 +14,7 @@
       :key="userState[0]"
       class="display-user-avatar"
       :style="{
-        left: `${(mobile ? 82 : 20) + 44 * index}px`,
+        left: `calc(var(--v-layout-left, 0px) + ${(mobile ? 82 : 20) + 44 * index}px)`,
 
         'background-color': userState[1].user.color,
       }"

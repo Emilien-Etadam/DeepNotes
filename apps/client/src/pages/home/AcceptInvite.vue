@@ -32,7 +32,7 @@
           style="
             text-align: center;
             margin-bottom: 24px;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 500;
           "
         >
@@ -87,7 +87,7 @@
           label="Create account"
           type="submit"
           color="primary"
-          style="width: 100%; font-size: 16px; padding: 14px 0px"
+          style="width: 100%; font-size: 14px; padding: 14px 0px"
           delay
         />
       </form>
