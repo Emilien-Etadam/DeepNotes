@@ -1,6 +1,7 @@
 <template>
   <CustomDialog
     ref="dialogRef"
+    v-bind="$attrs"
     :maximized="maximized"
     :card-style="{
       width: maximized ? undefined : '500px',

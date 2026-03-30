@@ -1,5 +1,8 @@
 <template>
-  <v-app class="pages-layout">
+  <v-app
+    class="pages-layout"
+    theme="dark"
+  >
     <template v-if="!pagesStore().loading">
       <MainToolbar />
 
@@ -114,14 +117,13 @@ body {
   overflow: hidden;
 
   position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
 }
 </style>
 
 <style lang="scss" scoped>
-.pages-layout-main {
-  padding: 0 !important;
-}
-
 .pages-layout :deep() {
   .right-sidebar-drawer.v-navigation-drawer--rail {
     .v-list-item {

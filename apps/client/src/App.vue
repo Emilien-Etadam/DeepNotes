@@ -92,6 +92,8 @@ html,
 body,
 #app {
   height: 100%;
+  width: 100%;
+  max-width: 100%;
 }
 
 #app {
@@ -103,6 +105,12 @@ body,
 
 .v-application {
   min-height: 100% !important; /* necessary */
+  width: 100%;
+}
+
+.v-application__wrap {
+  width: 100%;
+  min-width: 0;
 }
 
 body {
@@ -148,6 +156,17 @@ h3 {
 
 .v-tooltip .v-overlay__content {
   font-size: 12px;
+}
+
+// Tooltips create `v-overlay` elements; they should never block interactions.
+.v-tooltip .v-overlay__content,
+.v-tooltip .v-overlay__scrim {
+  pointer-events: none !important;
+}
+
+.v-dialog > .v-overlay__content {
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .disabled,

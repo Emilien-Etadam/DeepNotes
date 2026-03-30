@@ -14,6 +14,7 @@
     :autofocus="autofocus"
     :placeholder="placeholder"
     :disabled="disable"
+    :hide-details="hideDetails"
     :title="title"
     @update:model-value="$emit('update:model-value', $event)"
   >
@@ -41,6 +42,8 @@ interface Props {
   copyBtn?: boolean;
   readonly?: boolean;
   dense?: boolean;
+  /** Vuetify `hide-details` to reduce reserved vertical space under the input. */
+  hideDetails?: boolean;
   autofocus?: boolean;
   /** Forwarded as Vuetify `disabled`. */
   disable?: boolean;

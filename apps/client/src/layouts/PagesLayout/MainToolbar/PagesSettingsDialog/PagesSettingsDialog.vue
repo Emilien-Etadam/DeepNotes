@@ -1,6 +1,8 @@
 <template>
   <CustomDialog
     ref="dialogRef"
+    v-bind="$attrs"
+    :max-width="'unset'"
     :maximized="maximized"
     :card-style="{
       'max-width': 'unset',
@@ -60,9 +62,9 @@
     </template>
 
     <template #body>
-      <div style="flex: 1; height: 0; display: flex; padding: 0">
+      <div style="flex: 1; height: 100%; min-height: 0; display: flex; padding: 0">
         <template v-if="!maximized">
-          <v-list style="flex: none; width: 200px">
+          <v-list style="flex: none; width: 200px; height: 100%; overflow-y: auto">
             <TabBtn
               name="General"
               icon="mdi-account"
@@ -163,5 +165,21 @@ onMounted(async () => {
   } catch (error: any) {
     handleError(error);
   }
+});
+
+// Programmatic dialogs call `show()` on the mounted component instance.
+// This component is a wrapper around `CustomDialog`, so we forward `show/hide`
+// to ensure `appDialog({ component: PagesSettingsDialog })` works.
+function show() {
+  dialogRef.value?.show?.();
+}
+
+function hide() {
+  dialogRef.value?.hide?.();
+}
+
+defineExpose({
+  show,
+  hide,
 });
 </script>

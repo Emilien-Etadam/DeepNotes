@@ -1,6 +1,7 @@
 <template>
   <v-navigation-drawer
     :model-value="uiStore().leftSidebarExpanded"
+    app
     location="start"
     :width="uiStore().leftSidebarWidth"
     style="display: flex; flex-direction: column"

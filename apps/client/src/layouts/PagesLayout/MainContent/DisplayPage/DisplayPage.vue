@@ -196,6 +196,11 @@ watchEffect(() => {
 
   isolation: isolate;
 
+  /* Empty overlay DOMDisplay must not steal hits from .display-world below */
+  :deep(.display-overlay) {
+    pointer-events: none;
+  }
+
   :deep() {
     a {
       text-decoration: none;

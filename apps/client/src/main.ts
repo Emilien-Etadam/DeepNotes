@@ -41,10 +41,15 @@ const vuetify = createVuetify({
     defaultTheme: 'dark',
     themes: {
       dark: {
+        dark: true,
         colors: {
           primary: '#006dd2',
           secondary: '#606060',
           accent: '#9c27b0',
+          background: '#121212',
+          surface: '#212121',
+          'on-surface': 'rgba(255, 255, 255, 0.92)',
+          'on-background': 'rgba(255, 255, 255, 0.92)',
         },
       },
     },

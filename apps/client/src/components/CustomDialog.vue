@@ -1,29 +1,40 @@
 <template>
-  <v-dialog
-    :model-value="isOpen"
-    @update:model-value="onUpdateOpen"
-    :max-width="dialogMaxWidth"
-    :persistent="persistent"
-    @after-leave="onAfterLeave"
-  >
-    <v-card :style="cardStyle">
-      <v-card-title>
-        <slot name="header" />
-      </v-card-title>
+  <div style="display: contents">
+    <v-dialog
+      :model-value="isOpen"
+      @update:model-value="onUpdateOpen"
+      :max-width="dialogMaxWidth"
+      :persistent="persistent"
+      @after-leave="onAfterLeave"
+    >
+      <v-card :style="mergedCardStyle">
+        <v-card-title style="flex: none">
+          <slot name="header" />
+        </v-card-title>
 
-      <v-divider />
+        <v-divider />
 
-      <v-card-text>
-        <slot name="body" />
-      </v-card-text>
+        <v-card-text
+          style="
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+          "
+        >
+          <slot name="body" />
+        </v-card-text>
 
-      <v-divider />
+        <v-divider />
 
-      <v-card-actions>
-        <slot name="footer" />
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+        <v-card-actions style="flex: none">
+          <slot name="footer" />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -42,10 +53,16 @@ const props = withDefaults(
     cardStyle?: string | Record<string, string>;
     persistent?: boolean;
     maxWidth?: string | number;
+    /**
+     * When true, automatically calls `show()` on mount.
+     * Used by `ProgrammaticDialogLayer` to open programmatic dialogs reliably.
+     */
+    autoOpen?: boolean;
   }>(),
   {
     persistent: true,
     maxWidth: 500,
+    autoOpen: false,
   },
 );
 
@@ -56,9 +73,10 @@ const emit = defineEmits<{
   hide: [];
 }>();
 
-const internalOpen = ref(false);
+// Init early so `v-dialog` can mount/render immediately when auto-open is requested.
+const internalOpen = ref(!!props.autoOpen);
 
-const isControlled = computed(() => props.modelValue !== undefined);
+const isControlled = computed(() => props.autoOpen ? false : props.modelValue !== undefined);
 
 const isOpen = computed({
   get: () => (isControlled.value ? props.modelValue! : internalOpen.value),
@@ -72,6 +90,31 @@ const isOpen = computed({
 });
 
 const dialogMaxWidth = computed(() => props.maxWidth);
+
+const mergedCardStyle = computed(() => {
+  const baseStyle: Record<string, string> = {
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    flexShrink: '0',
+  };
+
+  if (props.cardStyle == null || typeof props.cardStyle === 'string') {
+    // We keep raw string styles as-is and only auto-infer minHeight for object styles.
+    return props.cardStyle == null ? baseStyle : [baseStyle, props.cardStyle];
+  }
+
+  const merged: Record<string, string> = {
+    ...baseStyle,
+    ...(props.cardStyle as Record<string, string>),
+  };
+
+  if (merged.height != null && merged.minHeight == null) {
+    merged.minHeight = merged.height;
+  }
+
+  return merged;
+});
 
 function onUpdateOpen(v: boolean) {
   isOpen.value = v;

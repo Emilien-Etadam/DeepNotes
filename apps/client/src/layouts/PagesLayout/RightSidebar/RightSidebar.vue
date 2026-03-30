@@ -1,6 +1,8 @@
 <template>
   <v-navigation-drawer
     :model-value="true"
+    app
+    theme="dark"
     location="end"
     permanent
     :rail="!uiStore().rightSidebarExpanded"
@@ -14,9 +16,9 @@
       style="
         padding: 0;
         flex: none;
-        height: 32px;
+        height: 48px;
         min-height: 0;
-        overflow: hidden;
+        overflow: visible;
       "
     >
       <v-avatar
@@ -45,7 +47,7 @@
       </v-toolbar-title>
     </v-toolbar>
 
-    <div style="overflow-y: auto; height: 0; flex: 1">
+    <div style="overflow-y: auto; flex: 1; min-height: 0">
       <NoteProperties v-if="page.activeElem.react.value?.type === 'note'" />
       <ArrowProperties
         v-else-if="page.activeElem.react.value?.type === 'arrow'"
@@ -68,6 +70,7 @@ provide('page', page);
 <style scoped lang="scss">
 .right-sidebar-drawer {
   background-color: $bg-sidebar;
+  color: rgba(255, 255, 255, 0.9);
 
   border-left: 1px solid $border-subtle !important;
 }

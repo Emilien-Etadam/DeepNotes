@@ -133,7 +133,7 @@ function onConfirmDialogModel(v: boolean) {
     :key="layer.id"
   >
     <div
-      v-show="idx === componentLayers.length - 1"
+      v-if="idx === componentLayers.length - 1"
       class="programmatic-dialog-layer"
     >
       <ProgrammaticDialogLayer

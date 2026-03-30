@@ -20,12 +20,13 @@
   <!-- Expanded sidebar -->
 
   <div v-else>
-    <div style="padding: 20px; display: flex; flex-direction: column">
+    <div style="padding: 16px; display: flex; flex-direction: column">
       <!-- Relative title -->
 
       <TextField
         label="Relative title"
         dense
+        hide-details
         :model-value="pageRelativeTitles()(page.id).get().text"
         @update:model-value="pageRelativeTitles()(page.id).set($event as any)"
         :disable="pageRelativeTitles()(page.id).get().status !== 'success'"
@@ -34,13 +35,14 @@
         title="Title displayed in the page path"
       />
 
-      <Gap style="height: 16px" />
+      <Gap style="height: 12px" />
 
       <!-- Absolute title -->
 
       <TextField
         label="Absolute title"
         dense
+        hide-details
         :model-value="pageAbsoluteTitles()(page.id).get().text"
         @update:model-value="pageAbsoluteTitles()(page.id).set($event as any)"
         :disable="pageAbsoluteTitles()(page.id).get().status !== 'success'"
@@ -52,20 +54,23 @@
 
     <v-divider />
 
-    <div style="padding: 20px; display: flex; flex-direction: column">
+    <div style="padding: 16px; display: flex; flex-direction: column">
       <!-- Page ID -->
 
       <TextField
         label="Page ID"
         dense
+        hide-details
         :model-value="page.id"
         copy-btn
         readonly
       />
 
-      <Gap style="height: 16px" />
+      <Gap style="height: 12px" />
 
       <DeepBtn
+        dense
+        size="sm"
         label="Copy link to this page"
         icon="mdi-content-copy"
         color="primary"
@@ -84,8 +89,10 @@
 
     <v-divider />
 
-    <div style="padding: 20px; display: flex; flex-direction: column">
+    <div style="padding: 16px; display: flex; flex-direction: column">
       <DeepBtn
+        dense
+        size="sm"
         label="Group settings"
         icon="mdi-account-cog"
         color="primary"
@@ -103,8 +110,10 @@
 
     <v-divider />
 
-    <div style="padding: 20px; display: flex; flex-direction: column">
+    <div style="padding: 16px; display: flex; flex-direction: column">
       <DeepBtn
+        dense
+        size="sm"
         label="Move page"
         icon="mdi-file-move"
         color="primary"
@@ -113,9 +122,11 @@
         @click="_movePage"
       />
 
-      <Gap style="height: 16px" />
+      <Gap style="height: 12px" />
 
       <DeepBtn
+        dense
+        size="sm"
         v-if="internals.pages.react.favoritePageIds.includes(page.id)"
         label="Remove from favorites"
         icon="mdi-star"
@@ -124,6 +135,8 @@
         @click="removeFavoritePages([page.id])"
       />
       <DeepBtn
+        dense
+        size="sm"
         v-else
         label="Add to favorites"
         icon="mdi-star"
@@ -132,9 +145,11 @@
         @click="addFavoritePages([page.id])"
       />
 
-      <Gap style="height: 16px" />
+      <Gap style="height: 12px" />
 
       <DeepBtn
+        dense
+        size="sm"
         label="Delete page"
         color="negative"
         :disable="page.react.readOnly"
@@ -171,7 +186,7 @@ import { appPageUrl } from 'src/code/utils/app-url';
 import { setClipboardText } from 'src/code/utils/clipboard';
 import { asyncDialog, handleError } from 'src/code/utils/misc';
 import DeletionDialog from 'src/components/DeletionDialog.vue';
-import type { Ref } from 'vue';
+import { type Ref } from 'vue';
 
 import GroupSettingsDialog from './GroupSettingsDialog/GroupSettingsDialog.vue';
 import MovePageDialog from './MovePageDialog.vue';

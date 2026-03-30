@@ -1,6 +1,7 @@
 <template>
   <CustomDialog
     ref="dialogRef"
+    v-bind="$attrs"
     card-style="width: 250px"
   >
     <template #header>
