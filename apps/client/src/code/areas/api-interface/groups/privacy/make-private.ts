@@ -5,15 +5,13 @@ import type {
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
 
 import { processGroupKeyRotationValues } from '../key-rotation';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
 export async function makeGroupPrivate(input: { groupId: string }) {
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/groups.privacy.makePrivate`,
+    url: apiWsUrl('/groups.privacy.makePrivate'),
 
     steps: [step1, step2, noopStep3],
   });

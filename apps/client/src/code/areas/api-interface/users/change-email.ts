@@ -5,6 +5,7 @@ import type {
 import { createPrivateKeyring, createSymmetricKeyring } from '@stdlib/crypto';
 import { deriveUserValues } from 'src/code/crypto';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
@@ -15,10 +16,7 @@ export async function changeEmail(input: {
   emailVerificationCode: string;
 }) {
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/users.account.emailChange.finish`,
+    url: apiWsUrl('/users.account.emailChange.finish'),
 
     steps: [step1, step2, noopStep3],
   });

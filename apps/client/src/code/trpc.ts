@@ -1,11 +1,12 @@
 import type { AppRouter } from '@deepnotes/app-server/src/trpc/router';
 import { createTRPCClient, httpLink } from '@trpc/client';
+import { apiUrl } from 'src/lib/endpoints';
 import superjson from 'superjson';
 
 export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpLink({
-      url: process.env.APP_SERVER_URL,
+      url: apiUrl(),
       transformer: superjson,
 
       headers({ op }) {

@@ -5,14 +5,6 @@ RUN corepack enable && corepack prepare pnpm@10.30.1 --activate
 WORKDIR /build
 COPY ./ ./
 
-# SPA needs these at build time (inlined in bundle). Use same host as client so browser can reach backends.
-ARG APP_SERVER_URL=http://localhost:48922/trpc
-ARG COLLAB_SERVER_URL=ws://localhost:48923
-ARG REALTIME_SERVER_URL=ws://localhost:48924
-ENV APP_SERVER_URL=${APP_SERVER_URL}
-ENV COLLAB_SERVER_URL=${COLLAB_SERVER_URL}
-ENV REALTIME_SERVER_URL=${REALTIME_SERVER_URL}
-
 RUN pnpm install
 RUN pnpm run repo:build
 RUN pnpm --filter @deepnotes/client run build:spa

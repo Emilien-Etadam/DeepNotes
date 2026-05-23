@@ -6,6 +6,7 @@ import { createKeyring } from '@stdlib/crypto';
 import { textToBytes } from '@stdlib/misc';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
@@ -14,10 +15,7 @@ export async function acceptJoinInvitation(input: {
   userName: string;
 }) {
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/groups.joinInvitations.accept`,
+    url: apiWsUrl('/groups.joinInvitations.accept'),
 
     steps: [step1, step2, noopStep3],
   });

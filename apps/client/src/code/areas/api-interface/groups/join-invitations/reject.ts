@@ -5,6 +5,7 @@ import type {
 import { groupInvitationNames } from 'src/code/pages/computed/group-invitation-names';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
@@ -14,10 +15,7 @@ export async function rejectJoinInvitation(input: { groupId: string }) {
   ).getAsync();
 
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/groups.joinInvitations.reject`,
+    url: apiWsUrl('/groups.joinInvitations.reject'),
 
     steps: [step1, step2, noopStep3],
   });

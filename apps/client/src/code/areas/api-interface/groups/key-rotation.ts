@@ -13,15 +13,13 @@ import sodium from 'libsodium-wrappers-sumo';
 import { computeGroupPasswordValues } from 'src/code/crypto';
 import { asyncDialog } from 'src/code/utils/misc';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
 export async function rotateGroupKeys(input: { groupId: string }) {
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/groups.rotateKeys`,
+    url: apiWsUrl('/groups.rotateKeys'),
 
     steps: [step1, step2, noopStep3],
   });

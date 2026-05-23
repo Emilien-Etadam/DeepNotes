@@ -1,0 +1,18 @@
+# Optional override for local debugging without a reverse proxy.
+# Copy to docker-compose.override.yml and adjust as needed.
+#
+# Backends are reachable only on the Docker host loopback, not on 0.0.0.0.
+# Prefer routing through the client container (port 80) in normal deployments.
+
+services:
+  app-server:
+    ports:
+      - '127.0.0.1:48922:48922'
+
+  collab-server:
+    ports:
+      - '127.0.0.1:48923:48923'
+
+  realtime-server:
+    ports:
+      - '127.0.0.1:48924:48924'

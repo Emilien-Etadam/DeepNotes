@@ -47,7 +47,7 @@ export async function movePage(input: {
   }
 
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll('http', 'ws')}/pages.move`,
+    url: apiWsUrl('/pages.move'),
 
     steps: [step1, step2, noopStep3],
   });

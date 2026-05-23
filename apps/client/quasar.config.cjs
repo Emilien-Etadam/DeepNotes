@@ -272,6 +272,24 @@ module.exports = configure(function (ctx) {
       open: false, // opens browser window automatically
       port: port,
       host: '0.0.0.0',
+      proxy: {
+        '/api/trpc': {
+          target: 'http://127.0.0.1:48922',
+          changeOrigin: true,
+          ws: true,
+          rewrite: (path) => path.replace(/^\/api\/trpc/, '/trpc'),
+        },
+        '/ws/collab': {
+          target: 'http://127.0.0.1:48923',
+          ws: true,
+          rewrite: (path) => path.replace(/^\/ws\/collab/, '') || '/',
+        },
+        '/ws/realtime': {
+          target: 'http://127.0.0.1:48924',
+          ws: true,
+          rewrite: (path) => path.replace(/^\/ws\/realtime/, '') || '/',
+        },
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework

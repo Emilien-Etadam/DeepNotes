@@ -11,6 +11,7 @@ import {
 import sodium from 'libsodium-wrappers-sumo';
 import { deriveUserValues } from 'src/code/crypto';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
@@ -33,10 +34,7 @@ export async function rotateUserKeys(input: { password: string }) {
   // Create websocket request
 
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/users.account.rotateKeys`,
+    url: apiWsUrl('/users.account.rotateKeys'),
 
     steps: [step1, step2, noopStep3],
   });

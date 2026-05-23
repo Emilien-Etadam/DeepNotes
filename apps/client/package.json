@@ -2,7 +2,7 @@
   "name": "@deepnotes/client",
   "description": "DeepNotes is an open source, end-to-end encrypted infinite canvas tool with deep page nesting and realtime collaboration. Create mind maps, diagrams, kanban boards, and more.",
   "homepage": "https://deepnotes.app",
-  "version": "1.0.25",
+  "version": "1.1.0",
   "author": "Gustavo Toyota <gustavottoyota@gmail.com>",
   "dependencies": {
     "@deeplib/data": "workspace:*",

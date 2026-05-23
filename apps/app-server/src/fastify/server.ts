@@ -51,16 +51,9 @@ export const fastify = once(async () => {
 
   await fastify.register(import('@fastify/cors'), {
     origin: (requestOrigin, callback) => {
-      // CORS origin logged only in dev
       if (process.env.DEV) console.log('CORS Origin: %s', requestOrigin);
 
-      if (
-        process.env.DEV ||
-        requestOrigin === undefined ||
-        requestOrigin === process.env.CLIENT_URL ||
-        requestOrigin === 'capacitor://deepnotes.app' ||
-        requestOrigin === 'http://localhost'
-      ) {
+      if (isAllowedCorsOrigin(requestOrigin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed'), false);

@@ -8,16 +8,15 @@ declare namespace NodeJS {
     HOST: string;
 
     APP_SERVER_PORT: string;
-    APP_SERVER_URL: string;
 
     CLIENT_PORT: string;
     CLIENT_URL: string;
+    CLIENT_APP_URL: string;
+    ALLOWED_ORIGINS?: string;
 
     REALTIME_SERVER_PORT: string;
-    REALTIME_SERVER_URL: string;
 
     COLLAB_SERVER_PORT: string;
-    COLLAB_SERVER_URL: string;
 
     ACCESS_TOKEN_SECRET: string;
     REFRESH_TOKEN_SECRET: string;

@@ -6,6 +6,7 @@ import { groupMemberNames } from 'src/code/pages/computed/group-member-names';
 import { groupNames } from 'src/code/pages/computed/group-names';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
@@ -23,10 +24,7 @@ export async function removeGroupUser(input: {
   ]);
 
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/groups.removeUser`,
+    url: apiWsUrl('/groups.removeUser'),
 
     steps: [step1, step2, noopStep3],
   });

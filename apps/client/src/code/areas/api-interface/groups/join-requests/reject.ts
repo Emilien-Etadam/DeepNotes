@@ -7,6 +7,7 @@ import { groupNames } from 'src/code/pages/computed/group-names';
 import { groupRequestNames } from 'src/code/pages/computed/group-request-names';
 import { createNotifications } from 'src/code/pages/utils';
 import { createWebsocketRequest } from 'src/code/utils/websocket-requests';
+import { apiWsUrl } from 'src/lib/endpoints';
 
 function noopStep3(_input: unknown) {}
 
@@ -21,10 +22,7 @@ export async function rejectJoinRequest(input: {
   ]);
 
   const { promise } = createWebsocketRequest({
-    url: `${process.env.APP_SERVER_URL.replaceAll(
-      'http',
-      'ws',
-    )}/groups.joinRequests.reject`,
+    url: apiWsUrl('/groups.joinRequests.reject'),
 
     steps: [step1, step2, noopStep3],
   });

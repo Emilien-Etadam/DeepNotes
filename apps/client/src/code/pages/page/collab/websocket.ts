@@ -39,7 +39,7 @@ export const PageWebsocket = once(
       syncPromise?: Resolvable;
 
       constructor(input: { collab: PageCollab }) {
-        super(`${process.env.COLLAB_SERVER_URL}/page:${input.collab.page.id}`);
+        super(`${collabUrl()}/page:${input.collab.page.id}`);
 
         this.page = input.collab.page;
         this.collab = input.collab;

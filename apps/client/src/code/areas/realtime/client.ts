@@ -12,6 +12,7 @@ import * as encoding from 'lib0/encoding';
 import { once, throttle } from 'lodash';
 import { pack, unpack } from 'msgpackr';
 
+import { realtimeUrl } from 'src/lib/endpoints';
 import { getNotificationInfo } from '../../pages/notifications/notifications';
 import { RealtimeContext } from './context';
 
@@ -47,7 +48,7 @@ export const RealtimeClient = once(
       private _isFirstConnection = true;
 
       constructor() {
-        super(process.env.REALTIME_SERVER_URL);
+        super(realtimeUrl());
       }
 
       connect() {
